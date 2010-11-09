@@ -4,7 +4,7 @@
       android:versionCode="1"
       android:versionName="1.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".GeotaggingHomeWithTab"
+        <activity android:name=".GeotaggingMap"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -12,34 +12,60 @@
             </intent-filter>
         </activity>
         
+        <activity android:name=".GeotaggingResponseList" android:label="GeotaggingResponseList"
+			android:theme="@android:style/Theme.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        
         <activity android:name=".GeotaggingEnteringInformation" android:label="GeotaggingEnteringInformation"
-			>
+			android:theme="@android:style/Theme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         
         <activity android:name=".GeotaggingCommentsType" android:label="GeotaggingCommentsType"
-			>
+			android:theme="@android:style/Theme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         
         <activity android:name=".GeotaggingListofEntities" android:label="GeotaggingListofEntities"
-			>
+			android:theme="@android:style/Theme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
-		<activity android:name=".GeotaggingMap" android:label="GeotaggingMap"
-			android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-<uses-library android:name="com.google.android.maps" />
+        
+        <activity android:name=".GeotaggingEntityInformation" android:label="GeotaggingEntityInformation">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+		
+		<activity android:name=".GeotaggingEntityListOfProblems" android:label="GeotaggingEntityListOfProblems">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+		
+		<activity android:name=".GeotaggingEntityProblem" android:label="GeotaggingEntityProblem">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+		
+		<activity android:name=".GeotaggingEntityResponse" android:label="GeotaggingEntityResponse">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+        
+		<uses-library android:name="com.google.android.maps" />
     </application>
     
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

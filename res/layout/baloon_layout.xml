@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<geotagging.views.BaloonInMapView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/baloon_panel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5px"
+    android:paddingTop="5px"
+    android:paddingRight="5px"
+    android:paddingBottom="5px">
+<LinearLayout
+android:id="@+id/widget28"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:orientation="vertical"
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+<ScrollView
+android:id="@+id/widget30"
+android:layout_width="fill_parent"
+android:layout_height="30px"
+>
+<LinearLayout
+android:id="@+id/widget31"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+>
+<ImageView
+android:id="@+id/close_button"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:paddingRight="5px"
+android:src="@drawable/close_button"
+android:clickable="true"
+android:paddingLeft="5px"
+>
+</ImageView>
+<TextView
+android:id="@+id/txv_title"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textSize="20sp"
+android:textColor="#ffffffff"
+android:text="TextView"
+>
+</TextView>
+</LinearLayout>
+</ScrollView>
+<ScrollView
+android:id="@+id/widget34"
+android:layout_width="fill_parent"
+android:layout_height="80px"
+>
+<TextView
+android:id="@+id/txv_description"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="TextView"
+android:textSize="20sp"
+android:textColor="#ffffffff"
+>
+</TextView>
+</ScrollView>
+<LinearLayout
+android:id="@+id/widget36"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+>
+<Button
+android:id="@+id/btn_detail"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Detail"
+>
+</Button>
+<Button
+android:id="@+id/btn_cancel"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Cancel"
+>
+</Button>
+</LinearLayout>
+</LinearLayout>
+</geotagging.views.BaloonInMapView>

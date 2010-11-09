@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:orientation="vertical">
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="My response provides:" />
+	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Big Picture" />
+	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Details" />
+	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Explanation" />
+	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Advice" />
+	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="An Alternative" />
+	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="An Example" />
+</LinearLayout>

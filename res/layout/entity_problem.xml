@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:orientation="vertical">
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Problem 1 with selected entity:" />
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Responder 1:
+   Blah blah blah blah
+   blah blah blah blah
+  …
+" />
+	<Button android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="See follow-up responses (4)" />
+	<Button android:id="@+id/buttonRespond" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Respond yourself" />
+</LinearLayout>

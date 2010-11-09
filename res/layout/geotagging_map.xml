@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/geotaggingmap"
-    android:layout_width="match_parent" 
-    android:layout_height="match_parent">
-    <com.google.android.maps.MapView
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
+    
+    <geotagging.views.GeotaggingMapView
     	android:id="@+id/mapview"
         android:layout_width="match_parent" 
         android:layout_height="match_parent"
@@ -11,4 +12,56 @@
         android:clickable="true"
         android:apiKey="0qbAL2m0_ty3apb0xzR5KFERAehDR1qrEGE_Ang"
         />
-</LinearLayout>
+        
+    <LinearLayout  	xmlns:android="http://schemas.android.com/apk/res/android" 
+    			    android:layout_width="match_parent" 
+        			android:layout_height="match_parent"
+					android:orientation="vertical"
+					android:gravity="bottom"
+					android:paddingLeft="5px"
+					android:paddingTop="5px"
+					android:paddingRight="5px">
+			<Button android:id="@+id/btnNewEntity"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:textSize="20sp"
+			android:textStyle="bold"
+	        android:text="New"/>
+	    <geotagging.views.TransparentPanel
+				android:id="@+id/transparent_panel" 
+	    	    android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:paddingTop="1px"
+	        	android:paddingLeft="1px"
+				android:paddingBottom="1px"
+				android:paddingRight="1px">
+		</geotagging.views.TransparentPanel>
+
+	</LinearLayout>
+	
+	<LinearLayout
+	android:id="@+id/layout_search"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="top"
+	android:paddingTop="5px"
+	android:paddingLeft="5px"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+		<EditText
+		android:id="@+id/search_content"
+		android:layout_width="268px"
+		android:layout_height="wrap_content"
+		android:text="Search"
+		android:textSize="18sp"
+		>
+		</EditText>
+		<ImageButton
+		android:id="@+id/search_imgbutton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_menu_search"
+		>
+	</ImageButton>
+	</LinearLayout>
+</FrameLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/refresh_item"
+          android:title="Refresh"
+          android:icon="@drawable/ic_menu_rotate" />
+    <item android:id="@+id/search_item"
+          android:title="Search"
+          android:icon="@drawable/ic_menu_search" />
+    <item android:id="@+id/add_item"
+          android:title="Add Entity"
+          android:icon="@drawable/ic_menu_add" />
+    <item android:id="@+id/preference_item"
+          android:title="Preferences"
+          android:icon="@drawable/ic_menu_preferences" />
+    
+</menu>

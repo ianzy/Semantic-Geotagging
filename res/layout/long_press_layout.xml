@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<geotagging.views.TransparentPanel
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/transparent_panel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5px"
+    android:paddingTop="5px"
+    android:paddingRight="5px"
+    android:paddingBottom="5px">
+		<LinearLayout
+		android:id="@+id/widget28"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		>
+		<Button
+		android:id="@+id/add_inpanel_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Add Entity"
+		>
+		</Button>
+		<Button
+		android:id="@+id/streetview_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Street View"
+		>
+		</Button>
+		
+		</LinearLayout>   
+</geotagging.views.TransparentPanel>
