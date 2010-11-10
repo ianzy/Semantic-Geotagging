@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content" android:layout_height="wrap_content"
-	android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+	<TextView android:id="@+id/label" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="Enter your comment here:" />
+	<EditText android:id="@+id/edit_response" android:text="test"
+		android:hint="what's this?" android:layout_width="fill_parent"
+        android:layout_height="100px" android:inputType="textMultiLine" android:gravity="top" >
+	</EditText>
+	<Button android:text="Add Image" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="My response provides:" />
-	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="Big Picture" />
-	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="Details" />
-	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="Explanation" />
-	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="Advice" />
-	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="An Alternative" />
-	<Button android:id="@+id/buttonResponse" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="An Example" />
+	<RadioGroup android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="vertical">
+		<RadioButton android:id="@+id/radio_big_picture"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="Big Picture" />
+		<RadioButton android:id="@+id/radio_details"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="Details" />
+		<RadioButton android:id="@+id/radio_explanation"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="Explanation" />
+		<RadioButton android:id="@+id/radio_advice"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="Advice" />
+		<RadioButton android:id="@+id/radio_alternative"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="An Alternative" />
+		<RadioButton android:id="@+id/radio_example"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="An Example" />
+	</RadioGroup>	
+	<Button android:id="@+id/submit_response" android:text="Submit" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:enabled="false"/>
 </LinearLayout>
