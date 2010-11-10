@@ -23,6 +23,7 @@
 			android:theme="@android:style/Theme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                
             </intent-filter>
         </activity>
         
@@ -70,4 +71,4 @@
     
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-</manifest> 
+</manifest>
