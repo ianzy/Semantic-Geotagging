@@ -1,5 +1,9 @@
 #ignore all files in bin
 bin/**/*
 bin/*
+
+#ignore all files in gen
+gen/*
+
 #don't need the manifest
 #AndroidManifest.xml
