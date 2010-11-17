@@ -5,24 +5,43 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class GeotaggingEntityListOfProblems extends Activity {
 
+	private ArrayAdapter<String> entity_problems_adapter;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.entity_list_of_problems);
+        setContentView(R.layout.entity_problems_list);
         
-        Button buttonProblemReport = (Button) findViewById(R.id.buttonProblem1);
-        buttonProblemReport.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	Intent intent = new Intent();
-            	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityProblem");
-            	startActivity(intent);
-            }
-        });
+        entity_problems_adapter = new ArrayAdapter<String>(this, R.layout.entity_problems);
+        entity_problems_adapter.add("Responder 1: Here's a problem...");
+        entity_problems_adapter.add("Responder 2: Here's a problem...");
+        entity_problems_adapter.add("Responder 3: Here's a problem...");
+        entity_problems_adapter.add("Responder 4: Here's a problem...");
+        
+        ListView pairedListView = (ListView) findViewById(R.id.entity_problems_list);
+        pairedListView.setAdapter(entity_problems_adapter);
+        pairedListView.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Intent intent = new Intent();
+				Bundle b = new Bundle();
+            	b.putString("entity_id", "13");
+				intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityProblem");
+				intent.putExtras(b);
+				startActivity(intent);
+			}
+		});
 	}
 	
 }
