@@ -24,7 +24,7 @@ public class UpdateResponseThread extends Thread {
 	private void prepareResponsesList() {
 		GeoResponseDAL responseDAL = new GeoResponseDAL(listView, entity_id);
 		List<Response> respsList = responseDAL.getLatestResponsesByTime("2010-09-10%08:00:00");
-        
+        //notify the observer to update the UI
         listView.updateAdapter(respsList);
 	}
 }

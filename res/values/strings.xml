@@ -2,6 +2,6 @@
 <resources>
     <string name="hello">Hello World, GeotaggingHome!</string>
     <string name="app_name">Semantic Geotagging</string>
-    <string name="GeotaggingAPIUri">http://10.0.2.2:3000/entities.json</string>
-    <string name="GeotaggingGetResponses">http://10.0.2.2:3000/resps_api/get_resps_by_entity_id_and_time.json?entity_id=</string>
+    <string name="GeotaggingAPIUri">http://geotagging.heroku.com/entities.json</string>
+    <string name="GeotaggingGetResponses">http://geotagging.heroku.com/resps_api/get_resps_by_entity_id.json?entity_id=</string>
 </resources>

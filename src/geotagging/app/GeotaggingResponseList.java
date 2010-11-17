@@ -34,13 +34,6 @@ public class GeotaggingResponseList extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = new MyCustomAdapter();
-        
-      //get entity_id from previous activity
-        Bundle b = getIntent().getExtras();
-        String entity_id = b.getString("entity_id");
-        updateResponseThread = new UpdateResponseThread(this, entity_id);
-        updateResponseThread.start();
-        
         setContentView(R.layout.response_list_layout);
         setListAdapter(mAdapter);
         
@@ -54,6 +47,12 @@ public class GeotaggingResponseList extends ListActivity {
 			}
         	
         });
+        
+        //get entity_id from previous activity
+        Bundle b = getIntent().getExtras();
+        String entity_id = b.getString("entity_id");
+        updateResponseThread = new UpdateResponseThread(this, entity_id);
+        updateResponseThread.start();
     }
     //experimental code
     private void setThread(String entity_id) { 
@@ -78,7 +77,6 @@ public class GeotaggingResponseList extends ListActivity {
     		for (int i = 0; i < rs.size(); i++) {
     			mAdapter.addItem(rs.get(i));
             }
-            
         	
         }
     };

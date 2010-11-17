@@ -38,7 +38,7 @@ public class GeoResponseDAL implements GeoResponseIDAL {
 	}
 
 	public List<Response> getLatestResponsesByTime(String time) {
-		String jsonText = this.getJsonText(cx.getResources().getString(R.string.GeotaggingGetResponses)+entity_id+"&time="+time);
+		String jsonText = this.getJsonText(cx.getResources().getString(R.string.GeotaggingGetResponses)+entity_id);
 		Log.i("test", cx.getResources().getString(R.string.GeotaggingGetResponses)+entity_id+"&time="+time);
 		Log.i("jsontext", jsonText);
 		return getResponsesFromJsonText(jsonText);

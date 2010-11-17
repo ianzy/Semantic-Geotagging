@@ -52,7 +52,7 @@
 		android:id="@+id/search_content"
 		android:layout_width="268px"
 		android:layout_height="wrap_content"
-		android:text="Search"
+		android:text=""
 		android:textSize="18sp"
 		>
 		</EditText>

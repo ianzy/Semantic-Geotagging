@@ -24,14 +24,14 @@ private Paint innerPaint, borderPaint ;
 
 	private void init() {
 		innerPaint = new Paint();
-		innerPaint.setARGB(225, 75, 75, 75); //gray
+		innerPaint.setARGB(100, 0, 0, 0); //color for content
 		innerPaint.setAntiAlias(true);
 
 		borderPaint = new Paint();
 		borderPaint.setARGB(255, 255, 255, 255);
 		borderPaint.setAntiAlias(true);
 		borderPaint.setStyle(Style.STROKE);
-		borderPaint.setStrokeWidth(2);
+		borderPaint.setStrokeWidth(5);
 	}
 	
 	public void setInnerPaint(Paint innerPaint) {

@@ -1,12 +1,13 @@
 package geotagging.app;
 
+import geotagging.DES.Entity;
 import geotagging.realtime.UpdateMapThread;
 import geotagging.utils.GeotaggingItemizedOverlay;
 import geotagging.views.BaloonInMapView;
 import geotagging.views.GeotaggingMapView;
-import geotagging.views.TransparentPanel;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -17,6 +18,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -39,7 +42,11 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
+//Todo: use EVENT to handle the UI elements update
+//http://10.0.2.2:3000/
 public class GeotaggingMap extends MapActivity {
+	
+//	private GestureDetector mGestureDetector;
 	
 	private static final int DIALOG_FOR_ENTITY_TYPES = 1;
 	private static final String[] HARDCODED_DATA = new String[] { //Need to refactored to dynamic data
@@ -52,13 +59,16 @@ public class GeotaggingMap extends MapActivity {
 	private BaloonInMapView baloon; //Balloon layout
 	private GeotaggingItemizedOverlay itemizedoverlay; //Overlay for the update thread
 	
+	private GeotaggingMapView mapView;
+	private Boolean isIconClick = false;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.geotagging_map);
         
-        //Experiment code, should be deleted
-        
+        //Experiment code
+//        this.mGestureDetector = new GestureDetector(this);
         //Start the street view for a given GeoPoint
         ImageButton imgbtn = (ImageButton) this.findViewById(R.id.search_imgbutton);
         imgbtn.setOnClickListener(new OnClickListener() {
@@ -69,13 +79,11 @@ public class GeotaggingMap extends MapActivity {
             }
         });
         
+//        mapview = (MapView) this.findViewById(R.id.mapview);
         //Inflate for the longpress layout
-        TransparentPanel tp;
-        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        tp = (TransparentPanel)layoutInflater.inflate(R.layout.long_press_layout, null);
-        GeotaggingMapView mapView = (GeotaggingMapView) this.findViewById(R.id.mapview);
-        mapView.setCustomizedChildView(tp);
-        mapView.setGeotaggingMapActivity(this);
+        
+        mapView = (GeotaggingMapView) this.findViewById(R.id.mapview);
+        mapView.addObserver(this);
         //End of experiment
         
         initializeViews();
@@ -93,8 +101,8 @@ public class GeotaggingMap extends MapActivity {
                 .setItems(HARDCODED_DATA, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                    	Toast.makeText(getApplicationContext(), "You selected" +HARDCODED_DATA[which],
-                		Toast.LENGTH_SHORT).show();
+//                    	Toast.makeText(getApplicationContext(), "You selected" +HARDCODED_DATA[which],
+//                		Toast.LENGTH_SHORT).show();
                 		Intent intent = new Intent();
                     	intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsType");
                     	startActivity(intent);
@@ -107,8 +115,8 @@ public class GeotaggingMap extends MapActivity {
                 .setItems(ITEMS_FOR_MAPMODE, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                    	Toast.makeText(getApplicationContext(), "You selected" +ITEMS_FOR_MAPMODE[which],
-                		Toast.LENGTH_SHORT).show();
+//                    	Toast.makeText(getApplicationContext(), "You selected" +ITEMS_FOR_MAPMODE[which],
+//                		Toast.LENGTH_SHORT).show();
                     	if ("Map" == ITEMS_FOR_MAPMODE[which]) {
                     		MapView mapView = (MapView) findViewById(R.id.mapview);
                 			mapView.setSatellite(false);
@@ -174,33 +182,38 @@ public class GeotaggingMap extends MapActivity {
         }});
         
         //Popup window in the mapview
-        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        baloon = (BaloonInMapView)layoutInflater.inflate(R.layout.baloon_layout, null);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(230,50);
-        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        baloon.setLayoutParams(layoutParams);
-        //The close button
-        ImageView imgView = (ImageView) baloon.findViewById(R.id.close_button);
-        imgView.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	baloon.setVisibility(View.GONE);
-            }
-        });
-        Button btnCancel = (Button) baloon.findViewById(R.id.btn_cancel);
-        btnCancel.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	baloon.setVisibility(View.GONE);
-            }
-        });
+//        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        baloon = (BaloonInMapView)layoutInflater.inflate(R.layout.baloon_layout, null);
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(230,50);
+//        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+//        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//        baloon.setLayoutParams(layoutParams);
+//        //The close button
+//        ImageView imgView = (ImageView) baloon.findViewById(R.id.close_button);
+//        imgView.setOnClickListener(new OnClickListener() {
+//            public void onClick(View v) {
+//            	baloon.setVisibility(View.GONE);
+//            }
+//        });
+//        Button btnCancel = (Button) baloon.findViewById(R.id.btn_cancel);
+//        btnCancel.setOnClickListener(new OnClickListener() {
+//            public void onClick(View v) {
+//            	baloon.setVisibility(View.GONE);
+//            }
+//        });
+       
 	}
 	
 	private void checkNetworkAvailability () {
 		URL url;
+		URLConnection conn = null;
+		InputStream inputstream = null;
 		try {
 			url = new URL(this.getResources().getString(R.string.GeotaggingAPIUri));
-			URLConnection conn = url.openConnection();
-			conn.getInputStream();
+			conn = url.openConnection();
+			conn.setConnectTimeout(1000);
+			inputstream = conn.getInputStream();
+			inputstream.close();
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -214,6 +227,7 @@ public class GeotaggingMap extends MapActivity {
 
 			Toast toast = Toast.makeText(this, text, duration);
 			toast.show();
+			
 		}
 	}
 	
@@ -234,11 +248,77 @@ public class GeotaggingMap extends MapActivity {
         mc.setZoom(17);
         
         List<Overlay> mapOverlays = mapView.getOverlays();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.amphitheater);
-        itemizedoverlay = new GeotaggingItemizedOverlay(drawable, this, mc, this.baloon, mapView);
+        Drawable drawable = this.getResources().getDrawable(R.drawable.fire_icon);
+        itemizedoverlay = new GeotaggingItemizedOverlay(drawable);
+        itemizedoverlay.addObserver(this);
         UpdateMapThread updateMapT = new UpdateMapThread(drawable,this,mapOverlays, itemizedoverlay);
         updateMapT.start();
-       
+        
 	}
 	
+	//observer methods for the map view
+	//act as an observer, map activity observe the map view, when the add entity click
+	//this method get called. If necessery, it will turn into an interface.
+	public void onAddEntityClick() {
+		this.showDialog(1); 
+	}
+	
+	public void onStreetViewClick(Intent intent) {
+		this.startActivity(intent); 
+	}
+	
+	//observer methods for GeotaggingItemizedOverlay
+	public void onIconTapped(GeoPoint p, Entity selectedEntity) {
+		Point screenPts = new Point();
+		MapController mc = mapView.getController();
+		
+		if (null == this.baloon) {
+			LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	        baloon = (BaloonInMapView)layoutInflater.inflate(R.layout.baloon_layout, null);
+		    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(230,50);
+	        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+	        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	        baloon.setLayoutParams(layoutParams);
+	        //The close button
+	        ImageView imgView = (ImageView) baloon.findViewById(R.id.close_button);
+	        imgView.setOnClickListener(new OnClickListener() {
+	            public void onClick(View v) {
+	            	baloon.setVisibility(View.GONE);
+	            }
+	        });
+	        Button btnCancel = (Button) baloon.findViewById(R.id.btn_cancel);
+	        btnCancel.setOnClickListener(new OnClickListener() {
+	            public void onClick(View v) {
+	            	baloon.setVisibility(View.GONE);
+	            }
+	        });
+		}
+		
+		//map geopoint to px to ensure a correct center of map view
+		mapView.getProjection().toPixels(p, screenPts);
+		mc.animateTo(mapView.getProjection().fromPixels(screenPts.x, screenPts.y-80));
+		
+		if (isIconClick) {
+			mapView.removeView(baloon);
+		}
+		isIconClick = true;
+		
+		mapView.addView(baloon, new MapView.LayoutParams(260,200,p,
+				MapView.LayoutParams.BOTTOM_CENTER));
+		
+		TextView title = (TextView) baloon.findViewById(R.id.txv_title);
+		title.setText(selectedEntity.getTitle());
+		TextView description = (TextView) baloon.findViewById(R.id.txv_description);
+		description.setText(selectedEntity.getDescription());
+		
+		Button btnDetail = (Button) baloon.findViewById(R.id.btn_detail);
+		btnDetail.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+        		Intent intent = new Intent();
+            	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityInformation");
+            	startActivity(intent);
+            }
+        });
+		 
+	}
 }

@@ -53,6 +53,10 @@ public class UpdateMapThread extends Thread {
             
             
             OverlayItem overlayitem = new OverlayItem(point, "Opening Entity Information", "Opening Entity Information");
+            
+//            Drawable d = cx.getResources().getDrawable(R.drawable.androidmarker);
+//            d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+//            overlayitem.setMarker(d);
             itemizedoverlay.addOverlay(overlayitem);
             itemizedoverlay.addEntity(entity);
             
