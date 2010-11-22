@@ -65,6 +65,7 @@ public class JsonEntityDAO implements GeoEntityInterface {
         
         List<Entity> entitiesList = new ArrayList<Entity>();
         Entity ne = null;
+        String updateAt;
         try {
 			JSONArray entities = new JSONArray(jsonText);
 			for (int i=0; i<entities.length() ;i++)
@@ -76,6 +77,11 @@ public class JsonEntityDAO implements GeoEntityInterface {
                 ne.setDescription(entity.getJSONObject("entity").getString("description"));
                 ne.setLocation(entity.getJSONObject("entity").getString("location"));
                 ne.setTitle(entity.getJSONObject("entity").getString("title"));
+                
+                updateAt = entity.getJSONObject("entity").getString("updated_at").replace("T", " ").replace("Z", "").replace("-", "/");
+                Log.i("updatedAT-----------------", updateAt);
+                ne.setUpdatedAt(Date.parse(updateAt));
+                Log.i("updatedAT-----------------", String.valueOf(Date.parse(updateAt)));
                 entitiesList.add(ne);
             }
 			

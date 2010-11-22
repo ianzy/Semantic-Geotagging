@@ -1,5 +1,6 @@
 package geotagging.DES;
 
+
 public class Entity {
 	private String title;
 	private String description;
@@ -7,7 +8,14 @@ public class Entity {
 	private String location;
 	private String lat;
 	private String lng;
+	private long updatedAt;
 	
+	public long getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(long updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 	public String getTitle() {
 		return title;
 	}

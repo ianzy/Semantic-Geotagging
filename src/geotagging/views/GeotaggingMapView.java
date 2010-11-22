@@ -2,8 +2,15 @@ package geotagging.views;
 
 import geotagging.app.GeotaggingMap;
 import geotagging.app.R;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -103,7 +110,31 @@ public class GeotaggingMapView extends MapView implements OnGestureListener{
 		Button btnAdd = (Button) this.findViewById(R.id.add_inpanel_button);
 		btnAdd.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-            	GeotaggingMapView.this.observer.onAddEntityClick(); 
+            	Geocoder geoCoder = new Geocoder(
+            			context, Locale.getDefault());
+            	StringBuilder location = new StringBuilder();
+            	List<Address> addresses;
+				try {
+					addresses = geoCoder.getFromLocation(
+					        p.getLatitudeE6()  / 1E6, 
+					        p.getLongitudeE6() / 1E6, 1);
+					if (addresses.size() > 0) 
+                    {
+                        for (int i=0; i<addresses.get(0).getMaxAddressLineIndex(); 
+                             i++) {
+                        	location.append(addresses.get(0).getAddressLine(i));
+                            if (addresses.get(0).getMaxAddressLineIndex()-1 != i) {
+                            	location.append(", ");
+                            }
+                        }
+                    }
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+                Log.i(">>>>>>>>>>>>>locatoin", location.toString());    
+            	GeotaggingMapView.this.observer.onAddEntityClick(p, location.toString()); 
             }
         });
 	}

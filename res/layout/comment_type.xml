@@ -5,8 +5,8 @@
     android:layout_height="fill_parent" >
 	<TextView android:id="@+id/label" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="Enter your comment here:" />
-	<EditText android:id="@+id/edit_comment" android:text="test"
-		android:hint="what's this?" android:layout_width="fill_parent"
+	<EditText android:id="@+id/edit_comment" android:text=""
+		android:hint="Enter your description here" android:layout_width="fill_parent"
         android:layout_height="100px" android:inputType="textMultiLine" android:gravity="top">
 	</EditText>
 	<Button android:text="Add Image" android:layout_width="wrap_content"

@@ -62,6 +62,8 @@ public class GeotaggingMap extends MapActivity {
 	private GeotaggingMapView mapView;
 	private Boolean isIconClick = false;
 	
+	private Intent newEntityIntent;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,9 +105,7 @@ public class GeotaggingMap extends MapActivity {
 
 //                    	Toast.makeText(getApplicationContext(), "You selected" +HARDCODED_DATA[which],
 //                		Toast.LENGTH_SHORT).show();
-                		Intent intent = new Intent();
-                    	intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsType");
-                    	startActivity(intent);
+                		startActivity(newEntityIntent);
                     }
                 })
                 .create();
@@ -259,7 +259,15 @@ public class GeotaggingMap extends MapActivity {
 	//observer methods for the map view
 	//act as an observer, map activity observe the map view, when the add entity click
 	//this method get called. If necessery, it will turn into an interface.
-	public void onAddEntityClick() {
+	public void onAddEntityClick(GeoPoint point, String location) {
+		newEntityIntent = new Intent();
+		newEntityIntent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsType");
+    	
+		Bundle b = new Bundle();
+    	b.putString("location", location);
+    	b.putDouble("lng", point.getLongitudeE6() / 1E6);
+    	b.putDouble("lat", point.getLatitudeE6() / 1E6);
+    	newEntityIntent.putExtras(b);
 		this.showDialog(1); 
 	}
 	
@@ -283,13 +291,13 @@ public class GeotaggingMap extends MapActivity {
 	        ImageView imgView = (ImageView) baloon.findViewById(R.id.close_button);
 	        imgView.setOnClickListener(new OnClickListener() {
 	            public void onClick(View v) {
-	            	baloon.setVisibility(View.GONE);
+	            	mapView.removeView(baloon);
 	            }
 	        });
 	        Button btnCancel = (Button) baloon.findViewById(R.id.btn_cancel);
 	        btnCancel.setOnClickListener(new OnClickListener() {
 	            public void onClick(View v) {
-	            	baloon.setVisibility(View.GONE);
+	            	mapView.removeView(baloon);
 	            }
 	        });
 		}

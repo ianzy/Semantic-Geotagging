@@ -3,6 +3,7 @@ package geotagging.realtime;
 import geotagging.DAL.JsonEntityDAO;
 import geotagging.DES.Entity;
 import geotagging.IDAL.GeoEntityInterface;
+import geotagging.app.R;
 import geotagging.utils.GeotaggingItemizedOverlay;
 
 import java.util.List;
@@ -54,6 +55,11 @@ public class UpdateMapThread extends Thread {
             
             OverlayItem overlayitem = new OverlayItem(point, "Opening Entity Information", "Opening Entity Information");
             
+            if (entity.getUpdatedAt() > Long.parseLong("1288794810000")) {
+            	Drawable d = cx.getResources().getDrawable(R.drawable.amphitheater);
+	            d.setBounds(-10, -20, d.getIntrinsicWidth()-10, d.getIntrinsicHeight()-20);
+	            overlayitem.setMarker(d);
+            }
 //            Drawable d = cx.getResources().getDrawable(R.drawable.androidmarker);
 //            d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
 //            overlayitem.setMarker(d);

@@ -29,6 +29,7 @@ public class GeotaggingResponseList extends ListActivity {
 	//experimental code
 	private int icm = 1;
 	
+	private Button refresh;
 	 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,13 +38,14 @@ public class GeotaggingResponseList extends ListActivity {
         setContentView(R.layout.response_list_layout);
         setListAdapter(mAdapter);
         
-        Button refresh = (Button) findViewById(R.id.response_refresh_button);
+        refresh = (Button) findViewById(R.id.response_refresh_button);
         refresh.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				setThread("14");
 		        updateResponseThread.start();
+		        refresh.setClickable(false);
 			}
         	
         });
@@ -68,6 +70,7 @@ public class GeotaggingResponseList extends ListActivity {
     public void updateAdapter(List<Response> rs) {
     	this.rs = rs;
     	handler.sendEmptyMessage(0);
+    	refresh.setClickable(true);
     }
     
     private Handler handler = new Handler() {
