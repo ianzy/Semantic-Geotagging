@@ -13,7 +13,7 @@ public class GeotaggingEntityProblem extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.entity_problem);
+        setContentView(R.layout.entity_problem_information);
         
         Button buttonProblemReport = (Button) findViewById(R.id.buttonRespond);
         buttonProblemReport.setOnClickListener(new OnClickListener() {

@@ -1,6 +1,8 @@
 package geotagging.app;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,7 +57,8 @@ public class GeotaggingEntityResponse extends Activity {
         OnClickListener radio_listener = new OnClickListener() {
             public void onClick(View v) {
                 // Perform action on clicks
-            	buttonProblemReport.setEnabled(true);                
+            	buttonProblemReport.setEnabled(true);
+            	buttonProblemReport.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
             }
         };
         

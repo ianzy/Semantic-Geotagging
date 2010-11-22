@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, GeotaggingHome!</string>
-    <string name="app_name">Semantic Geotagging</string>
+    <string name="app_name">Semantic Geotagging</string>    
+    <string name="title_entity_problems_list">Problems with selected entity</string>
+    <string name="title_entity_information_list">Information about selected entity</string>
     <string name="GeotaggingAPIUri">http://geotagging.heroku.com/entities.json</string>
     <string name="GeotaggingGetResponses">http://geotagging.heroku.com/resps_api/get_resps_by_entity_id.json?entity_id=</string>
 </resources>

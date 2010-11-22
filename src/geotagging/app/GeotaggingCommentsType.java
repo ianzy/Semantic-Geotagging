@@ -11,6 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,7 +49,8 @@ public class GeotaggingCommentsType extends Activity {
         OnClickListener radio_listener = new OnClickListener() {
             public void onClick(View v) {
                 // Perform action on clicks
-                submit_comment.setEnabled(true);                
+                submit_comment.setEnabled(true);
+                submit_comment.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
             }
         };
         radio_request_for_help.setOnClickListener(radio_listener);
