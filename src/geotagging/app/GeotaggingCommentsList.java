@@ -1,7 +1,8 @@
 package geotagging.app;
 
-import geotagging.DES.Response;
-import geotagging.realtime.UpdateResponseThread;
+import geotagging.DES.Comment;
+import geotagging.realtime.UpdateCommentThread;
+import geotagging.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,25 +17,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class GeotaggingResponseList extends ListActivity {
-
-	private List<Response> rs;
-	private UpdateResponseThread updateResponseThread;
+public class GeotaggingCommentsList extends ListActivity {
+	private List<Comment> cs;
+	private UpdateCommentThread updateCommentThread;
 	private MyCustomAdapter mAdapter;
-	
-	//experimental code
-	private int icm = 1;
-	
-	private Button refresh;
+
 	 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,26 +37,24 @@ public class GeotaggingResponseList extends ListActivity {
         setContentView(R.layout.response_list_layout);
         setListAdapter(mAdapter);
         
-        refresh = (Button) findViewById(R.id.response_refresh_button);
-        refresh.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				setThread("14");
-		        updateResponseThread.start();
-		        refresh.setClickable(false);
-			}
-        	
-        });
-        
+        //Set the onclick event listener for listview items
         ListView pairedListView = this.getListView();
         pairedListView.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				Intent intent = new Intent();
-				intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityListOfProblems");
+				
 				Log.i(">>>>>>>>>>>>>>>>>>>>>>>>>", String.valueOf(arg2));
+				Intent intent = new Intent();
+				
+				Comment c = cs.get(cs.size()-1-arg2);
+				Bundle b = new Bundle();
+				b.putInt("commentId",c.getCommentId());
+				b.putString("description", c.getDescription());
+				b.putString("userName", c.getUserName());
+				b.putString("userImg", c.getUserImg());
+				intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentDetails");
+				intent.putExtras(b);
 				startActivity(intent);
 			}
 		});
@@ -70,32 +62,39 @@ public class GeotaggingResponseList extends ListActivity {
         //get entity_id from previous activity
         Bundle b = getIntent().getExtras();
         String entity_id = b.getString("entity_id");
-        updateResponseThread = new UpdateResponseThread(this, entity_id);
-        updateResponseThread.start();
+        updateCommentThread = new UpdateCommentThread(this, entity_id);
+        updateCommentThread.start();
     }
-    //experimental code
-    private void setThread(String entity_id) { 
-    	Integer res = Integer.parseInt(entity_id)+icm++;
-    	entity_id = res.toString();
-		updateResponseThread = new UpdateResponseThread(this, entity_id);
+
+    /** Handle "home" title-bar action. */
+    public void onHomeClick(View v) {
+        UIUtils.goHome(this);
+    }
+
+    /** Handle "refresh" title-bar action. */
+    public void onRefreshClick(View v) {
+    }
+
+    /** Handle "search" title-bar action. */
+    public void onSearchClick(View v) {
+        UIUtils.goSearch(this);
     }
     
     //We must use a Handler object because we cannot update most UI 
     //objects while in a separate thread. 
     //When we send a message to the Handler it will get saved into 
     //a queue and get executed by the UI thread as soon as possible.
-    public void updateAdapter(List<Response> rs) {
-    	this.rs = rs;
+    public void updateAdapter(List<Comment> cs) {
+    	this.cs = cs;
     	handler.sendEmptyMessage(0);
-    	refresh.setClickable(true);
     }
     
     private Handler handler = new Handler() {
         public void  handleMessage(Message msg) {
              //update your view from here only.
 
-    		for (int i = 0; i < rs.size(); i++) {
-    			mAdapter.addItem(rs.get(i));
+    		for (int i = 0; i < cs.size(); i++) {
+    			mAdapter.addItem(cs.get(i));
             }
         	
         }
@@ -103,15 +102,15 @@ public class GeotaggingResponseList extends ListActivity {
  
     private class MyCustomAdapter extends BaseAdapter {
  
-        private ArrayList<Response> mData = new ArrayList<Response>();
+        private ArrayList<Comment> mData = new ArrayList<Comment>();
         private LayoutInflater mInflater;
  
         public MyCustomAdapter() {
             mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
  
-        public void addItem(final Response resp) {
-            mData.add(0, resp);
+        public void addItem(final Comment comment) {
+            mData.add(0, comment);
             notifyDataSetChanged();
         }
  
@@ -119,7 +118,7 @@ public class GeotaggingResponseList extends ListActivity {
             return mData.size();
         }
  
-        public Response getItem(int position) {
+        public Comment getItem(int position) {
             return mData.get(position);
         }
  
@@ -142,11 +141,11 @@ public class GeotaggingResponseList extends ListActivity {
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
-            Response r = mData.get(position);
-            holder.content.setText(r.getResp());
-            holder.image.setImageBitmap(r.getActualImg());
-            holder.time.setText(r.getTime());
-            holder.username.setText(r.getUsername());
+            Comment c = mData.get(position);
+            holder.content.setText(c.getDescription());
+            holder.image.setImageBitmap(c.getActualUserImg());
+            holder.time.setText(c.getTime());
+            holder.username.setText(c.getUserName());
             return convertView;
         }
  
@@ -158,8 +157,4 @@ public class GeotaggingResponseList extends ListActivity {
         public ImageView image;
         public TextView time;
     }
-    
-    
 }
-
-

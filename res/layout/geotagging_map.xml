@@ -4,16 +4,8 @@
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent">
     
-    <geotagging.views.GeotaggingMapView
-    	android:id="@+id/mapview"
-        android:layout_width="match_parent" 
-        android:layout_height="match_parent"
-        android:enabled="true"
-        android:clickable="true"
-        android:apiKey="0qbAL2m0_ty3apb0xzR5KFERAehDR1qrEGE_Ang"
-        />
-        
-    <LinearLayout  	xmlns:android="http://schemas.android.com/apk/res/android" 
+   
+    <!--<LinearLayout  	xmlns:android="http://schemas.android.com/apk/res/android" 
     			    android:layout_width="match_parent" 
         			android:layout_height="match_parent"
 					android:orientation="vertical"
@@ -21,12 +13,13 @@
 					android:paddingLeft="5px"
 					android:paddingTop="5px"
 					android:paddingRight="5px">
-			<Button android:id="@+id/btnNewEntity"
+		<Button android:id="@+id/btnNewEntity"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
 	        android:textSize="20sp"
 			android:textStyle="bold"
 	        android:text="New"/>
+	    
 	    <geotagging.views.TransparentPanel
 				android:id="@+id/transparent_panel" 
 	    	    android:layout_width="match_parent"
@@ -36,32 +29,47 @@
 				android:paddingBottom="1px"
 				android:paddingRight="1px">
 		</geotagging.views.TransparentPanel>
-
+		
 	</LinearLayout>
+	-->
 	
+    
 	<LinearLayout
-	android:id="@+id/layout_search"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:gravity="top"
-	android:paddingTop="5px"
-	android:paddingLeft="5px"
+	android:orientation="vertical"
+	android:background="#ffffff"
+	android:id="@+id/layout_vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	>
-		<EditText
-		android:id="@+id/search_content"
-		android:layout_width="268px"
-		android:layout_height="wrap_content"
-		android:text=""
-		android:textSize="18sp"
-		>
-		</EditText>
-		<ImageButton
-		android:id="@+id/search_imgbutton"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/ic_menu_search"
-		>
-	</ImageButton>
-	</LinearLayout>
+	
+	<LinearLayout style="@style/TitleBar">
+
+        <TextView style="@style/TitleBarText" 
+        	android:text="Semantic Geotagging"/>
+        
+        <ImageButton style="@style/TitleBarAction"
+            android:id="@+id/btn_title_refresh"
+            android:contentDescription="@string/description_refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
+        <ProgressBar style="@style/TitleBarProgressIndicator"
+            android:id="@+id/title_refresh_progress"
+            android:visibility="gone" />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_search"
+            android:src="@drawable/ic_title_search"
+            android:onClick="onSearchClick" />
+    </LinearLayout>
+	 <geotagging.views.GeotaggingMapView
+    	android:id="@+id/mapview"
+        android:layout_width="match_parent" 
+        android:layout_height="match_parent"
+        android:enabled="true"
+        android:clickable="true"
+        android:apiKey="0qbAL2m0_ty3apb0xzR5KFERAehDR1qrEGE_Ang"
+        />
+      </LinearLayout>
 </FrameLayout>

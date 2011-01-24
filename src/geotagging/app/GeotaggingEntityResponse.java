@@ -1,9 +1,16 @@
 package geotagging.app;
 
+import geotagging.utils.BackendHelperSingleton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -51,6 +58,35 @@ public class GeotaggingEntityResponse extends Activity {
             		message.append(radio_example.getText());
             	}
             	Toast.makeText(GeotaggingEntityResponse.this, message, Toast.LENGTH_LONG).show();
+            	
+            	EditText edit_comment = (EditText) findViewById(R.id.edit_response);
+            	
+            	JSONObject obj = new JSONObject();
+                JSONObject ent = new JSONObject();
+                try {
+					
+	                obj.put("description", edit_comment.getText());
+	                obj.put("comment_id", 1);
+	         
+	                ent.put("comment", obj);
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				String contentForPost = ent.toString();
+				Log.i(">>>>>>>>>>>>>>>>", contentForPost);
+				
+				BackendHelperSingleton.getInstance().postContent("http://10.0.2.2:3000/comments", contentForPost);
+				
+				//finish the activity
+                Intent intent = new Intent();
+                //need to be refactored
+                intent.putExtra("description", edit_comment.getText().toString());
+                intent.putExtra("comment_id", 1);
+                intent.putExtra("userName","demo");
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
         

@@ -10,6 +10,8 @@ public class Entity {
 	private String lng;
 	private long updatedAt;
 	
+
+	
 	public long getUpdatedAt() {
 		return updatedAt;
 	}

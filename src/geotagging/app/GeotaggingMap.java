@@ -3,6 +3,7 @@ package geotagging.app;
 import geotagging.DES.Entity;
 import geotagging.realtime.UpdateMapThread;
 import geotagging.utils.GeotaggingItemizedOverlay;
+import geotagging.utils.UIUtils;
 import geotagging.views.BaloonInMapView;
 import geotagging.views.GeotaggingMapView;
 
@@ -20,7 +21,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +40,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 
 //Todo: use EVENT to handle the UI elements update
 //http://10.0.2.2:3000/
@@ -72,14 +72,14 @@ public class GeotaggingMap extends MapActivity {
         //Experiment code
 //        this.mGestureDetector = new GestureDetector(this);
         //Start the street view for a given GeoPoint
-        ImageButton imgbtn = (ImageButton) this.findViewById(R.id.search_imgbutton);
-        imgbtn.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	Uri geoUri = Uri.parse("google.streetview:cbll=46.813812,-71.207378&cbp=1,99.56,,1,-5.27&mz=21");
-            	Intent mapCall = new Intent(Intent.ACTION_VIEW, geoUri);  
-            	startActivity(mapCall); 
-            }
-        });
+//        ImageButton imgbtn = (ImageButton) this.findViewById(R.id.search_imgbutton);
+//        imgbtn.setOnClickListener(new OnClickListener() {
+//            public void onClick(View v) {
+//            	Uri geoUri = Uri.parse("google.streetview:cbll=46.813812,-71.207378&cbp=1,99.56,,1,-5.27&mz=21");
+//            	Intent mapCall = new Intent(Intent.ACTION_VIEW, geoUri);  
+//            	startActivity(mapCall); 
+//            }
+//        });
         
 //        mapview = (MapView) this.findViewById(R.id.mapview);
         //Inflate for the longpress layout
@@ -93,6 +93,56 @@ public class GeotaggingMap extends MapActivity {
         initializeMap();
 	}
 	
+	/** Handle "refresh" title-bar action. */
+    public void onRefreshClick(View v) {
+        // trigger off background sync
+
+    }
+
+    /** Handle "search" title-bar action. */
+    public void onSearchClick(View v) {
+        UIUtils.goSearch(this);
+    }
+
+	
+	//experimental codes, handling a successful return of an activity
+	static final int ADD_ENTITY = 12345;
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+        if (requestCode == ADD_ENTITY) {
+            if (resultCode == RESULT_OK) {
+            	
+            	Entity entity = new Entity();
+            	entity.setLocation(data.getStringExtra("location"));
+            	entity.setUpdatedAt(Long.parseLong("1288794810002"));
+            	entity.setDescription(data.getStringExtra("description"));
+            	entity.setLat(String.valueOf(data.getDoubleExtra("lat", 0)));
+            	entity.setLng(String.valueOf(data.getDoubleExtra("lng", 0)));
+            	entity.setTitle(data.getStringExtra("title"));
+            	
+            	GeoPoint point = new GeoPoint(
+                    (int) (data.getDoubleExtra("lat", 0) * 1E6), 
+                    (int) (data.getDoubleExtra("lng", 0) * 1E6));
+                
+                
+                OverlayItem overlayitem = new OverlayItem(point, "Opening Entity Information", "Opening Entity Information");
+                
+                if (entity.getUpdatedAt() > Long.parseLong("1288794810000")) {
+                	Drawable d = this.getResources().getDrawable(R.drawable.amphitheater);
+    	            d.setBounds(-10, -20, d.getIntrinsicWidth()-10, d.getIntrinsicHeight()-20);
+    	            overlayitem.setMarker(d);
+                }
+//                    Drawable d = cx.getResources().getDrawable(R.drawable.androidmarker);
+//                    d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+//                    overlayitem.setMarker(d);
+                itemizedoverlay.addOverlay(overlayitem);
+                itemizedoverlay.addEntity(entity);
+                mapView.getOverlays().add(itemizedoverlay);
+            }
+        }
+    }
 	//Initialize the content of the dialogs
 	 @Override
 	    protected Dialog onCreateDialog(int id) {
@@ -105,7 +155,8 @@ public class GeotaggingMap extends MapActivity {
 
 //                    	Toast.makeText(getApplicationContext(), "You selected" +HARDCODED_DATA[which],
 //                		Toast.LENGTH_SHORT).show();
-                		startActivity(newEntityIntent);
+//                		startActivity(newEntityIntent);
+                		startActivityForResult(newEntityIntent, ADD_ENTITY);
                     }
                 })
                 .create();
@@ -175,11 +226,11 @@ public class GeotaggingMap extends MapActivity {
 	//Initialize any views will appear on the MapView
 	private void initializeViews() {
 		//New Entity Button
-        Button button = (Button) findViewById(R.id.btnNewEntity);
-        button.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				showDialog(DIALOG_FOR_ENTITY_TYPES);
-        }});
+//        Button button = (Button) findViewById(R.id.btnNewEntity);
+//        button.setOnClickListener(new View.OnClickListener() {
+//			public void onClick(View view) {
+//				showDialog(DIALOG_FOR_ENTITY_TYPES);
+//        }});
         
         //Popup window in the mapview
 //        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

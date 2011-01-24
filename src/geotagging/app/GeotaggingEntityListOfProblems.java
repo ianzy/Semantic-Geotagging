@@ -4,12 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class GeotaggingEntityListOfProblems extends Activity {
@@ -37,7 +34,7 @@ public class GeotaggingEntityListOfProblems extends Activity {
 				Intent intent = new Intent();
 				Bundle b = new Bundle();
             	b.putString("entity_id", "13");
-				intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityProblem");
+				intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentDetails");
 				intent.putExtras(b);
 				startActivity(intent);
 			}

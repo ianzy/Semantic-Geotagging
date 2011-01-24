@@ -1,14 +1,14 @@
 package geotagging.app;
 
+import geotagging.utils.UIUtils;
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,10 +27,10 @@ public class GeotaggingEntityInformation extends Activity {
         
         setContentView(R.layout.entity_information_list);
         
-        entity_information_adapter = new ArrayAdapter<String>(this, R.layout.entity_information);
+        entity_information_adapter = new ArrayAdapter<String>(this, R.layout.entity_information, R.id.comemnt_category);
         entity_information_adapter.add(REQUEST_FOR_HELP);
         entity_information_adapter.add(SITUATION_DESCRIPTION);
-        entity_information_adapter.add(PROBLEM_REPORT + "(4)");
+        entity_information_adapter.add(PROBLEM_REPORT);
         entity_information_adapter.add(SOMETHING_ELSE);
 
         ListView pairedListView = (ListView) findViewById(R.id.entity_information_list);
@@ -42,7 +42,8 @@ public class GeotaggingEntityInformation extends Activity {
 				Intent intent = new Intent();
 				Bundle b = new Bundle();
             	b.putString("entity_id", "13");
-				String information = ((TextView) arg1).getText().toString();
+				String information = ((TextView)((LinearLayout) arg1).getChildAt(0)).getText().toString();
+				Log.i("~~~~~~~~~~~~~~~~~~~~~~~~", information);
 				if(information.startsWith(REQUEST_FOR_HELP)){
 					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
 				}
@@ -50,7 +51,7 @@ public class GeotaggingEntityInformation extends Activity {
 					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
 	            }
 				else if(information.startsWith(PROBLEM_REPORT)){
-					intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityListOfProblems");
+					intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsList");
 				}
 				else if(information.startsWith(SOMETHING_ELSE)){
 					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
@@ -61,4 +62,18 @@ public class GeotaggingEntityInformation extends Activity {
 			}
 		});
 	}
+	
+	/** Handle "home" title-bar action. */
+    public void onHomeClick(View v) {
+        UIUtils.goHome(this);
+    }
+
+    /** Handle "refresh" title-bar action. */
+    public void onRefreshClick(View v) {
+    }
+
+    /** Handle "search" title-bar action. */
+    public void onSearchClick(View v) {
+        UIUtils.goSearch(this);
+    }
 }

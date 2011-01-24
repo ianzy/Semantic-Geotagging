@@ -19,6 +19,13 @@
             </intent-filter>
         </activity>
         
+        <activity android:name=".GeotaggingCommentsList" android:label="GeotaggingCommentsList"
+			android:theme="@android:style/Theme.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        
         <activity android:name=".GeotaggingEnteringInformation" android:label="GeotaggingEnteringInformation"
 			android:theme="@android:style/Theme.Light">
             <intent-filter>
@@ -42,25 +49,29 @@
         </activity>
 
         
-        <activity android:name=".GeotaggingEntityInformation" android:label="GeotaggingEntityInformation">
+        <activity android:name=".GeotaggingEntityInformation" android:label="GeotaggingEntityInformation"
+        	android:theme="@android:style/Theme.Light">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".GeotaggingEntityListOfProblems" android:label="GeotaggingEntityListOfProblems">
+		<activity android:name=".GeotaggingEntityListOfProblems" android:label="GeotaggingEntityListOfProblems"
+			android:theme="@android:style/Theme.Light">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".GeotaggingEntityProblem" android:label="GeotaggingEntityProblem">
+		<activity android:name=".GeotaggingCommentDetails" android:label="GeotaggingCommentDetails"
+			android:theme="@android:style/Theme.Light">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".GeotaggingEntityResponse" android:label="GeotaggingEntityResponse">
+		<activity android:name=".GeotaggingEntityResponse" android:label="GeotaggingEntityResponse"
+			android:theme="@android:style/Theme.Light">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>

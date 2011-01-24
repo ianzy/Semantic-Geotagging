@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -140,6 +141,18 @@ public class GeotaggingCommentsType extends Activity {
                     }
                     Log.i("response---------------------", response.toString());
                     rd.close();
+                    
+                    //finish the activity
+                    Intent intent = new Intent();
+                    //need to be refactored
+                    intent.putExtra("location",location);
+                    intent.putExtra("created_at","2010-11-03T07:39:57Z");
+                    intent.putExtra("title","New Entity From Android App");
+                    intent.putExtra("updated_at","2010-11-03T07:39:57Z");
+                    intent.putExtra("lng", lng);
+                    intent.putExtra("description", obj.getString("description"));
+                    intent.putExtra("lat", lat);
+                    setResult(RESULT_OK, intent);
                     finish();
 
                   } catch (Exception e) {
