@@ -55,8 +55,9 @@
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	>
-		<Button android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="Follow-up responses (4)" />
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			style="@style/CategorizedResponse" 
+        	android:text="Categorized Reponses"/>
 		<Button android:id="@+id/buttonRespond" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="Respond" />
 	</LinearLayout>

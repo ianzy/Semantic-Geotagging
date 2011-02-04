@@ -1,54 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
- <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	>
-	<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-	<TextView android:id="@+id/label" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:text="Enter your comment here:" />
-	<EditText android:id="@+id/edit_response" android:text=""
-		android:hint="Enter your description here" android:layout_width="fill_parent"
-        android:layout_height="100px" android:inputType="textMultiLine" android:gravity="top" >
-	</EditText>
-	<Button android:text="Add Image" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-	<TextView android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="My response provides:" />
-	<RadioGroup android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:orientation="horizontal">
+<include layout="@layout/activity_title_bar"/>
+	<ScrollView	android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		>
 		<LinearLayout
 	    android:orientation="vertical"
-	    android:layout_width="wrap_content"
+	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content" >
-		<RadioButton android:id="@+id/radio_big_picture"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Big Picture" />
-		<RadioButton android:id="@+id/radio_details"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Details" />
-		<RadioButton android:id="@+id/radio_explanation"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Explanation" />
+		<TextView android:id="@+id/label" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="Enter your comment here:" />
+		<EditText android:id="@+id/edit_response" android:text=""
+			android:hint="Enter your comment here" android:layout_width="fill_parent"
+	        android:layout_height="100px" android:inputType="textMultiLine" android:gravity="top" >
+		</EditText>
+		<Button android:text="Add Image" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="My response provides:" />
+		<RadioGroup android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="horizontal">
+			<LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content" >
+			<RadioButton android:id="@+id/radio_big_picture"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="Big Picture" />
+			<RadioButton android:id="@+id/radio_details"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="Details" />
+			<RadioButton android:id="@+id/radio_explanation"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="Explanation" />
+			</LinearLayout>
+			<LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content" >
+			<RadioButton android:id="@+id/radio_advice"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="Advice" />
+			<RadioButton android:id="@+id/radio_alternative"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="An Alternative" />
+			<RadioButton android:id="@+id/radio_example"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="An Example" />
+			</LinearLayout>
+		</RadioGroup>	
+		
 		</LinearLayout>
-		<LinearLayout
-	    android:orientation="vertical"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content" >
-		<RadioButton android:id="@+id/radio_advice"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Advice" />
-		<RadioButton android:id="@+id/radio_alternative"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="An Alternative" />
-		<RadioButton android:id="@+id/radio_example"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="An Example" />
-		</LinearLayout>
-	</RadioGroup>	
-	<Button android:id="@+id/submit_response" android:text="Submit" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:enabled="false"/>
-	</LinearLayout>
-</ScrollView>
+	</ScrollView>
+	<LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="@android:style/ButtonBar">
+        <Button
+        	android:id="@+id/submit_response"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Submit"
+            android:enabled="false" />
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel" />
+    </LinearLayout>
+</LinearLayout>

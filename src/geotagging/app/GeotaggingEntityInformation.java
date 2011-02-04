@@ -32,31 +32,38 @@ public class GeotaggingEntityInformation extends Activity {
         entity_information_adapter.add(SITUATION_DESCRIPTION);
         entity_information_adapter.add(PROBLEM_REPORT);
         entity_information_adapter.add(SOMETHING_ELSE);
-
+        
+        //get entity id from previous activity
+        Bundle bundleFromMapView = getIntent().getExtras();
+        final int entityId = bundleFromMapView.getInt("entityId");
+//        Log.i("???????????????????????", String.valueOf(entityId));
+        
         ListView pairedListView = (ListView) findViewById(R.id.entity_information_list);
         pairedListView.setAdapter(entity_information_adapter);
+        
         pairedListView.setOnItemClickListener(new OnItemClickListener() {
-
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				Intent intent = new Intent();
 				Bundle b = new Bundle();
-            	b.putString("entity_id", "13");
+            	b.putString("entity_id", String.valueOf(entityId));
 				String information = ((TextView)((LinearLayout) arg1).getChildAt(0)).getText().toString();
 				Log.i("~~~~~~~~~~~~~~~~~~~~~~~~", information);
-				if(information.startsWith(REQUEST_FOR_HELP)){
-					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
-				}
-				else if(information.startsWith(SITUATION_DESCRIPTION)){
-					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
-	            }
-				else if(information.startsWith(PROBLEM_REPORT)){
-					intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsList");
-				}
-				else if(information.startsWith(SOMETHING_ELSE)){
-					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
-				}
 				
+//				if(information.startsWith(REQUEST_FOR_HELP)){
+//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
+//				}
+//				else if(information.startsWith(SITUATION_DESCRIPTION)){
+//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
+//	            }
+//				else if(information.startsWith(PROBLEM_REPORT)){
+//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsList");
+//				}
+//				else if(information.startsWith(SOMETHING_ELSE)){
+//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
+//				}
+				intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsList");
+				b.putString("commentCategory", information);
 				intent.putExtras(b);
 				startActivity(intent);
 			}

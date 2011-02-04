@@ -1,6 +1,7 @@
 package geotagging.app;
 
 import geotagging.utils.BackendHelperSingleton;
+import geotagging.utils.UIUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,5 +106,16 @@ public class GeotaggingEntityResponse extends Activity {
         radio_alternative.setOnClickListener(radio_listener);
         radio_example.setOnClickListener(radio_listener);
 	}
+	
+	/** Handle "home" title-bar action. */
+    public void onHomeClick(View v) {
+        UIUtils.goHome(this);
+    }
+
+
+    /** Handle "search" title-bar action. */
+    public void onSearchClick(View v) {
+        UIUtils.goSearch(this);
+    }
 	
 }

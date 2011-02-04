@@ -370,11 +370,16 @@ public class GeotaggingMap extends MapActivity {
 		TextView description = (TextView) baloon.findViewById(R.id.txv_description);
 		description.setText(selectedEntity.getDescription());
 		
+		final int id = selectedEntity.getId();
+		
 		Button btnDetail = (Button) baloon.findViewById(R.id.btn_detail);
 		btnDetail.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
         		Intent intent = new Intent();
             	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityInformation");
+            	Bundle b = new Bundle();
+            	b.putInt("entityId", id);
+            	intent.putExtras(b);
             	startActivity(intent);
             }
         });

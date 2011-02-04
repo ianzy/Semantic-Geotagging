@@ -2,7 +2,6 @@
 <resources>
 
 	<style name="TitleBar">
-
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">@dimen/title_height</item>
         <item name="android:orientation">horizontal</item>
@@ -31,7 +30,6 @@
     </style>
     
     <style name="TitleBarText">
-
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">fill_parent</item>
         <item name="android:layout_weight">1</item>
@@ -44,5 +42,20 @@
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
+    
+    <style name="CategorizedResponse">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingRight">12dip</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/followup_response</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+        
     
 </resources>

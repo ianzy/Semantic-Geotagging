@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout style="@style/TitleBar"
 	xmlns:android="http://schemas.android.com/apk/res/android">
-        <ImageButton style="@style/TitleBarAction"
-            android:contentDescription="@string/description_home"
-            android:src="@drawable/ic_title_home"
-            android:onClick="onHomeClick" />
+       <ImageButton style="@style/TitleBarAction"
+           android:contentDescription="@string/description_home"
+           android:src="@drawable/ic_title_home"
+           android:onClick="onHomeClick" />
 
-        <ImageView style="@style/TitleBarSeparator" />
-        <TextView style="@style/TitleBarText" 
-        	android:text="Semantic Geotagging"/>
+       <ImageView style="@style/TitleBarSeparator" />
+       <TextView style="@style/TitleBarText" 
+       	android:text="Semantic Geotagging"/>
 
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:contentDescription="@string/description_search"
-            android:src="@drawable/ic_title_search"
-            android:onClick="onSearchClick" />
-    </LinearLayout>
+       <ImageView style="@style/TitleBarSeparator" />
+       <ImageButton style="@style/TitleBarAction"
+           android:contentDescription="@string/description_search"
+           android:src="@drawable/ic_title_search"
+           android:onClick="onSearchClick" />
+   </LinearLayout>

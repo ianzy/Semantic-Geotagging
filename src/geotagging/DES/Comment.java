@@ -1,5 +1,6 @@
 package geotagging.DES;
 
+import geotagging.provider.CacheBase.Comments;
 import android.graphics.Bitmap;
 
 public class Comment {
@@ -12,6 +13,21 @@ public class Comment {
 	private String time;
 	private int commentId;
 	
+	private int entity_id;
+	private int category_id;
+	
+	public int getEntity_id() {
+		return entity_id;
+	}
+	public void setEntity_id(int entityId) {
+		entity_id = entityId;
+	}
+	public int getCategory_id() {
+		return category_id;
+	}
+	public void setCategory_id(int categoryId) {
+		category_id = categoryId;
+	}
 	public int getCommentId() {
 		return commentId;
 	}

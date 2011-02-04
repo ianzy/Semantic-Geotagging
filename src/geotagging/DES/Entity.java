@@ -10,8 +10,14 @@ public class Entity {
 	private String lng;
 	private long updatedAt;
 	
-
+	private int id;
 	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public long getUpdatedAt() {
 		return updatedAt;
 	}
