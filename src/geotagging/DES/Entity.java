@@ -8,7 +8,7 @@ public class Entity {
 	private String location;
 	private String lat;
 	private String lng;
-	private long updatedAt;
+	private String updatedAt;
 	
 	private int id;
 	
@@ -18,10 +18,10 @@ public class Entity {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public long getUpdatedAt() {
+	public String getUpdatedAt() {
 		return updatedAt;
 	}
-	public void setUpdatedAt(long updatedAt) {
+	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 	public String getTitle() {

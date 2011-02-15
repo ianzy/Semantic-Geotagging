@@ -3,31 +3,57 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-	<TextView android:id="@+id/label" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:text="Enter your comment here:" />
-	<EditText android:id="@+id/edit_comment" android:text=""
+	
+	<include layout="@layout/activity_title_bar"/>
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1" >
+	<LinearLayout
+       android:orientation="vertical"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content">
+    
+    <TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Entity title:" />
+	<EditText android:id="@+id/edit_title"
+		android:layout_weight="1"
+		android:text=""
+		android:hint="Enter entity title here" android:layout_width="fill_parent"
+        android:layout_height="0px" android:inputType="textMultiLine" android:gravity="top">
+	</EditText>
+	
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="Entity description:" />	
+	<EditText android:id="@+id/edit_comment" 
+		android:layout_weight="1"
+		android:text=""
 		android:hint="Enter your description here" android:layout_width="fill_parent"
-        android:layout_height="100px" android:inputType="textMultiLine" android:gravity="top">
+        android:layout_height="200px" android:inputType="textMultiLine" android:gravity="top">
 	</EditText>
 	<Button android:text="Add Image" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
-	<TextView android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="My comment is a:" />
-	<RadioGroup android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:orientation="vertical">
-		<RadioButton android:id="@+id/radio_request_for_help"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Request for help" />
-		<RadioButton android:id="@+id/radio_situation_description"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Situation description" />
-		<RadioButton android:id="@+id/radio_problem_report"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Problem report" />
-		<RadioButton android:id="@+id/radio_something_else"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="Something Else" />
-	</RadioGroup>
-	<Button android:id="@+id/submit_comment" android:text="Submit" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:enabled="false"/>
+	
+	</LinearLayout>
+	</ScrollView>
+	<LinearLayout
+       android:orientation="horizontal"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       style="@android:style/ButtonBar">
+       <Button
+       	android:id="@+id/submit_comment"
+           android:layout_width="0dip"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:text="Submit"
+           android:onClick="onSubmitClick" />
+       <Button
+           android:layout_width="0dip"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:text="Cancel" 
+           android:onClick="onCancelClick"/>
+   </LinearLayout>
+	
 </LinearLayout>

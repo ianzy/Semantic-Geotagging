@@ -1,12 +1,16 @@
 package geotagging.provider;
 
 import geotagging.DES.Comment;
+import geotagging.DES.CommentCategory;
 import geotagging.DES.Entity;
+import geotagging.DES.ResponseCategory;
 import geotagging.DES.States;
 import geotagging.provider.CacheBase.CommentCategories;
+import geotagging.provider.CacheBase.CommentCounters;
 import geotagging.provider.CacheBase.Comments;
 import geotagging.provider.CacheBase.Entities;
 import geotagging.provider.CacheBase.ResponseCategories;
+import geotagging.provider.CacheBase.ResponseCounters;
 import geotagging.provider.CacheBase.Responses;
 import geotagging.provider.GeotaggingDatabaseHelper.Tables;
 
@@ -32,33 +36,33 @@ public class DatabaseAdapter {
 	}
 	
 	public void close() {
-		mDatabaseHelper.close();
+		db.close();
 	}
 
-	public Cursor GetAllEntities() {
+	public Cursor getAllEntities() {
 		return db.query(Tables.ENTITIES, EntityQuery.PROJECTION, null, null, null, null, Entities.ENTITY_ID + " DESC");
 	}
 	
-	public Cursor GetComments(int entity_id, int category_id) {
+	public Cursor getComments(int entity_id, int category_id) {
 		return db.query(Tables.COMMENTS, CommentQuery.PROJECTION,
 				Comments.COMMENT_ENTITYID + "=" + String.valueOf(entity_id) + " AND " + Comments.COMMENT_CATEGORYID+"="+String.valueOf(category_id),
-				null, null, null, Comments.COMMENT_ID + " DESC");
+				null, null, null, Comments.COMMENT_ID + " ASC");
 	}
 	
-	public Cursor GetResponses(int comment_id) {
+	public Cursor getResponses(int comment_id) {
 		return db.query(Tables.RESPONSES, ResponseQuery.PROJECTION, 
-				Responses.RESPONSE_COMMENTID+"="+String.valueOf(comment_id), null, null, null, Responses._ID + " DESC");
+				Responses.RESPONSE_COMMENTID+"="+String.valueOf(comment_id), null, null, null, Responses._ID + " ASC");
 	}
 	
-	public Cursor GetCommentCategories() {
+	public Cursor getCommentCategories() {
 		return db.query(Tables.COMMENTCATEGORIES, CommentCategoryQuery.PROJECTION, null, null, null, null, null);
 	}
 	
-	public Cursor GetResponseCategories() {
+	public Cursor getResponseCategories() {
 		return db.query(Tables.RESPONSECATEGORIES, ResponseCategoryQuery.PROJECTION, null, null, null, null, null);
 	}
 	
-	public Cursor GetStates(String username) {
+	public Cursor getStates(String username) {
 		Cursor mCursor =
         db.query(true, Tables.STATES, StatesQuery.PROJECTION,
         		geotagging.provider.CacheBase.States.STATE_USERNAME + "=" + username, 
@@ -73,18 +77,131 @@ public class DatabaseAdapter {
 	    return mCursor;
 	}
 	
-//	//handles user insert
-//	public long createEntity(Entity e) {
-//		return 0;
-//	}
-//	
-//	public long createComment(Comment c) {
-//		return 0;
-//	}
-//	
-//	public long createResponse(Response r) {
-//		return 0;
-//	}
+	public Cursor getCommentCounters(int entity_id) {
+		return db.query(Tables.COMMENTCOUNTERS, 
+				CommentCounterQuery.PROJECTION, CommentCounters.COUNTER_ENTITYID
+				+"="
+				+String.valueOf(entity_id), 
+				null, null, null, null);
+	}
+	
+	public Cursor getResponseCounters(int comment_id) {
+		return db.query(Tables.RESPONSECOUNTERS, ResponseCounterQuery.PROJECTION,
+				ResponseCounters.COUNTER_COMMENTID+"="+String.valueOf(comment_id),
+				null, null, null, null);
+	}
+	
+	public boolean updateCommentCounter(int entity_id, int category_id, int count) {
+		Cursor c = db.query(Tables.COMMENTCOUNTERS, 
+				CommentCounterQuery.PROJECTION, CommentCounters.COUNTER_ENTITYID
+				+"="+String.valueOf(entity_id)
+				+" AND "+CommentCounters.COUNTER_CATEGORYID+"="+String.valueOf(category_id), 
+				null, null, null, null);
+		if (c.moveToFirst()) {
+			ContentValues args = new ContentValues();
+	        args.put(CommentCounters.COUNTER_ENTITYID, entity_id);
+	        args.put(CommentCounters.COUNTER_CATEGORYID, category_id);
+	        args.put(CommentCounters.COUNTER_CATEGORY_NAME, c.getString(c.getColumnIndex(CommentCounters.COUNTER_CATEGORY_NAME)));
+	        args.put(CommentCounters.COUNTER_COUNTER, count);
+	        c.close();
+	        return db.update(Tables.COMMENTCOUNTERS, args, 
+	        		CommentCounters.COUNTER_CATEGORYID+"="+String.valueOf(category_id)+" AND "
+	        		+CommentCounters.COUNTER_ENTITYID+"="+String.valueOf(entity_id), null) > 0;
+		}
+		c.close();
+		return false;
+		
+	}
+	
+	public boolean updateResponseCounter(int comment_id, int category_id, int count) {
+		Cursor c = db.query(Tables.RESPONSECOUNTERS, 
+				CommentCounterQuery.PROJECTION, ResponseCounters.COUNTER_COMMENTID
+				+"="+String.valueOf(comment_id)
+				+" AND "+ResponseCounters.COUNTER_CATEGORYID+"="+String.valueOf(category_id), 
+				null, null, null, null);
+		if (c.moveToFirst()) {
+			ContentValues args = new ContentValues();
+	        args.put(ResponseCounters.COUNTER_COMMENTID, comment_id);
+	        args.put(ResponseCounters.COUNTER_CATEGORYID, category_id);
+	        args.put(ResponseCounters.COUNTER_CATEGORY_NAME, c.getString(c.getColumnIndex(ResponseCounters.COUNTER_CATEGORY_NAME)));
+	        args.put(ResponseCounters.COUNTER_COUNTER, count);
+	        c.close();
+	        return db.update(Tables.RESPONSECOUNTERS, args, 
+	        		ResponseCounters.COUNTER_CATEGORYID+"="+String.valueOf(category_id)+" AND "
+	        		+ResponseCounters.COUNTER_COMMENTID+"="+String.valueOf(comment_id), null) > 0;
+	    }
+		
+		c.close();
+		return false;
+	}
+	
+	public int createCommentCategories(List<CommentCategory> lcc) {
+		ContentValues initialValues;
+		CommentCategory cc;
+		for(int i=0; i<lcc.size(); i++)	{
+			cc = lcc.get(i);
+			initialValues = new ContentValues();
+	        initialValues.put(geotagging.provider.CacheBase.CommentCategories.CATEGORY_ID, cc.getCategory_id());
+	        initialValues.put(geotagging.provider.CacheBase.CommentCategories.CATEGORY_NAME, cc.getName());
+	        db.insert(Tables.COMMENTCATEGORIES, null, initialValues);
+		}
+		
+		return 0;
+	}
+	
+	public int createResponseCategories(List<ResponseCategory> lrc) {
+		ContentValues initialValues;
+		ResponseCategory rc;
+		for(int i=0; i<lrc.size(); i++)	{
+			rc = lrc.get(i);
+			initialValues = new ContentValues();
+	        initialValues.put(geotagging.provider.CacheBase.ResponseCategories.CATEGORY_ID, rc.getCategory_id());
+	        initialValues.put(geotagging.provider.CacheBase.ResponseCategories.CATEGORY_NAME, rc.getName());
+	        db.insert(Tables.RESPONSECATEGORIES, null, initialValues);
+		}
+		
+		return 0;
+	}
+	
+	public int createCommentCategoriesCounter(int entity_id) {
+		ContentValues initialValues;
+		Cursor c = this.getCommentCategories();
+		if(c.moveToFirst()) {
+			do {
+				initialValues = new ContentValues();
+		        initialValues.put(CommentCounters.COUNTER_CATEGORYID, c.getInt(c.getColumnIndex(CommentCategories.CATEGORY_ID)));
+		        initialValues.put(CommentCounters.COUNTER_COUNTER, 0);
+		        initialValues.put(CommentCounters.COUNTER_ENTITYID, entity_id);
+		        initialValues.put(CommentCounters.COUNTER_CATEGORY_NAME, c.getString(c.getColumnIndex(CommentCategories.CATEGORY_NAME)));
+		        db.insert(Tables.COMMENTCOUNTERS, null, initialValues);
+				
+			} while(c.moveToNext());
+		}
+
+		c.close();
+		return 0;
+	}
+	
+	public int createResponseCategoriesCounter(int comment_id) {
+		ContentValues initialValues;
+		Cursor c = this.getResponseCategories();
+		if(c.moveToFirst()) {
+			do {
+				initialValues = new ContentValues();
+		        initialValues.put(ResponseCounters.COUNTER_CATEGORYID, c.getInt(c.getColumnIndex(ResponseCategories.CATEGORY_ID)));
+		        initialValues.put(ResponseCounters.COUNTER_COUNTER, 0);
+		        initialValues.put(ResponseCounters.COUNTER_COMMENTID, comment_id);
+		        initialValues.put(ResponseCounters.COUNTER_CATEGORY_NAME, c.getString(c.getColumnIndex(ResponseCategories.CATEGORY_NAME)));
+		        db.insert(Tables.RESPONSECOUNTERS, null, initialValues);
+				
+			} while(c.moveToNext());
+		}
+
+		c.close();
+		return 0;
+	}
+	
+	
 	
 	public long createStates(String username, String password) {
 		ContentValues initialValues = new ContentValues();
@@ -109,8 +226,9 @@ public class DatabaseAdapter {
 	
 	public int createEntities(List<Entity> le) {
 		ContentValues args;
+		Entity e;
 		for(int i=0; i<le.size(); i++) {
-			Entity e = le.get(i);
+			e = le.get(i);
 			args = new ContentValues();
 			args.put(Entities.ENTITY_DESCRIPTION, e.getDescription());
 			args.put(Entities.ENTITY_ICONURL, e.getIconURI());
@@ -127,8 +245,9 @@ public class DatabaseAdapter {
 	
 	public int createComments(List<Comment> lc) {
 		ContentValues args;
+		Comment c;
 		for(int i=0; i<lc.size(); i++) {
-			Comment c = lc.get(i);
+			c = lc.get(i);
 			args = new ContentValues();
 			args.put(Comments.COMMENT_CATEGORYID, c.getCategory_id());
 			args.put(Comments.COMMENT_DESCRIPTION, c.getDescription());
@@ -138,22 +257,24 @@ public class DatabaseAdapter {
 			args.put(Comments.COMMENT_TIME, c.getTime());
 			args.put(Comments.COMMENT_USERIMG, c.getUserImg());
 			args.put(Comments.COMMENT_USERNAME, c.getUserName());
-			db.insert(Tables.ENTITIES, null, args);
+			db.insert(Tables.COMMENTS, null, args);
 		}
 		return 0;
 	}
 	
 	public int createResponses(List<Comment> lr) {
 		ContentValues args;
+		Comment c;
 		for(int i=0; i<lr.size(); i++) {
-			Comment c = lr.get(i);
+			c = lr.get(i);
 			args = new ContentValues();
 			args.put(Responses.RESPONSE_CATEGORYID, c.getCategory_id());
 			args.put(Responses.RESPONSE_COMMENTID, c.getCommentId());
 			args.put(Responses.RESPONSE_DESCRIPTION, c.getDescription());
 			args.put(Responses.RESPONSE_TIME, c.getTime());
 			args.put(Responses.RESPONSE_USERNAME, c.getUserName());
-			db.insert(Tables.ENTITIES, null, args);
+			args.put(Responses.RESPONSE_USERIMG, c.getUserImg());
+			db.insert(Tables.RESPONSES, null, args);
 		}
 		return 0;
 	}
@@ -190,7 +311,8 @@ public class DatabaseAdapter {
 			Responses.RESPONSE_COMMENTID,
 			Responses.RESPONSE_DESCRIPTION,
 			Responses.RESPONSE_TIME,
-			Responses.RESPONSE_USERNAME
+			Responses.RESPONSE_USERNAME,
+			Responses.RESPONSE_USERIMG
 		};
 	}
 	
@@ -220,6 +342,22 @@ public class DatabaseAdapter {
 			geotagging.provider.CacheBase.States.STATE_LATESTRESPONSEID,
 			geotagging.provider.CacheBase.States.STATE_PASSWORD,
 			geotagging.provider.CacheBase.States.STATE_USERNAME
+		};
+	}
+	
+	private interface CommentCounterQuery {
+		String[] PROJECTION = {
+			CommentCounters.COUNTER_CATEGORY_NAME,
+			CommentCounters.COUNTER_CATEGORYID,
+			CommentCounters.COUNTER_COUNTER
+		};
+	}
+	
+	private interface ResponseCounterQuery {
+		String[] PROJECTION = {
+			ResponseCounters.COUNTER_CATEGORY_NAME,
+			ResponseCounters.COUNTER_CATEGORYID,
+			ResponseCounters.COUNTER_COUNTER
 		};
 	}
 }

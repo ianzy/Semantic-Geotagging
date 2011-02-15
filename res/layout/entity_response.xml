@@ -3,19 +3,20 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-<include layout="@layout/activity_title_bar"/>
+	<include layout="@layout/activity_title_bar"/>
 	<ScrollView	android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
+		android:layout_weight="1"
 		>
 		<LinearLayout
 	    android:orientation="vertical"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content" >
-		<TextView android:id="@+id/label" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:text="Enter your comment here:" />
+
 		<EditText android:id="@+id/edit_response" android:text=""
-			android:hint="Enter your comment here" android:layout_width="fill_parent"
-	        android:layout_height="100px" android:inputType="textMultiLine" android:gravity="top" >
+			android:hint="Enter your response here" android:layout_width="match_parent"
+	        android:layout_height="110px" android:inputType="textMultiLine" android:gravity="top" 
+	        android:paddingTop="6px">
 		</EditText>
 		<Button android:text="Add Image" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" />
@@ -23,34 +24,45 @@
 			android:layout_height="wrap_content" android:text="My response provides:" />
 		<RadioGroup android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:orientation="horizontal">
-			<LinearLayout
-		    android:orientation="vertical"
+			<RelativeLayout
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content" >
 			<RadioButton android:id="@+id/radio_big_picture"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="Big Picture" />
+				android:text="Big Picture" 
+				android:onClick="onRadioClick"
+				android:layout_alignParentTop="true"
+				android:layout_alignParentLeft="true"/>
 			<RadioButton android:id="@+id/radio_details"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="Details" />
+				android:text="Details"
+				android:onClick="onRadioClick" 
+				android:layout_toRightOf="@+id/radio_big_picture"
+				android:layout_alignParentTop="true"/>
 			<RadioButton android:id="@+id/radio_explanation"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="Explanation" />
-			</LinearLayout>
-			<LinearLayout
-		    android:orientation="vertical"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content" >
+				android:text="Explanation"
+				android:onClick="onRadioClick"
+				android:layout_below="@+id/radio_big_picture" />
 			<RadioButton android:id="@+id/radio_advice"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="Advice" />
+				android:text="Advice" 
+				android:onClick="onRadioClick"
+				android:layout_below="@+id/radio_details"
+				android:layout_toRightOf="@+id/radio_explanation"/>
 			<RadioButton android:id="@+id/radio_alternative"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="An Alternative" />
+				android:text="An Alternative"
+				android:onClick="onRadioClick" 
+				
+				android:layout_below="@+id/radio_explanation"/>
 			<RadioButton android:id="@+id/radio_example"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="An Example" />
-			</LinearLayout>
+				android:text="An Example"
+				android:onClick="onRadioClick"
+				android:layout_below="@+id/radio_advice" 
+				android:layout_toRightOf="@+id/radio_alternative"/>
+			</RelativeLayout>
 		</RadioGroup>	
 		
 		</LinearLayout>
@@ -59,18 +71,21 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        style="@android:style/ButtonBar">
+        style="@android:style/ButtonBar"
+        >
         <Button
         	android:id="@+id/submit_response"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Submit"
-            android:enabled="false" />
+            android:enabled="false" 
+            android:onClick="onSubmitClick"/>
         <Button
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancel" />
+            android:text="Cancel"
+            android:onClick="onCancelClick" />
     </LinearLayout>
 </LinearLayout>

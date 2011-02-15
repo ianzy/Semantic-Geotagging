@@ -1,6 +1,5 @@
 package geotagging.DES;
 
-import geotagging.provider.CacheBase.Comments;
 import android.graphics.Bitmap;
 
 public class Comment {

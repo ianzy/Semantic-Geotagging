@@ -10,6 +10,8 @@ import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,9 +27,13 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class GeotaggingCommentsList extends ListActivity {
+	
+	private static final int NEW_COMMENT = 0x1333;
 	private List<Comment> cs;
 	private UpdateCommentThread updateCommentThread;
 	private MyCustomAdapter mAdapter;
+	private int entity_id;
+	private int category_id;
 
 	 
     @Override
@@ -47,7 +53,7 @@ public class GeotaggingCommentsList extends ListActivity {
 				Log.i(">>>>>>>>>>>>>>>>>>>>>>>>>", String.valueOf(arg2));
 				Intent intent = new Intent();
 				
-				Comment c = cs.get(cs.size()-1-arg2);
+				Comment c = mAdapter.getItem(arg2);
 				Bundle b = new Bundle();
 				b.putInt("commentId",c.getCommentId());
 				b.putString("description", c.getDescription());
@@ -61,8 +67,9 @@ public class GeotaggingCommentsList extends ListActivity {
         
         //get entity_id from previous activity
         Bundle b = getIntent().getExtras();
-        String entity_id = b.getString("entity_id");
-        updateCommentThread = new UpdateCommentThread(this, entity_id);
+        entity_id = b.getInt("entity_id");
+        category_id = b.getInt("category_id");
+        updateCommentThread = new UpdateCommentThread(this, entity_id, category_id);
         updateCommentThread.start();
     }
 
@@ -73,6 +80,35 @@ public class GeotaggingCommentsList extends ListActivity {
 
     /** Handle "refresh" title-bar action. */
     public void onRefreshClick(View v) {
+    }
+    
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+		if (requestCode == NEW_COMMENT) {
+            if (resultCode == RESULT_OK) {
+            	Comment c = new Comment();
+            	Drawable d = this.getResources().getDrawable(R.drawable.default_user_icon);
+				c.setActualUserImg(((BitmapDrawable)d).getBitmap());
+            	c.setTime(data.getStringExtra("created_at"));
+            	c.setDescription(data.getStringExtra("description"));
+            	c.setUserName(data.getStringExtra("user_name"));
+            	c.setUserImg("http://selfsolved.com/images/icons/default_user_icon_128.png");
+            	mAdapter.addItem(c);
+            }
+		}
+            
+	}
+    
+    public void onComposeClick(View v) {
+    	Bundle b = new Bundle();
+		b.putInt("entity_id", this.entity_id);
+		b.putInt("category_id", this.category_id);
+		
+    	Intent intent = new Intent();
+    	intent.putExtras(b);
+    	intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentComposing");
+    	startActivityForResult(intent, NEW_COMMENT);
     }
 
     /** Handle "search" title-bar action. */

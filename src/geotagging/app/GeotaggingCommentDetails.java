@@ -1,31 +1,45 @@
 package geotagging.app;
 
+import geotagging.DAL.GeoCategoryDAL;
 import geotagging.DES.Comment;
+import geotagging.DES.ResponseCategory;
 import geotagging.realtime.UpdateFollowupCommentThread;
 import geotagging.utils.BackendHelperSingleton;
 import geotagging.utils.UIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-public class GeotaggingCommentDetails extends Activity {
-
-	private ArrayAdapter<String> followup_response_adapter;
+public class GeotaggingCommentDetails extends Activity implements ExpandableListView.OnGroupClickListener,
+ExpandableListView.OnChildClickListener{
+	// used for asyn updates
 	private List<Comment> cs;
 	
-	private static final int NEW_COMMENT = 0x443322;
+	private GeoCategoryDAL categoryDAL;
+	private List<ResponseCategory> categories;
+	
+	private static final int NEW_RESPONSE = 0x443322;
+	private int commentId;
+	
+	private MyExpandableListAdapter mAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +50,7 @@ public class GeotaggingCommentDetails extends Activity {
         //get data from previous activity
         Bundle b = getIntent().getExtras();
         String userName = b.getString("userName");
-        int commentId = b.getInt("commentId");
+        commentId = b.getInt("commentId");
         String description = b.getString("description");
         String userImg = b.getString("userImg");
 		
@@ -49,22 +63,17 @@ public class GeotaggingCommentDetails extends Activity {
         ImageView imUserImg = (ImageView)this.findViewById(R.id.comment_detail_user_image);
         imUserImg.setImageBitmap(BackendHelperSingleton.getInstance().fetchImage(userImg));
         
+        mAdapter = new MyExpandableListAdapter();
         
-        Button buttonProblemReport = (Button) findViewById(R.id.buttonRespond);
-        buttonProblemReport.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	Intent intent = new Intent();
-            	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityResponse");
-            	startActivityForResult(intent, NEW_COMMENT);
-            }
-        });
+        ExpandableListView pairedListView = (ExpandableListView) findViewById(R.id.follow_response_list);
+        pairedListView.setAdapter(mAdapter);
+        pairedListView.setOnChildClickListener(this);
+        pairedListView.setOnGroupClickListener(this);
         
-        followup_response_adapter = new ArrayAdapter<String>(this, R.layout.entity_problems);
+        //fetching the response categeory from local database
+        categoryDAL = new GeoCategoryDAL(this);
+        categories = categoryDAL.getResponseCategoriesByCommentId(commentId);
         
-        ListView pairedListView = (ListView) findViewById(R.id.follow_response_list);
-        pairedListView.setAdapter(followup_response_adapter);
-        
-        //
         UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId);
         t.start();
 	}
@@ -72,10 +81,19 @@ public class GeotaggingCommentDetails extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
-		if (requestCode == NEW_COMMENT) {
+		if (requestCode == NEW_RESPONSE) {
             if (resultCode == RESULT_OK) {
-            
-            	followup_response_adapter.add("@"+data.getStringExtra("userName")+" said,"+data.getStringExtra("description"));
+            	Comment c = new Comment();
+            	Drawable d = this.getResources().getDrawable(R.drawable.default_user_icon);
+				c.setActualUserImg(((BitmapDrawable)d).getBitmap());
+            	c.setTime(data.getStringExtra("created_at"));
+            	c.setDescription(data.getStringExtra("description"));
+            	c.setUserName(data.getStringExtra("userName"));
+            	String categoryName = data.getStringExtra("category_name");
+            	List<Comment> cs = new ArrayList<Comment>();
+            	cs.add(c);
+            	
+            	mAdapter.addResponsesWithGroup(categoryName, cs);
             }
 		}
             
@@ -88,6 +106,16 @@ public class GeotaggingCommentDetails extends Activity {
 
     /** Handle "refresh" title-bar action. */
     public void onRefreshClick(View v) {
+    
+    }
+    
+    public void onComposeClick(View v) {
+    	Bundle b = new Bundle();
+    	b.putInt("comment_id", commentId);
+    	Intent intent = new Intent();
+    	intent.putExtras(b);
+    	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityResponse");
+    	startActivityForResult(intent, NEW_RESPONSE);
     }
 
     /** Handle "search" title-bar action. */
@@ -102,13 +130,146 @@ public class GeotaggingCommentDetails extends Activity {
     
     private Handler handler = new Handler() {
         public void  handleMessage(Message msg) {
-             //update your view from here only.
-
-    		for (int i = 0; i < cs.size(); i++) {
-    			followup_response_adapter.add("@"+cs.get(i).getUserName()+" said,"+cs.get(i).getDescription());
+            //update view from here only.
+        	List<Comment> commetListOfSpecificCategory;
+        	int category_id_categories;
+        	for (int ii=0; ii<categories.size(); ii++) {
+        		category_id_categories = categories.get(ii).getCategory_id();
+        		commetListOfSpecificCategory = new ArrayList<Comment>();
+        		for (int i = 0; i < cs.size(); i++) {
+        			if(cs.get(i).getCategory_id() == category_id_categories) {
+        				commetListOfSpecificCategory.add(cs.get(i));
+        			}
+    				
+    			}
+        		if(commetListOfSpecificCategory.size() != 0) {
+        			mAdapter.addResponsesWithGroup(categories.get(ii).getName(), commetListOfSpecificCategory);
+        		}
+        		
             }
         	
         }
     };
+	
+    public boolean onGroupClick(ExpandableListView parent, View v,
+			int groupPosition, long id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean onChildClick(ExpandableListView parent, View v,
+			int groupPosition, int childPosition, long id) {
+		// TODO Auto-generated method stub
+		
+		return false;
+	}
+    
+    private class MyExpandableListAdapter extends BaseExpandableListAdapter {
+
+        private List<String> groups = new ArrayList<String>();; 
+        private List<List<Comment>> children = new ArrayList<List<Comment>>(); 
+        private LayoutInflater mInflater;
+        
+        public MyExpandableListAdapter() {
+        	mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        
+        public void addResponsesWithGroup(String p, List<Comment> commentList){
+        	if(groups.contains(p)) {
+        		int i = groups.indexOf(p);
+        		List<Comment> existingCommentList = children.get(i);
+        		existingCommentList.addAll(0, commentList);
+        	} else {
+        		groups.add(p);
+            	children.add(commentList);
+        	}
+        	
+        	notifyDataSetChanged();
+        }
+        
+        public Object getChild(int groupPosition, int childPosition) {
+            return children.get(groupPosition).get(childPosition);
+        }
+
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+
+        public int getChildrenCount(int groupPosition) {
+            return children.get(groupPosition).size();  
+        }
+
+        public TextView getGenericView() {
+            // Layout parameters for the ExpandableListView
+            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 64);
+
+            TextView textView = new TextView(GeotaggingCommentDetails.this);
+            textView.setLayoutParams(lp);
+            // Center the text vertically
+            textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+            // Set the text starting position
+            textView.setPadding(36, 0, 0, 0);
+            textView.setTextSize(24);
+            return textView;
+        }
+        
+        public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
+                View convertView, ViewGroup parent) {
+        	ViewHolder holder = null;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.list_item_response, null);
+                holder = new ViewHolder();
+                holder.username = (TextView)convertView.findViewById(R.id.response_list_user_name);
+                holder.image = (ImageView)convertView.findViewById(R.id.list_item_user_img);
+                holder.time = (TextView)convertView.findViewById(R.id.response_time_list_item);
+                holder.content = (TextView)convertView.findViewById(R.id.response_content_list_item);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder)convertView.getTag();
+            }
+            Comment c = children.get(groupPosition).get(childPosition);
+            holder.content.setText(c.getDescription());
+            holder.image.setImageBitmap(c.getActualUserImg());
+            holder.time.setText(c.getTime());
+            holder.username.setText(c.getUserName());
+            return convertView;
+        }
+
+        public Object getGroup(int groupPosition) {
+            return groups.get(groupPosition);
+        }
+
+        public int getGroupCount() {
+            return groups.size();
+        }
+
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
+                ViewGroup parent) {
+            TextView textView = getGenericView();
+            textView.setText(getGroup(groupPosition).toString());
+            return textView;
+        }
+
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
+
+        public boolean hasStableIds() {
+            return true;
+        }     
+
+    }
+
+    public static class ViewHolder {
+        public TextView username;
+        public TextView content;
+        public ImageView image;
+        public TextView time;
+    }
 	
 }

@@ -4,6 +4,10 @@ import android.provider.BaseColumns;
 
 
 public final class CacheBase {
+	
+	// shared preference file name across the application
+	public static final String PREFERENCE_FILENAME = "GeotaggingStates";
+	
 	// This class cannot be instantiated
 	private CacheBase() {
 		
@@ -37,6 +41,7 @@ public final class CacheBase {
 		String RESPONSE_COMMENTID = "comment_id";
 		String RESPONSE_TIME = "time";
 		String RESPONSE_CATEGORYID = "category_id";
+		String RESPONSE_USERIMG = "user_img";
 	}
 	
 	interface StatesColumns {
@@ -66,12 +71,14 @@ public final class CacheBase {
 		String COUNTER_ENTITYID = "entity_id";
 		String COUNTER_CATEGORYID = "category_id";
 		String COUNTER_COUNTER = "counter";
+		String COUNTER_CATEGORY_NAME = "category_name";
 	}
 	
 	interface ResponseCounterColumns {
-		String COUNTER_ENTITYID = "entity_id";
+		String COUNTER_COMMENTID = "comment_id";
 		String COUNTER_CATEGORYID = "category_id";
-		String COUNTER_COUNTER = "counter";		
+		String COUNTER_COUNTER = "counter";	
+		String COUNTER_CATEGORY_NAME = "category_name";
 	}
 	
 	public static class Entities implements EntitiesColumns, BaseColumns {

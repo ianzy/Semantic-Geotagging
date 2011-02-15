@@ -1,6 +1,8 @@
 package geotagging.app;
 
 import geotagging.DES.Entity;
+import geotagging.provider.CacheBase;
+import geotagging.realtime.UpdateCategoriesThread;
 import geotagging.realtime.UpdateMapThread;
 import geotagging.utils.GeotaggingItemizedOverlay;
 import geotagging.utils.UIUtils;
@@ -19,6 +21,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -84,6 +87,30 @@ public class GeotaggingMap extends MapActivity {
 //        mapview = (MapView) this.findViewById(R.id.mapview);
         //Inflate for the longpress layout
         
+        //should be in a method
+        SharedPreferences settings = this.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, MODE_PRIVATE);
+        if(settings.getString("username", "NSV").equals("NSV")) {
+        	SharedPreferences.Editor prefEditor = settings.edit();
+        	prefEditor.putString("username", "demo");
+        	prefEditor.putString("password", "demodemo");
+        	prefEditor.putInt("user_id", 1);
+        	
+        	prefEditor.putInt("latest_entityid", 0);
+        	prefEditor.putInt("latest_commentid", 0);
+        	prefEditor.putInt("latest_responseid", 0);
+        	prefEditor.putInt("cached_entityid", 0);
+        	prefEditor.putInt("cached_commentid", 0);
+        	prefEditor.putInt("cached_responseid", 0);
+        	prefEditor.putInt("remote_count", 50);
+        	prefEditor.commit(); 
+        	
+        	// initialize the categories base
+        	UpdateCategoriesThread thread = new UpdateCategoriesThread(this);
+        	thread.start();
+        }
+        
+        //end of should be in a method
+        
         mapView = (GeotaggingMapView) this.findViewById(R.id.mapview);
         mapView.addObserver(this);
         //End of experiment
@@ -116,7 +143,7 @@ public class GeotaggingMap extends MapActivity {
             	
             	Entity entity = new Entity();
             	entity.setLocation(data.getStringExtra("location"));
-            	entity.setUpdatedAt(Long.parseLong("1288794810002"));
+//            	entity.setUpdatedAt();
             	entity.setDescription(data.getStringExtra("description"));
             	entity.setLat(String.valueOf(data.getDoubleExtra("lat", 0)));
             	entity.setLng(String.valueOf(data.getDoubleExtra("lng", 0)));
@@ -129,11 +156,11 @@ public class GeotaggingMap extends MapActivity {
                 
                 OverlayItem overlayitem = new OverlayItem(point, "Opening Entity Information", "Opening Entity Information");
                 
-                if (entity.getUpdatedAt() > Long.parseLong("1288794810000")) {
-                	Drawable d = this.getResources().getDrawable(R.drawable.amphitheater);
-    	            d.setBounds(-10, -20, d.getIntrinsicWidth()-10, d.getIntrinsicHeight()-20);
-    	            overlayitem.setMarker(d);
-                }
+//              // code for changing the icons
+//                	Drawable d = this.getResources().getDrawable(R.drawable.amphitheater);
+//    	            d.setBounds(-10, -20, d.getIntrinsicWidth()-10, d.getIntrinsicHeight()-20);
+//    	            overlayitem.setMarker(d);
+                
 //                    Drawable d = cx.getResources().getDrawable(R.drawable.androidmarker);
 //                    d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
 //                    overlayitem.setMarker(d);
@@ -260,7 +287,7 @@ public class GeotaggingMap extends MapActivity {
 		URLConnection conn = null;
 		InputStream inputstream = null;
 		try {
-			url = new URL(this.getResources().getString(R.string.GeotaggingAPIUri));
+			url = new URL(this.getResources().getString(R.string.GeotaggingAPIGetEntities));
 			conn = url.openConnection();
 			conn.setConnectTimeout(1000);
 			inputstream = conn.getInputStream();

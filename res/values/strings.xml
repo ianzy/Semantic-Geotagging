@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, GeotaggingHome!</string>
     <string name="app_name">Semantic Geotagging</string>    
     <string name="title_entity_problems_list">Problems with selected entity</string>
     <string name="title_entity_information_list">Information about selected entity</string>
-    <string name="GeotaggingAPIUri">http://geotagging.heroku.com/entities.json</string>
+    
+    <string name="GeotaggingAPIGetEntities">http://geotagging.heroku.com/api/entities.json</string>
+    <string name="GeotaggingAPIGetComments">http://geotagging.heroku.com/api/comments.json</string>
+    <string name="GeotaggingAPIGetResponses">http://geotagging.heroku.com/api/responses.json</string>
+    <string name="GeotaggingAPIGetCommentCategories">http://geotagging.heroku.com/api/comment_categories.json</string>
+    <string name="GeotaggingAPIGetResponseCategories">http://geotagging.heroku.com/api/response_categories.json</string>
+    
+    <string name="GeotaggingAPIPostNewEntity">http://geotagging.heroku.com/api/entities.json</string>
+    <string name="GeotaggingAPIPostNewComment">http://geotagging.heroku.com/api/comments.json</string>
+    <string name="GeotaggingAPIPostNewResponse">http://geotagging.heroku.com/api/comments.json</string>
+    
+    
     <string name="GeotaggingGetResponses">http://geotagging.heroku.com/resps_api/get_resps_by_entity_id.json?entity_id=</string>
     <string name="get_comments_by_entity_and_category">http://10.0.2.2:3000/api/get_comments_by_entity_and_category.json</string>
     
     <string name="description_home">Home</string>
     <string name="description_search">Search</string>
     <string name="description_refresh">Refresh</string>
+    <string name="description_compose">Compose</string>
 </resources>

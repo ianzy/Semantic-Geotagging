@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -43,17 +42,17 @@ public class GeotaggingResponseList extends ListActivity {
         setContentView(R.layout.response_list_layout);
         setListAdapter(mAdapter);
         
-        refresh = (Button) findViewById(R.id.response_refresh_button);
-        refresh.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				setThread("14");
-		        updateResponseThread.start();
-		        refresh.setClickable(false);
-			}
-        	
-        });
+//        refresh = (Button) findViewById(R.id.response_refresh_button);
+//        refresh.setOnClickListener(new OnClickListener() {
+//
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				setThread("14");
+//		        updateResponseThread.start();
+//		        refresh.setClickable(false);
+//			}
+//        	
+//        });
         
         ListView pairedListView = this.getListView();
         pairedListView.setOnItemClickListener(new OnItemClickListener() {

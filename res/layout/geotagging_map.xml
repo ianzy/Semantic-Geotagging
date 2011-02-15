@@ -48,6 +48,7 @@
         <TextView style="@style/TitleBarText" 
         	android:text="Semantic Geotagging"/>
         
+        <ImageView style="@style/TitleBarSeparator" />
         <ImageButton style="@style/TitleBarAction"
             android:id="@+id/btn_title_refresh"
             android:contentDescription="@string/description_refresh"

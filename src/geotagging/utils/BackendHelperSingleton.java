@@ -33,7 +33,7 @@ public class BackendHelperSingleton {
    }
    
    //Backend helper methods
-   public void postContent(String apiurl, String content) {
+   public boolean postContent(String apiurl, String content) {
 	   URL url;
        HttpURLConnection connection = null; 
        
@@ -73,8 +73,10 @@ public class BackendHelperSingleton {
            }
            Log.i("response---------------------", response.toString());
            rd.close();
+           return true;
          } catch (Exception e) {
            e.printStackTrace();
+           return false;
          } finally {
 
            if(connection != null) {

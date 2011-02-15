@@ -1,6 +1,11 @@
 package geotagging.app;
 
+import geotagging.DAL.GeoCategoryDAL;
+import geotagging.DES.CommentCategory;
 import geotagging.utils.UIUtils;
+
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,28 +20,30 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class GeotaggingEntityInformation extends Activity {
 	
+	private GeoCategoryDAL categoryDAL;
 	private ArrayAdapter<String> entity_information_adapter;
-	private String REQUEST_FOR_HELP = "Request for Help";
-	private String SITUATION_DESCRIPTION = "Situation Description";
-	private String PROBLEM_REPORT = "Problem Report";
-	private String SOMETHING_ELSE = "Something Else";
+	private List<CommentCategory> categories;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+   
         setContentView(R.layout.entity_information_list);
-        
-        entity_information_adapter = new ArrayAdapter<String>(this, R.layout.entity_information, R.id.comemnt_category);
-        entity_information_adapter.add(REQUEST_FOR_HELP);
-        entity_information_adapter.add(SITUATION_DESCRIPTION);
-        entity_information_adapter.add(PROBLEM_REPORT);
-        entity_information_adapter.add(SOMETHING_ELSE);
         
         //get entity id from previous activity
         Bundle bundleFromMapView = getIntent().getExtras();
         final int entityId = bundleFromMapView.getInt("entityId");
-//        Log.i("???????????????????????", String.valueOf(entityId));
+        
+        entity_information_adapter = new ArrayAdapter<String>(this, R.layout.entity_information, R.id.comemnt_category);
+        
+        //fetch categories from local cache database
+        categoryDAL = new GeoCategoryDAL(this);
+        categories = categoryDAL.getCommentCategoriesByEntityId(entityId);
+        CommentCategory category;
+        for(int i=0; i<categories.size(); i++) {
+        	category = categories.get(i);
+        	entity_information_adapter.add("["+category.getCount()+"]"+"    "+category.getName());
+        }
         
         ListView pairedListView = (ListView) findViewById(R.id.entity_information_list);
         pairedListView.setAdapter(entity_information_adapter);
@@ -46,24 +53,13 @@ public class GeotaggingEntityInformation extends Activity {
 					long arg3) {
 				Intent intent = new Intent();
 				Bundle b = new Bundle();
-            	b.putString("entity_id", String.valueOf(entityId));
+            	b.putInt("entity_id", entityId);
+            	b.putInt("category_id", categories.get(arg2).getCategory_id());
 				String information = ((TextView)((LinearLayout) arg1).getChildAt(0)).getText().toString();
 				Log.i("~~~~~~~~~~~~~~~~~~~~~~~~", information);
-				
-//				if(information.startsWith(REQUEST_FOR_HELP)){
-//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
-//				}
-//				else if(information.startsWith(SITUATION_DESCRIPTION)){
-//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
-//	            }
-//				else if(information.startsWith(PROBLEM_REPORT)){
-//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsList");
-//				}
-//				else if(information.startsWith(SOMETHING_ELSE)){
-//					intent.setClassName("geotagging.app","geotagging.app.GeotaggingResponseList");
-//				}
+				Log.i("~~~~~~~~~~~~~~~~~~~~~~~~", String.valueOf(categories.get(arg2).getCategory_id()));
 				intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsList");
-				b.putString("commentCategory", information);
+				b.putString("commentCategory", categories.get(arg2).getName());
 				intent.putExtras(b);
 				startActivity(intent);
 			}

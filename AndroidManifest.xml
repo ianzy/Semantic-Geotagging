@@ -70,6 +70,13 @@
 			</intent-filter>
 		</activity>
 		
+		<activity android:name=".GeotaggingCommentComposing" android:label="GeotaggingCommentComposing"
+			android:theme="@android:style/Theme.Light">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+		
 		<activity android:name=".GeotaggingEntityResponse" android:label="GeotaggingEntityResponse"
 			android:theme="@android:style/Theme.Light">
 			<intent-filter>

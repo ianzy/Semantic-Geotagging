@@ -70,6 +70,7 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + Responses.RESPONSE_COMMENTID + " INTEGER,"
 			      + Responses.RESPONSE_DESCRIPTION + " TEXT,"
 			      + Responses.RESPONSE_TIME + " TEXT,"
+			      + Responses.RESPONSE_USERIMG + " TEXT,"
 			      + Responses.RESPONSE_USERNAME + " TEXT"
 			      + ");");
 		
@@ -103,14 +104,16 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + CommentCounters._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 			      + CommentCounters.COUNTER_CATEGORYID + " INTEGER,"
 			      + CommentCounters.COUNTER_COUNTER + " INTEGER,"
-			      + CommentCounters.COUNTER_ENTITYID + " INTEGER"
+			      + CommentCounters.COUNTER_ENTITYID + " INTEGER,"
+			      + CommentCounters.COUNTER_CATEGORY_NAME + " TEXT"
 			      + ");");
 		
 		db.execSQL("CREATE TABLE " + Tables.RESPONSECOUNTERS + " ("
 			      + ResponseCounters._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 			      + ResponseCounters.COUNTER_CATEGORYID + " INTEGER,"
 			      + ResponseCounters.COUNTER_COUNTER + " INTEGER,"
-			      + ResponseCounters.COUNTER_ENTITYID + " INTEGER"
+			      + ResponseCounters.COUNTER_COMMENTID + " INTEGER,"
+			      + ResponseCounters.COUNTER_CATEGORY_NAME + " TEXT"
 			      + ");");
 	}
 

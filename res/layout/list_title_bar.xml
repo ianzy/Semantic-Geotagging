@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
-  
-  <LinearLayout style="@style/TitleBar">
+<LinearLayout style="@style/TitleBar"
+xmlns:android="http://schemas.android.com/apk/res/android">
       <ImageButton style="@style/TitleBarAction"
           android:contentDescription="@string/description_home"
           android:src="@drawable/ic_title_home"
@@ -13,7 +8,7 @@
 
       <ImageView style="@style/TitleBarSeparator" />
       <TextView style="@style/TitleBarText" 
-      	android:text="Comments"/>
+      	android:text="Semantic Geotagging"/>
     	
     	<ImageView style="@style/TitleBarSeparator" />
     	<ImageButton style="@style/TitleBarAction"
@@ -37,8 +32,3 @@
           android:src="@drawable/ic_title_search"
           android:onClick="onSearchClick" />
   </LinearLayout>
-  
-	<ListView android:id="@+id/android:list" 
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent" />
-</LinearLayout>
