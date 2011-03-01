@@ -74,7 +74,7 @@ ExpandableListView.OnChildClickListener{
         categoryDAL = new GeoCategoryDAL(this);
         categories = categoryDAL.getResponseCategoriesByCommentId(commentId);
         
-        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId);
+        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.INITIALIZE_MODE);
         t.start();
 	}
 	
@@ -89,6 +89,7 @@ ExpandableListView.OnChildClickListener{
             	c.setTime(data.getStringExtra("created_at"));
             	c.setDescription(data.getStringExtra("description"));
             	c.setUserName(data.getStringExtra("userName"));
+            	c.setEntity_id(data.getIntExtra("id", -1));
             	String categoryName = data.getStringExtra("category_name");
             	List<Comment> cs = new ArrayList<Comment>();
             	cs.add(c);
@@ -106,6 +107,13 @@ ExpandableListView.OnChildClickListener{
 
     /** Handle "refresh" title-bar action. */
     public void onRefreshClick(View v) {
+    	// trigger off background sync
+    	findViewById(R.id.btn_title_refresh).setVisibility(
+                View.GONE );
+        findViewById(R.id.title_refresh_progress).setVisibility(
+                View.VISIBLE);
+        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.SYNC_MODE);
+        t.start();
     
     }
     
@@ -123,9 +131,9 @@ ExpandableListView.OnChildClickListener{
         UIUtils.goSearch(this);
     }
 	
-	public void updateAdapter(List<Comment> cs) {
+	public void updateAdapter(List<Comment> cs, int mode) {
     	this.cs = cs;
-    	handler.sendEmptyMessage(0);
+    	handler.sendEmptyMessage(mode);
     }
     
     private Handler handler = new Handler() {
@@ -133,20 +141,65 @@ ExpandableListView.OnChildClickListener{
             //update view from here only.
         	List<Comment> commetListOfSpecificCategory;
         	int category_id_categories;
-        	for (int ii=0; ii<categories.size(); ii++) {
-        		category_id_categories = categories.get(ii).getCategory_id();
-        		commetListOfSpecificCategory = new ArrayList<Comment>();
-        		for (int i = 0; i < cs.size(); i++) {
-        			if(cs.get(i).getCategory_id() == category_id_categories) {
-        				commetListOfSpecificCategory.add(cs.get(i));
-        			}
-    				
-    			}
-        		if(commetListOfSpecificCategory.size() != 0) {
-        			mAdapter.addResponsesWithGroup(categories.get(ii).getName(), commetListOfSpecificCategory);
-        		}
+        	
+        	switch(msg.what) {
+        	case UpdateFollowupCommentThread.INITIALIZE_MODE:
         		
-            }
+            	for (int ii=0; ii<categories.size(); ii++) {
+            		category_id_categories = categories.get(ii).getCategory_id();
+            		commetListOfSpecificCategory = new ArrayList<Comment>();
+            		for (int i = 0; i < cs.size(); i++) {
+            			if(cs.get(i).getCategory_id() == category_id_categories) {
+            				commetListOfSpecificCategory.add(cs.get(i));
+            			}
+        				
+        			}
+            		if(commetListOfSpecificCategory.size() != 0) {
+            			mAdapter.addResponsesWithGroup(categories.get(ii).getName(), commetListOfSpecificCategory);
+            		}
+            		
+                }
+        		break;
+        	case UpdateFollowupCommentThread.SYNC_MODE:
+        		//ugly code....
+        		boolean existingFlag = false;
+        		if(null != cs)
+            	for (int ii=0; ii<categories.size(); ii++) {
+            		category_id_categories = categories.get(ii).getCategory_id();
+            		commetListOfSpecificCategory = new ArrayList<Comment>();
+            		for (int i = 0; i < cs.size(); i++) {
+            			if(cs.get(i).getCategory_id() == category_id_categories) {
+            				String groupName = categories.get(ii).getName();
+            				List<Comment> existingComments = mAdapter.getChildren(groupName);
+            				if(null != existingComments) {
+            					existingFlag = false;
+            					for(int j=0; j<existingComments.size(); j++) {
+            						if(existingComments.get(j).getEntity_id() == cs.get(i).getEntity_id()) {
+            							existingFlag = true;
+            							break;
+            						}	
+            					}
+            				}
+            				if(existingFlag) {
+            					break;
+            				}
+            				commetListOfSpecificCategory.add(cs.get(i));
+            			}
+        				
+        			}
+            		if(commetListOfSpecificCategory.size() != 0) {
+            			mAdapter.addResponsesWithGroup(categories.get(ii).getName(), commetListOfSpecificCategory);
+            		}
+            		
+                }
+        		
+        		findViewById(R.id.btn_title_refresh).setVisibility(
+                        View.VISIBLE );
+                findViewById(R.id.title_refresh_progress).setVisibility(
+                        View.GONE);
+        		break;
+        	}
+        	
         	
         }
     };
@@ -185,6 +238,14 @@ ExpandableListView.OnChildClickListener{
         	}
         	
         	notifyDataSetChanged();
+        }
+        
+        public List<Comment> getChildren(String groupName) {
+        	if(groups.contains(groupName)) {
+        		int i = groups.indexOf(groupName);
+        		return children.get(i);
+        	}
+        	return null;
         }
         
         public Object getChild(int groupPosition, int childPosition) {

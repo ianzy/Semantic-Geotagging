@@ -42,6 +42,7 @@ public final class CacheBase {
 		String RESPONSE_TIME = "time";
 		String RESPONSE_CATEGORYID = "category_id";
 		String RESPONSE_USERIMG = "user_img";
+		String RESPONSE_ID = "response_id";
 	}
 	
 	interface StatesColumns {

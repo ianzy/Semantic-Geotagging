@@ -34,7 +34,7 @@
           android:contentDescription="@string/description_search"
           android:src="@drawable/ic_title_search"
           android:onClick="onSearchClick" />
-  </LinearLayout>
+  		</LinearLayout>
 
 	<ScrollView
 	android:id="@+id/comment_detail_sw"
@@ -43,7 +43,7 @@
 	>
 	<LinearLayout
 	android:id="@+id/comment_detail_ll"
-	android:layout_width="wrap_content"
+	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
 	>
@@ -74,26 +74,14 @@
 		android:id="@+id/comment_detail_content"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="short a lot of short words
-		short a lot of short wordsshort a lot of short wordsshort a lot of short words
-		short a lot of short wordsshort a lot of short wordsshort a lot of short words
-		short a lot of short wordsshort a lot of short wordsshort a lot of short words"
 		android:textSize="15px"
 		android:paddingLeft="5px"
 		android:paddingTop="5px"
 		>
 	</TextView>
-	<LinearLayout
-	android:id="@+id/comment_detail_footer"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	>
-		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-			style="@style/CategorizedResponse" 
-        	android:text="Categorized Reponses"/>
-		<Button android:id="@+id/buttonRespond" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="Respond" />
-	</LinearLayout>
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		style="@style/CategorizedResponse" 
+       	android:text="Categorized Reponses"/>
 	</LinearLayout>
 	</ScrollView>
 	<ExpandableListView android:id="@+id/follow_response_list"

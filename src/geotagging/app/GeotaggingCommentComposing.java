@@ -1,7 +1,9 @@
 package geotagging.app;
 
+import geotagging.DES.Comment;
 import geotagging.provider.CacheBase;
 import geotagging.utils.BackendHelperSingleton;
+import geotagging.utils.DALUtils;
 import geotagging.utils.UIUtils;
 
 import java.text.DateFormat;
@@ -29,6 +31,7 @@ public class GeotaggingCommentComposing extends Activity {
 	}
 	
 	public void onSubmitClick(View v) {
+		
 		Bundle b = this.getIntent().getExtras();
 		int entity_id = b.getInt("entity_id");
 		int category_id = b.getInt("category_id");
@@ -59,10 +62,13 @@ public class GeotaggingCommentComposing extends Activity {
 		String contentForPost = ent.toString();
 		Log.i(">>>>>>>>>>>>>>>>", contentForPost);
 		
-		String apiurl = "http://10.0.2.2:3000/api/comments.json";
+		String apiurl = this.getResources().getString(R.string.GeotaggingAPIPostNewComment);//"http://10.0.2.2:3000/api/comments.json"
+		String response = BackendHelperSingleton.getInstance().postContent(apiurl, contentForPost);
 		
-		if(BackendHelperSingleton.getInstance().postContent(apiurl, contentForPost)) {
+		
+		if(response != null) {
 			Toast.makeText(this, "Submitting new comment", Toast.LENGTH_LONG).show();
+			Comment comment = DALUtils.getCommentFromJsonText(response);
 			//finish the activity
             Intent intent = new Intent();
             //need to be refactored
@@ -72,12 +78,14 @@ public class GeotaggingCommentComposing extends Activity {
             Date date = new Date();
             String createAt = dateFormat.format(date)+ " UTC";
             intent.putExtra("created_at", createAt); 
+            intent.putExtra("id", comment.getCommentId());
             setResult(RESULT_OK, intent);
             finish();
 		} else {
 			Toast.makeText(this, "Submition failed", Toast.LENGTH_LONG).show();
-			
 		}
+		
+		
 		
 	}
 	

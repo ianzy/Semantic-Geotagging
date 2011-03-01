@@ -274,6 +274,7 @@ public class DatabaseAdapter {
 			args.put(Responses.RESPONSE_TIME, c.getTime());
 			args.put(Responses.RESPONSE_USERNAME, c.getUserName());
 			args.put(Responses.RESPONSE_USERIMG, c.getUserImg());
+			args.put(Responses.RESPONSE_ID, c.getEntity_id());
 			db.insert(Tables.RESPONSES, null, args);
 		}
 		return 0;
@@ -312,7 +313,8 @@ public class DatabaseAdapter {
 			Responses.RESPONSE_DESCRIPTION,
 			Responses.RESPONSE_TIME,
 			Responses.RESPONSE_USERNAME,
-			Responses.RESPONSE_USERIMG
+			Responses.RESPONSE_USERIMG,
+			Responses.RESPONSE_ID
 		};
 	}
 	

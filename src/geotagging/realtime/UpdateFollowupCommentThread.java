@@ -10,20 +10,30 @@ import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class UpdateFollowupCommentThread extends Thread {
+public class UpdateFollowupCommentThread extends BaseThread {
 
 	private GeotaggingCommentDetails commentList;
 	private int comment_id;
+	private int mode;
 	
-	public UpdateFollowupCommentThread(GeotaggingCommentDetails commentList, int comment_id) {
+	public UpdateFollowupCommentThread(GeotaggingCommentDetails commentList, int comment_id, int mode) {
 		this.commentList = commentList;
 		this.comment_id = comment_id;
+		this.mode = mode;
 	}
 	
 	@Override
 	public void run() {
-		this.prepareCachedCommentsList();
-		this.prepareRemoteCommentsList();
+		switch(this.mode) {
+		case INITIALIZE_MODE:
+			this.prepareCachedCommentsList();
+			this.prepareRemoteCommentsList();
+			break;
+		case SYNC_MODE:
+			this.prepareRemoteCommentsList();
+			break;
+		}
+		
 	}
 	
 	private void prepareCachedCommentsList() {
@@ -33,7 +43,7 @@ public class UpdateFollowupCommentThread extends Thread {
 		if(commentsList == null || commentsList.size() == 0 )
 			return;
 		//notify the observer to update the UI
-		commentList.updateAdapter(commentsList);
+		commentList.updateAdapter(commentsList, this.mode);
 	}
 	
 	private void prepareRemoteCommentsList() {
@@ -47,10 +57,13 @@ public class UpdateFollowupCommentThread extends Thread {
 		GeoCommentDAL commentsDAL = new GeoCommentDAL(commentList);
 		List<Comment> commentsList = commentsDAL.getRemoteFollowUpCommentsByCommentId(since_id, comment_id, remote_count);
         
-		if(commentsList == null || commentsList.size() == 0 )
+		if(commentsList == null || commentsList.size() == 0 ) {
+			if(this.mode == SYNC_MODE)
+				commentList.updateAdapter(commentsList, this.mode);
 			return;
+		}
 		
 		//notify the observer to update the UI
-		commentList.updateAdapter(commentsList);
+		commentList.updateAdapter(commentsList, this.mode);
 	}
 }

@@ -69,7 +69,7 @@ public class GeotaggingCommentsList extends ListActivity {
         Bundle b = getIntent().getExtras();
         entity_id = b.getInt("entity_id");
         category_id = b.getInt("category_id");
-        updateCommentThread = new UpdateCommentThread(this, entity_id, category_id);
+        updateCommentThread = new UpdateCommentThread(this, entity_id, category_id, UpdateCommentThread.INITIALIZE_MODE);
         updateCommentThread.start();
     }
 
@@ -80,6 +80,13 @@ public class GeotaggingCommentsList extends ListActivity {
 
     /** Handle "refresh" title-bar action. */
     public void onRefreshClick(View v) {
+    	// trigger off background sync
+    	findViewById(R.id.btn_title_refresh).setVisibility(
+                View.GONE );
+        findViewById(R.id.title_refresh_progress).setVisibility(
+                View.VISIBLE);
+        updateCommentThread = new UpdateCommentThread(this, entity_id, category_id, UpdateCommentThread.SYNC_MODE);
+        updateCommentThread.start();
     }
     
     @Override
@@ -94,7 +101,9 @@ public class GeotaggingCommentsList extends ListActivity {
             	c.setDescription(data.getStringExtra("description"));
             	c.setUserName(data.getStringExtra("user_name"));
             	c.setUserImg("http://selfsolved.com/images/icons/default_user_icon_128.png");
+            	c.setCommentId(data.getIntExtra("id", -1));
             	mAdapter.addItem(c);
+            	this.onRefreshClick(null);
             }
 		}
             
@@ -120,18 +129,46 @@ public class GeotaggingCommentsList extends ListActivity {
     //objects while in a separate thread. 
     //When we send a message to the Handler it will get saved into 
     //a queue and get executed by the UI thread as soon as possible.
-    public void updateAdapter(List<Comment> cs) {
+    public void updateAdapter(List<Comment> cs, int mode) {
     	this.cs = cs;
-    	handler.sendEmptyMessage(0);
+    	handler.sendEmptyMessage(mode);
     }
     
     private Handler handler = new Handler() {
         public void  handleMessage(Message msg) {
              //update your view from here only.
-
-    		for (int i = 0; i < cs.size(); i++) {
-    			mAdapter.addItem(cs.get(i));
-            }
+        	switch(msg.what) {
+        	case UpdateCommentThread.INITIALIZE_MODE:
+        		for (int i = 0; i < cs.size(); i++) {
+        			mAdapter.addItem(cs.get(i));
+                }
+        		break;
+        	case UpdateCommentThread.SYNC_MODE:
+        		boolean existFlag;
+        		if(null != cs)
+        		for (int i = 0; i < cs.size(); i++) {
+        			existFlag = false;
+        			for(int ii=0; ii<mAdapter.getCount(); ii++) {
+        				if(mAdapter.getItem(ii).getCommentId() == cs.get(i).getCommentId()) {
+        					existFlag = true;
+        					break;
+        				}
+        					
+        			}
+        			if(existFlag) {
+        				continue;
+        			}
+        			mAdapter.addItem(cs.get(i));
+        			
+                }
+        		
+        		findViewById(R.id.btn_title_refresh).setVisibility(
+                        View.VISIBLE );
+                findViewById(R.id.title_refresh_progress).setVisibility(
+                        View.GONE);
+        		break;
+        	}
+    		
         	
         }
     };

@@ -1,6 +1,8 @@
 package geotagging.app;
 
+import geotagging.DES.Entity;
 import geotagging.utils.BackendHelperSingleton;
+import geotagging.utils.DALUtils;
 import geotagging.utils.UIUtils;
 
 import org.json.JSONException;
@@ -29,13 +31,15 @@ public class GeotaggingCommentsType extends Activity {
 	}
 	
 	public void onSubmitClick(View v) {
-        	
+        
 		//experimental code for submitting data to the back end    	
     	//getting data from intent extra
     	Bundle b = getIntent().getExtras();
-        final String location = b.getString("location");
-        final double lng = b.getDouble("lng");
-        final double lat = b.getDouble("lat");
+        String location = b.getString("location");
+        double lng = b.getDouble("lng");
+        double lat = b.getDouble("lat");
+        String iconName = b.getString("iconName");
+        int drawableId = b.getInt("drawableId");
         //end of getting data
 		
     	if(edit_comment.getText().toString().trim().equals("") ||
@@ -55,6 +59,7 @@ public class GeotaggingCommentsType extends Activity {
             obj.put("lng", lng);
             obj.put("description", edit_comment.getText().toString());
             obj.put("lat", lat);
+            obj.put("icon_uri", iconName);
 
             ent.put("entity", obj);
 		} catch (JSONException e1) {
@@ -65,9 +70,12 @@ public class GeotaggingCommentsType extends Activity {
 		String contentForPost = ent.toString();
 		Log.i(">>>>>>>>>>>>>>>>", contentForPost);
 		
-		String apiurl = "http://10.0.2.2:3000/api/entities.json";
+		String apiurl = this.getResources().getString(R.string.GeotaggingAPIPostNewEntity);
+		String response = BackendHelperSingleton.getInstance().postContent(apiurl, contentForPost);
 		
-		if(BackendHelperSingleton.getInstance().postContent(apiurl, contentForPost)) {
+		
+		if(response != null) {
+			Entity entity = DALUtils.getEntityFromJsonText(response);
 			Toast.makeText(GeotaggingCommentsType.this, "Submitting new entity", Toast.LENGTH_LONG).show();
 			//finish the activity
             Intent intent = new Intent();
@@ -77,11 +85,12 @@ public class GeotaggingCommentsType extends Activity {
             intent.putExtra("lng", lng);
             intent.putExtra("description", edit_comment.getText().toString());
             intent.putExtra("lat", lat);
+            intent.putExtra("drawableId", drawableId);
+            intent.putExtra("entity_id", entity.getId());
             setResult(RESULT_OK, intent);
             finish();
 		} else {
 			Toast.makeText(GeotaggingCommentsType.this, "Submit fail", Toast.LENGTH_LONG).show();
-			
 		}
 			
 	}

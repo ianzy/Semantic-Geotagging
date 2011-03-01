@@ -96,6 +96,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
 				comment.setTime(cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_TIME)));
 				comment.setUserName(cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERNAME)));
 				comment.setUserImg(cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERIMG)));
+				comment.setEntity_id(cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_ID)));
 				
 				//**********************attention!*************************
 				Drawable d = cx.getResources().getDrawable(R.drawable.default_user_icon);
@@ -223,6 +224,8 @@ public class GeoCommentDAL implements GeoCommentIDAL {
             {
 				comment = new Comment();
                 JSONObject c = comments.getJSONObject(i);
+                //used to identify existing responses, this field stores the actual comment id
+                comment.setEntity_id(c.getJSONObject("comment").getInt("id"));
                 comment.setCommentId(c.getJSONObject("comment").getInt("comment_id"));
                 comment.setCategory_id(c.getJSONObject("comment").getInt("category_id"));
                 comment.setDescription(c.getJSONObject("comment").getString("description"));

@@ -3,7 +3,7 @@ package geotagging.realtime;
 import geotagging.DAL.GeoCategoryDAL;
 import android.content.Context;
 
-public class UpdateCategoriesThread extends Thread {
+public class UpdateCategoriesThread extends BaseThread {
 
 	private GeoCategoryDAL categoryDAL;
 	

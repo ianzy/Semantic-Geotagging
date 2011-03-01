@@ -4,6 +4,7 @@ import geotagging.DES.Entity;
 import geotagging.app.GeotaggingMap;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.graphics.drawable.Drawable;
 
@@ -38,6 +39,10 @@ public class GeotaggingItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	
 	public void addEntity(Entity entity){
 		mEntities.add(entity);
+	}
+	
+	public List<Entity> getEntities() {
+		return mEntities;
 	}
 	
 	@Override

@@ -1,9 +1,11 @@
 package geotagging.app;
 
 import geotagging.DAL.GeoCategoryDAL;
+import geotagging.DES.Comment;
 import geotagging.DES.ResponseCategory;
 import geotagging.provider.CacheBase;
 import geotagging.utils.BackendHelperSingleton;
+import geotagging.utils.DALUtils;
 import geotagging.utils.UIUtils;
 
 import java.text.DateFormat;
@@ -67,7 +69,6 @@ public class GeotaggingEntityResponse extends Activity {
 	
 	public void onSubmitClick(View v) {
 		
-		
 		EditText edit_comment = (EditText) findViewById(R.id.edit_response);
     	SharedPreferences settings = this.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, MODE_PRIVATE);
 		int user_id = settings.getInt("user_id", -1);
@@ -95,10 +96,12 @@ public class GeotaggingEntityResponse extends Activity {
 		String contentForPost = ent.toString();
 		Log.i(">>>>>>>>>>>>>>>>", contentForPost);
 		
-		String apiurl = "http://10.0.2.2:3000/api/comments.json";
+		String apiurl = this.getResources().getString(R.string.GeotaggingAPIPostNewResponse);//"http://10.0.2.2:3000/api/comments.json"
+		String response = BackendHelperSingleton.getInstance().postContent(apiurl, contentForPost);
 		
-		if(BackendHelperSingleton.getInstance().postContent(apiurl, contentForPost)) {
+		if(response != null) {
 			Toast.makeText(this, "Submitting new response", Toast.LENGTH_LONG).show();
+			Comment resp = DALUtils.getResponseFromJsonText(response);
 			//finish the activity
 	        Intent intent = new Intent();
 	        //need to be refactored
@@ -110,6 +113,7 @@ public class GeotaggingEntityResponse extends Activity {
             Date date = new Date();
             String createAt = dateFormat.format(date)+ " UTC";
             intent.putExtra("created_at", createAt); 
+            intent.putExtra("id", resp.getEntity_id());
 	        setResult(RESULT_OK, intent);
 	        finish();
 		} else {

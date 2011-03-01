@@ -4,6 +4,7 @@ import geotagging.DES.Entity;
 import geotagging.provider.CacheBase;
 import geotagging.realtime.UpdateCategoriesThread;
 import geotagging.realtime.UpdateMapThread;
+import geotagging.utils.CustomArrayAdapter;
 import geotagging.utils.GeotaggingItemizedOverlay;
 import geotagging.utils.UIUtils;
 import geotagging.views.BaloonInMapView;
@@ -25,6 +26,8 @@ import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,11 +35,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -52,9 +58,26 @@ public class GeotaggingMap extends MapActivity {
 //	private GestureDetector mGestureDetector;
 	
 	private static final int DIALOG_FOR_ENTITY_TYPES = 1;
-	private static final String[] HARDCODED_DATA = new String[] { //Need to refactored to dynamic data
-		"Plane crash", "Airfield fire", "Pumper unit 7", "Personnel", "Something new"
+	
+	// hard coded data, need to be refactored
+	public static final String[] HARDCODED_DATA = new String[] { //Need to refactored to dynamic data
+		"Fire", "Crime", "Earthquake", "Explosion", "Gas leak"
 	};
+	public static final int[] DRAWABLES = new int[] {
+		R.drawable.fire_icon_small,
+		R.drawable.crime,
+		R.drawable.earthquake,
+		R.drawable.explosion_icon,
+		R.drawable.nuclear
+	};
+	public static final String[] ICONNAMES = new String[] {
+		"fireIcon",
+		"crime",
+		"earthquake",
+		"explosionicon",
+		"gasleak"
+	};
+	
 	private static final int DIALOG_FOR_MAPMODE = 2;
 	private static final String[] ITEMS_FOR_MAPMODE = new String[] {
 		"Map","Satellite", "Street View","Traffic"
@@ -65,7 +88,9 @@ public class GeotaggingMap extends MapActivity {
 	private GeotaggingMapView mapView;
 	private Boolean isIconClick = false;
 	
-	private Intent newEntityIntent;
+	
+	private GeoPoint point;
+	private String location;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,9 +116,9 @@ public class GeotaggingMap extends MapActivity {
         SharedPreferences settings = this.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, MODE_PRIVATE);
         if(settings.getString("username", "NSV").equals("NSV")) {
         	SharedPreferences.Editor prefEditor = settings.edit();
-        	prefEditor.putString("username", "demo");
-        	prefEditor.putString("password", "demodemo");
-        	prefEditor.putInt("user_id", 1);
+        	prefEditor.putString("username", "Mike");
+        	prefEditor.putString("password", "demo");
+        	prefEditor.putInt("user_id", 4);
         	
         	prefEditor.putInt("latest_entityid", 0);
         	prefEditor.putInt("latest_commentid", 0);
@@ -123,8 +148,30 @@ public class GeotaggingMap extends MapActivity {
 	/** Handle "refresh" title-bar action. */
     public void onRefreshClick(View v) {
         // trigger off background sync
-
+    	findViewById(R.id.btn_title_refresh).setVisibility(
+                View.GONE );
+        findViewById(R.id.title_refresh_progress).setVisibility(
+                View.VISIBLE);
+    	List<Overlay> mapOverlays = mapView.getOverlays();
+        Drawable drawable = this.getResources().getDrawable(R.drawable.fire_icon_small);
+    	UpdateMapThread updateMapT = new UpdateMapThread(drawable,this,mapOverlays, itemizedoverlay, UpdateMapThread.SYNC_MODE);
+        updateMapT.start();
     }
+    
+    public void dismissProgressBar() {
+    	handler.sendEmptyMessage(0);
+    }
+    
+    private Handler handler = new Handler() {
+        public void  handleMessage(Message msg) {
+             //update your view from here only.
+        	findViewById(R.id.btn_title_refresh).setVisibility(
+                    View.VISIBLE );
+            findViewById(R.id.title_refresh_progress).setVisibility(
+                    View.GONE);
+        	
+        }
+    };
 
     /** Handle "search" title-bar action. */
     public void onSearchClick(View v) {
@@ -148,6 +195,7 @@ public class GeotaggingMap extends MapActivity {
             	entity.setLat(String.valueOf(data.getDoubleExtra("lat", 0)));
             	entity.setLng(String.valueOf(data.getDoubleExtra("lng", 0)));
             	entity.setTitle(data.getStringExtra("title"));
+            	entity.setId(data.getIntExtra("entity_id", -1));
             	
             	GeoPoint point = new GeoPoint(
                     (int) (data.getDoubleExtra("lat", 0) * 1E6), 
@@ -161,12 +209,14 @@ public class GeotaggingMap extends MapActivity {
 //    	            d.setBounds(-10, -20, d.getIntrinsicWidth()-10, d.getIntrinsicHeight()-20);
 //    	            overlayitem.setMarker(d);
                 
-//                    Drawable d = cx.getResources().getDrawable(R.drawable.androidmarker);
-//                    d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-//                    overlayitem.setMarker(d);
+                Drawable d = this.getResources().getDrawable(data.getIntExtra("drawableId", -1));
+                d.setBounds(-10, -20, d.getIntrinsicWidth()-10, d.getIntrinsicHeight()-20);
+                overlayitem.setMarker(d);
+                
                 itemizedoverlay.addOverlay(overlayitem);
                 itemizedoverlay.addEntity(entity);
                 mapView.getOverlays().add(itemizedoverlay);
+                this.dismissDialog(DIALOG_FOR_ENTITY_TYPES);
             }
         }
     }
@@ -175,17 +225,54 @@ public class GeotaggingMap extends MapActivity {
 	    protected Dialog onCreateDialog(int id) {
 		 switch (id) {
 	        case DIALOG_FOR_ENTITY_TYPES:
+//	        	return new AlertDialog.Builder(GeotaggingMap.this)
+//                .setTitle("The new entity is a:")
+//                .setItems(HARDCODED_DATA, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+////                    	Toast.makeText(getApplicationContext(), "You selected" +HARDCODED_DATA[which],
+////                		Toast.LENGTH_SHORT).show();
+////                		startActivity(newEntityIntent);
+//                		startActivityForResult(newEntityIntent, ADD_ENTITY);
+//                    }
+//                })
+//                .create();
+	        	LayoutInflater factory = LayoutInflater.from(this);
+	            View customDialogView = factory.inflate(R.layout.alert_dialog_list_type_entity, null);
+	            ListView pairedListView = (ListView)customDialogView.findViewById(R.id.alert_dialog_list_types);
+//	            ArrayAdapter<String> entity_types_adapter = new ArrayAdapter<String>(this, R.layout.alert_dialog_list_type_item, R.id.dialog_item_content);
+	            CustomArrayAdapter entity_types_adapter = new CustomArrayAdapter(this, R.layout.alert_dialog_list_type_item, R.id.dialog_item_content, DRAWABLES);
+//	            View itemtmp = factory.inflate(R.layout.alert_dialog_list_type_item, null);
+	            for(int i=0; i<HARDCODED_DATA.length; i++) {
+	            	entity_types_adapter.add(HARDCODED_DATA[i]);
+//	            	View item = entity_types_adapter.getView(i, itemtmp, pairedListView);
+//	            	ImageView img = (ImageView)item.findViewById(R.id.dialog_item_icon);
+//	            	img.setImageResource(R.drawable.default_user_icon);
+	            }
+	            pairedListView.setAdapter(entity_types_adapter);
+	            pairedListView.setOnItemClickListener(new OnItemClickListener() {
+	    			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+	    					long arg3) {
+	    				Intent newEntityIntent = new Intent();
+	    				newEntityIntent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsType");
+	    		    	
+	    				Bundle b = new Bundle();
+	    		    	b.putString("location", location);
+	    		    	b.putDouble("lng", point.getLongitudeE6() / 1E6);
+	    		    	b.putDouble("lat", point.getLatitudeE6() / 1E6);
+	    		    	b.putInt("drawableId", DRAWABLES[(int)arg3]);
+	    		    	b.putString("iconName", ICONNAMES[(int)arg3]);
+	    		    	Log.i("+++++++++++++++++++++", HARDCODED_DATA[(int)arg3]);
+	    		    	Log.i("+++++++++++++++++++++", String.valueOf(DRAWABLES[(int)arg3]));
+	    		    	newEntityIntent.putExtras(b);
+	    				startActivityForResult(newEntityIntent, ADD_ENTITY);
+	    			}
+	    		});
+	            
+	            
 	        	return new AlertDialog.Builder(GeotaggingMap.this)
-                .setTitle("I want to comment on:")
-                .setItems(HARDCODED_DATA, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-//                    	Toast.makeText(getApplicationContext(), "You selected" +HARDCODED_DATA[which],
-//                		Toast.LENGTH_SHORT).show();
-//                		startActivity(newEntityIntent);
-                		startActivityForResult(newEntityIntent, ADD_ENTITY);
-                    }
-                })
+                .setTitle("The new entity is a:")
+                .setView(customDialogView)
                 .create();
 	        case DIALOG_FOR_MAPMODE:
 	        	return new AlertDialog.Builder(GeotaggingMap.this)
@@ -314,7 +401,7 @@ public class GeotaggingMap extends MapActivity {
 		MapView mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         MapController mc = mapView.getController();
-        String coordinates[] = {"37.623019","-122.441704"};
+        String coordinates[] = {"37.410566","-122.059704"};
         double lat = Double.parseDouble(coordinates[0]);
         double lng = Double.parseDouble(coordinates[1]);
  
@@ -326,10 +413,10 @@ public class GeotaggingMap extends MapActivity {
         mc.setZoom(17);
         
         List<Overlay> mapOverlays = mapView.getOverlays();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.fire_icon);
+        Drawable drawable = this.getResources().getDrawable(R.drawable.fire_icon_small);
         itemizedoverlay = new GeotaggingItemizedOverlay(drawable);
         itemizedoverlay.addObserver(this);
-        UpdateMapThread updateMapT = new UpdateMapThread(drawable,this,mapOverlays, itemizedoverlay);
+        UpdateMapThread updateMapT = new UpdateMapThread(drawable,this,mapOverlays, itemizedoverlay, UpdateMapThread.INITIALIZE_MODE);
         updateMapT.start();
         
 	}
@@ -338,15 +425,9 @@ public class GeotaggingMap extends MapActivity {
 	//act as an observer, map activity observe the map view, when the add entity click
 	//this method get called. If necessery, it will turn into an interface.
 	public void onAddEntityClick(GeoPoint point, String location) {
-		newEntityIntent = new Intent();
-		newEntityIntent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentsType");
-    	
-		Bundle b = new Bundle();
-    	b.putString("location", location);
-    	b.putDouble("lng", point.getLongitudeE6() / 1E6);
-    	b.putDouble("lat", point.getLatitudeE6() / 1E6);
-    	newEntityIntent.putExtras(b);
-		this.showDialog(1); 
+		this.point = point;
+		this.location = location;
+		this.showDialog(DIALOG_FOR_ENTITY_TYPES); 
 	}
 	
 	public void onStreetViewClick(Intent intent) {

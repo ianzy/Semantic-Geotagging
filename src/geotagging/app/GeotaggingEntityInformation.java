@@ -27,10 +27,13 @@ public class GeotaggingEntityInformation extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-   
-        setContentView(R.layout.entity_information_list);
-        
-        //get entity id from previous activity
+        setContentView(R.layout.entity_information_list);       
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		//get entity id from previous activity
         Bundle bundleFromMapView = getIntent().getExtras();
         final int entityId = bundleFromMapView.getInt("entityId");
         
@@ -64,6 +67,11 @@ public class GeotaggingEntityInformation extends Activity {
 				startActivity(intent);
 			}
 		});
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
 	}
 	
 	/** Handle "home" title-bar action. */

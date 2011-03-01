@@ -71,7 +71,8 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + Responses.RESPONSE_DESCRIPTION + " TEXT,"
 			      + Responses.RESPONSE_TIME + " TEXT,"
 			      + Responses.RESPONSE_USERIMG + " TEXT,"
-			      + Responses.RESPONSE_USERNAME + " TEXT"
+			      + Responses.RESPONSE_USERNAME + " TEXT,"
+			      + Responses.RESPONSE_ID + " INTEGER"
 			      + ");");
 		
 		db.execSQL("CREATE TABLE " + Tables.STATES + " ("
