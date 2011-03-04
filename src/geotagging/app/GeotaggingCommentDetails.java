@@ -104,6 +104,10 @@ ExpandableListView.OnChildClickListener{
     public void onHomeClick(View v) {
         UIUtils.goHome(this);
     }
+    
+    public void onBackClick(View v) {
+    	UIUtils.goBack(this);
+    }
 
     /** Handle "refresh" title-bar action. */
     public void onRefreshClick(View v) {

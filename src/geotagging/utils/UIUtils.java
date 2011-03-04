@@ -40,6 +40,11 @@ public class UIUtils {
     public static void goSearch(Activity activity) {
         activity.startSearch(null, false, Bundle.EMPTY, false);
     }
+    
+    public static void goBack(Activity activity) {
+    	activity.setResult(Activity.RESULT_CANCELED);
+    	activity.finish();
+    }
 
     
 }

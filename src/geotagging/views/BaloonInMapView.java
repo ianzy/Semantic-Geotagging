@@ -47,9 +47,9 @@ public class BaloonInMapView extends LinearLayout {
         canvas.drawRoundRect(baloonRect, 20, 20, borderPaint);
         //Arrow below
         Path baloonTip = new Path();
-        baloonTip.moveTo(9*(getMeasuredWidth()/20), bottomForContent);
+        baloonTip.moveTo(39*(getMeasuredWidth()/100), bottomForContent);
         baloonTip.lineTo(getMeasuredWidth()/2, getMeasuredHeight()-20);
-        baloonTip.lineTo(11*(getMeasuredWidth()/20), bottomForContent);
+        baloonTip.lineTo(61*(getMeasuredWidth()/100), bottomForContent);
         
         canvas.drawPath(baloonTip, panelPaint);
                 

@@ -37,7 +37,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -71,7 +70,7 @@ public class GeotaggingMap extends MapActivity {
 		R.drawable.nuclear
 	};
 	public static final String[] ICONNAMES = new String[] {
-		"fireIcon",
+		"fireicon",
 		"crime",
 		"earthquake",
 		"explosionicon",
@@ -408,7 +407,7 @@ public class GeotaggingMap extends MapActivity {
         GeoPoint p = new GeoPoint(
             (int) (lat * 1E6), 
             (int) (lng * 1E6));
- 
+        
         mc.animateTo(p);
         mc.setZoom(17);
         
@@ -442,17 +441,17 @@ public class GeotaggingMap extends MapActivity {
 		if (null == this.baloon) {
 			LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        baloon = (BaloonInMapView)layoutInflater.inflate(R.layout.baloon_layout, null);
-		    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(230,50);
+		    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(250,190);
 	        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
 	        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 	        baloon.setLayoutParams(layoutParams);
 	        //The close button
-	        ImageView imgView = (ImageView) baloon.findViewById(R.id.close_button);
-	        imgView.setOnClickListener(new OnClickListener() {
-	            public void onClick(View v) {
-	            	mapView.removeView(baloon);
-	            }
-	        });
+//	        ImageView imgView = (ImageView) baloon.findViewById(R.id.close_button);
+//	        imgView.setOnClickListener(new OnClickListener() {
+//	            public void onClick(View v) {
+//	            	mapView.removeView(baloon);
+//	            }
+//	        });
 	        Button btnCancel = (Button) baloon.findViewById(R.id.btn_cancel);
 	        btnCancel.setOnClickListener(new OnClickListener() {
 	            public void onClick(View v) {
@@ -470,7 +469,8 @@ public class GeotaggingMap extends MapActivity {
 		}
 		isIconClick = true;
 		
-		mapView.addView(baloon, new MapView.LayoutParams(260,200,p,
+		//change the width and height for the pop up window
+		mapView.addView(baloon, new MapView.LayoutParams(290,250,p,
 				MapView.LayoutParams.BOTTOM_CENTER));
 		
 		TextView title = (TextView) baloon.findViewById(R.id.txv_title);
@@ -479,6 +479,8 @@ public class GeotaggingMap extends MapActivity {
 		description.setText(selectedEntity.getDescription());
 		
 		final int id = selectedEntity.getId();
+		final String entityTitle = selectedEntity.getTitle();
+		final String icon = selectedEntity.getIconURI();
 		
 		Button btnDetail = (Button) baloon.findViewById(R.id.btn_detail);
 		btnDetail.setOnClickListener(new OnClickListener() {
@@ -487,6 +489,16 @@ public class GeotaggingMap extends MapActivity {
             	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityInformation");
             	Bundle b = new Bundle();
             	b.putInt("entityId", id);
+            	b.putString("entity_title", entityTitle);
+            	
+            	int iconDrawable = -1;
+            	for(int i=0; i<ICONNAMES.length; i++)
+            		if(ICONNAMES[i].equals(icon)) {
+            			iconDrawable = DRAWABLES[i];
+            			break;
+            		}
+            			
+            	b.putInt("icon", iconDrawable);
             	intent.putExtras(b);
             	startActivity(intent);
             }

@@ -6,6 +6,29 @@
     >
     <include layout="@layout/activity_title_bar"/>
     
+    <LinearLayout
+	android:id="@+id/entity_information_header"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	>
+		<ImageView
+		android:id="@+id/entity_information_icon"
+		android:layout_width="60px"
+		android:layout_height="60px"
+		android:padding="5px"
+		>
+		</ImageView>
+		<TextView
+		android:id="@+id/entity_information_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Title"
+		android:paddingTop="20px"
+		android:paddingLeft = "10px"
+		android:textSize="25px"
+		>
+		</TextView>
+	</LinearLayout>
     <ListView android:id="@+id/entity_information_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

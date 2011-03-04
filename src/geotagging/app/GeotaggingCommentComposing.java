@@ -94,6 +94,10 @@ public class GeotaggingCommentComposing extends Activity {
 		this.finish();
 	}
 	
+	public void onBackClick(View v) {
+    	UIUtils.goBack(this);
+    }
+	
 	/** Handle "home" title-bar action. */
     public void onHomeClick(View v) {
         UIUtils.goHome(this);

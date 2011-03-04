@@ -133,6 +133,10 @@ public class GeotaggingEntityResponse extends Activity {
     public void onHomeClick(View v) {
         UIUtils.goHome(this);
     }
+    
+    public void onBackClick(View v) {
+    	UIUtils.goBack(this);
+    }
 
 
     /** Handle "search" title-bar action. */

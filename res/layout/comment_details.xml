@@ -6,8 +6,8 @@
 	  <LinearLayout style="@style/TitleBar">
       <ImageButton style="@style/TitleBarAction"
           android:contentDescription="@string/description_home"
-          android:src="@drawable/ic_title_home"
-          android:onClick="onHomeClick" />
+          android:src="@drawable/back_button"
+          android:onClick="onBackClick" />
 
       <ImageView style="@style/TitleBarSeparator" />
       <TextView style="@style/TitleBarText" 
@@ -32,8 +32,8 @@
       <ImageView style="@style/TitleBarSeparator" />
       <ImageButton style="@style/TitleBarAction"
           android:contentDescription="@string/description_search"
-          android:src="@drawable/ic_title_search"
-          android:onClick="onSearchClick" />
+          android:src="@drawable/ic_title_home"
+          android:onClick="onHomeClick" />
   		</LinearLayout>
 
 	<ScrollView
@@ -81,7 +81,7 @@
 	</TextView>
 	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 		style="@style/CategorizedResponse" 
-       	android:text="Categorized Reponses"/>
+       	android:text="Follow up responses"/>
 	</LinearLayout>
 	</ScrollView>
 	<ExpandableListView android:id="@+id/follow_response_list"

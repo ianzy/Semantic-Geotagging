@@ -11,14 +11,14 @@
 	    android:layout_weight="1"
 	    android:gravity="center_vertical"
 	    android:padding="10dp"
-	    android:textSize="@dimen/text_size_large"
+	    android:textSize="25px"
 	    >
 	</TextView>
 	
-	<TextView android:id="@+id/counter"
+	<TextView android:id="@+id/comment_category_counter"
 		android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:textSize="@dimen/text_size_large"
-	    android:text=">" >
+	    android:textSize="25px"
+	    android:text=" " >
 	</TextView>
 </LinearLayout>

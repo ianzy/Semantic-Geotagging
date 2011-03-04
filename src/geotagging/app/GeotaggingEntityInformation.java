@@ -4,15 +4,20 @@ import geotagging.DAL.GeoCategoryDAL;
 import geotagging.DES.CommentCategory;
 import geotagging.utils.UIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,13 +26,21 @@ import android.widget.AdapterView.OnItemClickListener;
 public class GeotaggingEntityInformation extends Activity {
 	
 	private GeoCategoryDAL categoryDAL;
-	private ArrayAdapter<String> entity_information_adapter;
+	private CommentCategoryAdapter entity_information_adapter;
 	private List<CommentCategory> categories;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.entity_information_list);       
+        setContentView(R.layout.entity_information_list);     
+        
+        Bundle b = getIntent().getExtras();
+        String entityTitle = b.getString("entity_title");
+        int entityIcon = b.getInt("icon");
+        TextView title = (TextView)this.findViewById(R.id.entity_information_title);
+        title.setText(entityTitle);
+        ImageView icon = (ImageView)this.findViewById(R.id.entity_information_icon);
+        icon.setImageDrawable(this.getResources().getDrawable(entityIcon));
 	}
 	
 	@Override
@@ -37,15 +50,13 @@ public class GeotaggingEntityInformation extends Activity {
         Bundle bundleFromMapView = getIntent().getExtras();
         final int entityId = bundleFromMapView.getInt("entityId");
         
-        entity_information_adapter = new ArrayAdapter<String>(this, R.layout.entity_information, R.id.comemnt_category);
+        entity_information_adapter = new CommentCategoryAdapter();
         
         //fetch categories from local cache database
         categoryDAL = new GeoCategoryDAL(this);
         categories = categoryDAL.getCommentCategoriesByEntityId(entityId);
-        CommentCategory category;
         for(int i=0; i<categories.size(); i++) {
-        	category = categories.get(i);
-        	entity_information_adapter.add("["+category.getCount()+"]"+"    "+category.getName());
+        	entity_information_adapter.addItem(categories.get(i));
         }
         
         ListView pairedListView = (ListView) findViewById(R.id.entity_information_list);
@@ -69,6 +80,60 @@ public class GeotaggingEntityInformation extends Activity {
 		});
 	}
 	
+	
+	 private class CommentCategoryAdapter extends BaseAdapter {
+		 
+        private List<CommentCategory> mData;
+        private LayoutInflater mInflater;
+ 
+        public CommentCategoryAdapter() {
+            mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mData = new ArrayList<CommentCategory>();
+        }
+ 
+        public void addItem(final CommentCategory category) {
+            mData.add(category);
+            notifyDataSetChanged();
+        }
+ 
+        public int getCount() {
+            return mData.size();
+        }
+ 
+        public CommentCategory getItem(int position) {
+            return mData.get(position);
+        }
+ 
+        public long getItemId(int position) {
+            return position;
+        }
+ 
+        
+        public View getView(int position, View convertView, ViewGroup parent) {
+            System.out.println("getView " + position + " " + convertView);
+            ViewHolder holder = null;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.entity_information, null);
+                holder = new ViewHolder();
+                holder.categoryName = (TextView)convertView.findViewById(R.id.comemnt_category);
+                holder.counter = (TextView)convertView.findViewById(R.id.comment_category_counter);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder)convertView.getTag();
+            }
+            CommentCategory c = mData.get(position);
+            holder.categoryName.setText(c.getName());
+            holder.counter.setText("("+String.valueOf(c.getCount())+")");
+            return convertView;
+        }
+ 
+    }
+ 
+    public static class ViewHolder {
+        public TextView categoryName;
+        public TextView counter;
+    }
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -77,6 +142,10 @@ public class GeotaggingEntityInformation extends Activity {
 	/** Handle "home" title-bar action. */
     public void onHomeClick(View v) {
         UIUtils.goHome(this);
+    }
+    
+    public void onBackClick(View v) {
+    	UIUtils.goBack(this);
     }
 
     /** Handle "refresh" title-bar action. */
