@@ -11,9 +11,16 @@ public class Comment {
 	private Bitmap actualCommentImg;
 	private String time;
 	private int commentId;
-	
+	private int commentCounter;
 	private int entity_id;
 	private int category_id;
+	
+	public int getCommentCounter() {
+		return this.commentCounter;
+	}
+	public void setCommentCounter(int commentCounter) {
+		this.commentCounter = commentCounter;
+	}
 	
 	public int getEntity_id() {
 		return entity_id;

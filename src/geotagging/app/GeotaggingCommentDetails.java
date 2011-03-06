@@ -4,7 +4,6 @@ import geotagging.DAL.GeoCategoryDAL;
 import geotagging.DES.Comment;
 import geotagging.DES.ResponseCategory;
 import geotagging.realtime.UpdateFollowupCommentThread;
-import geotagging.utils.BackendHelperSingleton;
 import geotagging.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -52,16 +51,12 @@ ExpandableListView.OnChildClickListener{
         String userName = b.getString("userName");
         commentId = b.getInt("commentId");
         String description = b.getString("description");
-        String userImg = b.getString("userImg");
 		
         TextView tvUserName = (TextView)this.findViewById(R.id.comment_detail_user_name);
-        tvUserName.setText(userName);
+        tvUserName.setText(userName+" said,");
         
         TextView tvDescription = (TextView)this.findViewById(R.id.comment_detail_content);
         tvDescription.setText(description);
-        
-        ImageView imUserImg = (ImageView)this.findViewById(R.id.comment_detail_user_image);
-        imUserImg.setImageBitmap(BackendHelperSingleton.getInstance().fetchImage(userImg));
         
         mAdapter = new MyExpandableListAdapter();
         

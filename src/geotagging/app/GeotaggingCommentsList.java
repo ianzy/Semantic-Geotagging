@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -187,7 +186,7 @@ public class GeotaggingCommentsList extends ListActivity {
         }
  
         public void addItem(final Comment comment) {
-            mData.add(0, comment);
+            mData.add(comment);
             notifyDataSetChanged();
         }
  
@@ -211,7 +210,8 @@ public class GeotaggingCommentsList extends ListActivity {
                 convertView = mInflater.inflate(R.layout.list_item, null);
                 holder = new ViewHolder();
                 holder.username = (TextView)convertView.findViewById(R.id.title_list_item);
-                holder.image = (ImageView)convertView.findViewById(R.id.image_list_item);
+//                holder.image = (ImageView)convertView.findViewById(R.id.image_list_item);
+                holder.counter = (TextView)convertView.findViewById(R.id.counter_list_item);
                 holder.time = (TextView)convertView.findViewById(R.id.time_list_item);
                 holder.content = (TextView)convertView.findViewById(R.id.content_list_item);
                 convertView.setTag(holder);
@@ -220,7 +220,8 @@ public class GeotaggingCommentsList extends ListActivity {
             }
             Comment c = mData.get(position);
             holder.content.setText(c.getDescription());
-            holder.image.setImageBitmap(c.getActualUserImg());
+//            holder.image.setImageBitmap(c.getActualUserImg());
+            holder.counter.setText("More "+String.valueOf(c.getCommentCounter()));
             holder.time.setText(c.getTime());
             holder.username.setText(c.getUserName());
             return convertView;
@@ -231,7 +232,8 @@ public class GeotaggingCommentsList extends ListActivity {
     public static class ViewHolder {
         public TextView username;
         public TextView content;
-        public ImageView image;
+        public TextView counter;
+//        public ImageView image;
         public TextView time;
     }
 }

@@ -33,6 +33,7 @@ public final class CacheBase {
 		String COMMENT_TIME = "time";
 		String COMMENT_CATEGORYID = "category_id";
 		String COMMENT_ENTITYID = "entity_id";
+		String COMMENT_COUNTER = "comments_counter";
 	}
 	
 	interface ResponsesColumns {
@@ -43,6 +44,7 @@ public final class CacheBase {
 		String RESPONSE_CATEGORYID = "category_id";
 		String RESPONSE_USERIMG = "user_img";
 		String RESPONSE_ID = "response_id";
+		String RESPONSE_COUNTER = "response_counter";
 	}
 	
 	interface StatesColumns {

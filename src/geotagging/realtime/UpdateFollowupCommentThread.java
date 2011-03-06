@@ -44,17 +44,16 @@ public class UpdateFollowupCommentThread extends BaseThread {
 			return;
 		//notify the observer to update the UI
 		commentList.updateAdapter(commentsList, this.mode);
+		
+		
 	}
 	
 	private void prepareRemoteCommentsList() {
 		SharedPreferences states = commentList.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, Context.MODE_PRIVATE);
-		int since_id = states.getInt("latest_responseid", -1);
 		int remote_count = states.getInt("remote_count", -1);
-		if(-1 == since_id) {
-			
-			return;
-		}
+		
 		GeoCommentDAL commentsDAL = new GeoCommentDAL(commentList);
+		int since_id = commentsDAL.getLatestResponseIdByCommentId(comment_id);
 		List<Comment> commentsList = commentsDAL.getRemoteFollowUpCommentsByCommentId(since_id, comment_id, remote_count);
         
 		if(commentsList == null || commentsList.size() == 0 ) {

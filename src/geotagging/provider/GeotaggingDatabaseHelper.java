@@ -61,6 +61,7 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + Comments.COMMENT_IMG + " TEXT,"
 			      + Comments.COMMENT_TIME + " TEXT,"
 			      + Comments.COMMENT_USERIMG + " TEXT,"
+			      + Comments.COMMENT_COUNTER + " INTEGER,"
 			      + Comments.COMMENT_USERNAME + " TEXT"
 			      + ");");
 		
@@ -72,6 +73,7 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + Responses.RESPONSE_TIME + " TEXT,"
 			      + Responses.RESPONSE_USERIMG + " TEXT,"
 			      + Responses.RESPONSE_USERNAME + " TEXT,"
+			      + Responses.RESPONSE_COUNTER + " INTEGER,"
 			      + Responses.RESPONSE_ID + " INTEGER"
 			      + ");");
 		

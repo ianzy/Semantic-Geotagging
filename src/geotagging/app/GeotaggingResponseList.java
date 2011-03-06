@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -31,7 +30,7 @@ public class GeotaggingResponseList extends ListActivity {
 	private MyCustomAdapter mAdapter;
 	
 	//experimental code
-	private int icm = 1;
+//	private int icm = 1;
 	
 	private Button refresh;
 	 
@@ -73,11 +72,11 @@ public class GeotaggingResponseList extends ListActivity {
         updateResponseThread.start();
     }
     //experimental code
-    private void setThread(String entity_id) { 
-    	Integer res = Integer.parseInt(entity_id)+icm++;
-    	entity_id = res.toString();
-		updateResponseThread = new UpdateResponseThread(this, entity_id);
-    }
+//    private void setThread(String entity_id) { 
+//    	Integer res = Integer.parseInt(entity_id)+icm++;
+//    	entity_id = res.toString();
+//		updateResponseThread = new UpdateResponseThread(this, entity_id);
+//    }
     
     //We must use a Handler object because we cannot update most UI 
     //objects while in a separate thread. 
@@ -134,7 +133,7 @@ public class GeotaggingResponseList extends ListActivity {
                 convertView = mInflater.inflate(R.layout.list_item, null);
                 holder = new ViewHolder();
                 holder.username = (TextView)convertView.findViewById(R.id.title_list_item);
-                holder.image = (ImageView)convertView.findViewById(R.id.image_list_item);
+//                holder.image = (ImageView)convertView.findViewById(R.id.image_list_item);
                 holder.time = (TextView)convertView.findViewById(R.id.time_list_item);
                 holder.content = (TextView)convertView.findViewById(R.id.content_list_item);
                 convertView.setTag(holder);
@@ -143,7 +142,7 @@ public class GeotaggingResponseList extends ListActivity {
             }
             Response r = mData.get(position);
             holder.content.setText(r.getResp());
-            holder.image.setImageBitmap(r.getActualImg());
+//            holder.image.setImageBitmap(r.getActualImg());
             holder.time.setText(r.getTime());
             holder.username.setText(r.getUsername());
             return convertView;
@@ -154,7 +153,7 @@ public class GeotaggingResponseList extends ListActivity {
     public static class ViewHolder {
         public TextView username;
         public TextView content;
-        public ImageView image;
+//        public ImageView image;
         public TextView time;
     }
     

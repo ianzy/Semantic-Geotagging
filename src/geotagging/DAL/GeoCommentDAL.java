@@ -36,6 +36,32 @@ public class GeoCommentDAL implements GeoCommentIDAL {
         this.da = new DatabaseAdapter(cx);
 	}
 	
+	//get the latest comment id of the certain entity
+	public int getLatestCommentIdByEntityId(int entity_id) {
+		int commentId = 0;
+		da.open();
+		Cursor cursor = da.getLatestComment(entity_id);
+		if(cursor.moveToFirst()) {
+			commentId = cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_ID));
+		}
+		cursor.close();
+		da.close();
+		return commentId;
+	}
+	
+	//get the latest response id of the certain comment
+	public int getLatestResponseIdByCommentId(int comment_id) {
+		int responseId = 0;
+		da.open();
+		Cursor cursor = da.getLatestResponse(comment_id);
+		if(cursor.moveToFirst()) {
+			responseId = cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_ID));
+		}
+		cursor.close();
+		da.close();
+		return responseId;
+	}
+	
 	//set of methods to get comment around a entity thread
 	public List<Comment> getCachedCommentsByEntityIDAndCategoryID(int entity_id, int category_id) {
 		da.open();
@@ -54,6 +80,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
 				comment.setTime(cursor.getString(cursor.getColumnIndex(Comments.COMMENT_TIME)));
 				comment.setUserImg(cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERIMG)));
 				comment.setUserName(cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERNAME)));
+				comment.setCommentCounter(cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_COUNTER)));
 				
 				//**********************attention!*************************
 				Drawable d = cx.getResources().getDrawable(R.drawable.default_user_icon);
@@ -97,6 +124,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
 				comment.setUserName(cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERNAME)));
 				comment.setUserImg(cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERIMG)));
 				comment.setEntity_id(cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_ID)));
+				comment.setCommentCounter(cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_COUNTER)));
 				
 				//**********************attention!*************************
 				Drawable d = cx.getResources().getDrawable(R.drawable.default_user_icon);
@@ -153,6 +181,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
                 comment.setUserName(c.getJSONObject("comment").getString("username"));
                 comment.setCategory_id(c.getJSONObject("comment").getInt("category_id"));
                 comment.setEntity_id(c.getJSONObject("comment").getInt("entity_id"));
+                comment.setCommentCounter(c.getJSONObject("comment").getInt("counter"));
                 
                 comment.setActualUserImg(helper.fetchImage(comment.getUserImg()));
                 
@@ -232,6 +261,8 @@ public class GeoCommentDAL implements GeoCommentIDAL {
                 comment.setTime(c.getJSONObject("comment").getString("created_at"));
                 comment.setUserName(c.getJSONObject("comment").getString("username"));
                 comment.setUserImg(c.getJSONObject("comment").getString("user_image"));
+                comment.setCommentCounter(c.getJSONObject("comment").getInt("counter"));
+                
                 comment.setActualUserImg(helper.fetchImage(comment.getUserImg()));
                 // Updating counter
                 for(int ii=0; ii<categories.size(); ii++) {

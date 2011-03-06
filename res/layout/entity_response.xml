@@ -18,8 +18,18 @@
 	        android:layout_height="110px" android:inputType="textMultiLine" android:gravity="top" 
 	        android:paddingTop="6px">
 		</EditText>
-		<Button android:text="Add Image" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
+		<LinearLayout
+	   		android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content"
+	   		android:orientation="horizontal">
+		   <Button android:text="Add Image" 
+	   			android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+			<TextView
+				android:text="(Optional)"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"/>
+		</LinearLayout>
 		<TextView android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="My response provides:" />
 		<RadioGroup android:layout_width="fill_parent"

@@ -7,19 +7,15 @@ android:layout_alignParentTop="true"
 android:layout_alignParentLeft="true"
 android:orientation="horizontal"
 >
-	<ImageView android:id="@+id/image_list_item"
-	android:layout_width="65px"
-	android:layout_height="65px"
-	android:padding="6px"
-	>
-	</ImageView>
+	
 	<LinearLayout
 	android:id="@+id/list_content_frame"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
 	android:paddingTop="6px"
-	android:paddingRight="6px"
+	android:paddingLeft="6px"
+	android:layout_weight="1"
 	>
 		<LinearLayout
 		android:id="@+id/widget38"
@@ -50,8 +46,21 @@ android:orientation="horizontal"
 		android:layout_height="wrap_content"
 		android:text="Content"
 		android:paddingBottom="10dp"
-		android:textSize="16sp"
+		android:textSize="8pt"
 		>
 		</TextView>
 	</LinearLayout>
+	<LinearLayout
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_weight="0"
+	android:orientation="vertical"
+	android:paddingTop="20px"
+	>
+	<TextView 
+	style="@style/LabelIndicator"
+	android:id="@+id/counter_list_item"
+	android:text="More (13)"/>
+	</LinearLayout>
+	
 </LinearLayout>

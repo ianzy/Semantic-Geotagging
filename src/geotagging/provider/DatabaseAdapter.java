@@ -43,15 +43,26 @@ public class DatabaseAdapter {
 		return db.query(Tables.ENTITIES, EntityQuery.PROJECTION, null, null, null, null, Entities.ENTITY_ID + " DESC");
 	}
 	
+	public Cursor getLatestComment(int entity_id) {
+		return db.query(Tables.COMMENTS, CommentQuery.PROJECTION,
+				Comments.COMMENT_ENTITYID + "=" + String.valueOf(entity_id),
+				null, null, null, Comments.COMMENT_ID + " DESC", "1");
+	}
+	
+	public Cursor getLatestResponse(int comment_id) {
+		return db.query(Tables.RESPONSES, ResponseQuery.PROJECTION, 
+				Responses.RESPONSE_COMMENTID+"="+String.valueOf(comment_id), null, null, null, Responses._ID + " DESC", "1");
+	}
+	
 	public Cursor getComments(int entity_id, int category_id) {
 		return db.query(Tables.COMMENTS, CommentQuery.PROJECTION,
 				Comments.COMMENT_ENTITYID + "=" + String.valueOf(entity_id) + " AND " + Comments.COMMENT_CATEGORYID+"="+String.valueOf(category_id),
-				null, null, null, Comments.COMMENT_ID + " ASC");
+				null, null, null, Comments.COMMENT_ID + " DESC");
 	}
 	
 	public Cursor getResponses(int comment_id) {
 		return db.query(Tables.RESPONSES, ResponseQuery.PROJECTION, 
-				Responses.RESPONSE_COMMENTID+"="+String.valueOf(comment_id), null, null, null, Responses._ID + " ASC");
+				Responses.RESPONSE_COMMENTID+"="+String.valueOf(comment_id), null, null, null, Responses._ID + " DESC");
 	}
 	
 	public Cursor getCommentCategories() {
@@ -256,6 +267,8 @@ public class DatabaseAdapter {
 			args.put(Comments.COMMENT_IMG, c.getCommentImg());
 			args.put(Comments.COMMENT_TIME, c.getTime());
 			args.put(Comments.COMMENT_USERIMG, c.getUserImg());
+			args.put(Comments.COMMENT_COUNTER, 0);
+//			args.put(Comments.COMMENT_COUNTER, c.getCommentCounter());
 			args.put(Comments.COMMENT_USERNAME, c.getUserName());
 			db.insert(Tables.COMMENTS, null, args);
 		}
@@ -274,8 +287,52 @@ public class DatabaseAdapter {
 			args.put(Responses.RESPONSE_TIME, c.getTime());
 			args.put(Responses.RESPONSE_USERNAME, c.getUserName());
 			args.put(Responses.RESPONSE_USERIMG, c.getUserImg());
+			args.put(Responses.RESPONSE_COUNTER, 0);
+//			args.put(Responses.RESPONSE_COUNTER, c.getCommentCounter());
 			args.put(Responses.RESPONSE_ID, c.getEntity_id());
 			db.insert(Tables.RESPONSES, null, args);
+			
+			//update counter in both comment and response tables
+			Cursor cursor = db.query(Tables.COMMENTS, 
+					CommentQuery.PROJECTION, Comments.COMMENT_ID
+					+"="+String.valueOf(c.getCommentId()), 
+					null, null, null, null);
+			if (cursor.moveToFirst()) {
+				ContentValues comment = new ContentValues();
+				comment.put(Comments.COMMENT_CATEGORYID, cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_CATEGORYID)));
+		        comment.put(Comments.COMMENT_COUNTER, cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_COUNTER))+1);
+		        comment.put(Comments.COMMENT_DESCRIPTION, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_DESCRIPTION)));
+		        comment.put(Comments.COMMENT_ENTITYID, cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_ENTITYID)));
+		        comment.put(Comments.COMMENT_ID, cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_ID)));
+		        comment.put(Comments.COMMENT_IMG, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_IMG)));
+		        comment.put(Comments.COMMENT_TIME, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_TIME)));
+		        comment.put(Comments.COMMENT_USERIMG, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERIMG)));
+		        comment.put(Comments.COMMENT_USERNAME, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERNAME)));
+		        db.update(Tables.COMMENTS, comment, 
+		        		Comments.COMMENT_ID+"="+String.valueOf(c.getCommentId()), null);
+		    }
+			cursor.close();
+			
+			cursor = db.query(Tables.RESPONSES, 
+					ResponseQuery.PROJECTION, Responses.RESPONSE_ID
+					+"="+String.valueOf(c.getCommentId()), 
+					null, null, null, null);
+			if (cursor.moveToFirst()) {
+				ContentValues response = new ContentValues();
+				response.put(Responses.RESPONSE_CATEGORYID, cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_CATEGORYID)));
+				response.put(Responses.RESPONSE_COMMENTID, cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_COMMENTID)));
+				response.put(Responses.RESPONSE_COUNTER, cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_COUNTER))+1);
+				response.put(Responses.RESPONSE_ID, cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_ID)));
+				response.put(Responses.RESPONSE_DESCRIPTION, cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_DESCRIPTION)));
+				response.put(Responses.RESPONSE_TIME, cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_TIME)));
+				response.put(Responses.RESPONSE_USERIMG, cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERIMG)));
+				response.put(Responses.RESPONSE_USERNAME, cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERNAME)));
+				
+				db.update(Tables.RESPONSES, response, 
+						Responses.RESPONSE_ID+"="+String.valueOf(c.getCommentId()), null);
+			}
+			cursor.close();
+			
 		}
 		return 0;
 	}
@@ -302,6 +359,7 @@ public class DatabaseAdapter {
 			Comments.COMMENT_IMG,
 			Comments.COMMENT_TIME,
 			Comments.COMMENT_USERIMG,
+			Comments.COMMENT_COUNTER,
 			Comments.COMMENT_USERNAME
 		};
 	}
@@ -314,6 +372,7 @@ public class DatabaseAdapter {
 			Responses.RESPONSE_TIME,
 			Responses.RESPONSE_USERNAME,
 			Responses.RESPONSE_USERIMG,
+			Responses.RESPONSE_COUNTER,
 			Responses.RESPONSE_ID
 		};
 	}
