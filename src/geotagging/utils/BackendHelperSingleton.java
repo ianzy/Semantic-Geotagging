@@ -36,6 +36,7 @@ public class BackendHelperSingleton {
    public String postContent(String apiurl, String content) {
 	   URL url;
        HttpURLConnection connection = null; 
+       DataOutputStream wr = null;
        
        //{"entity":{"location":"1000-1136 Fairmont Dr San Bruno, CA 94066","created_at":"2010-11-03T07:39:57Z","title":"House on fire","updated_at":"2010-11-03T07:39:57Z","lng":-122.441361,"id":15,"description":"1000-1136 Fairmont Dr\nSan Bruno, CA 94066","lat":37.624123,"icon_uri":""}}
        try {
@@ -55,12 +56,22 @@ public class BackendHelperSingleton {
            connection.setDoOutput(true);
 
            //Send request
-           DataOutputStream wr = new DataOutputStream (
+           wr = new DataOutputStream (
                        connection.getOutputStream ());
            wr.writeBytes (content);
            wr.flush ();
-           wr.close ();
-           Log.i("<<<<<<<<<<<<<<<<<<<<<<<here","test");
+
+           int status = connection.getResponseCode();
+           Log.i("<<<<<<<<<<<<<<<<<<<<<<<here",String.valueOf(status));
+           switch(status) {
+           case 406:
+        	   return null;
+           case 422:
+        	   return null;
+           case 500:
+        	   return null;
+           }
+           
            //Get Response	
            InputStream is = connection.getInputStream();
            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
@@ -78,7 +89,7 @@ public class BackendHelperSingleton {
            e.printStackTrace();
            return null;
          } finally {
-
+        	 if (wr != null) try { wr.close(); } catch (IOException logOrIgnore) {}
            if(connection != null) {
              connection.disconnect(); 
            }
@@ -87,12 +98,14 @@ public class BackendHelperSingleton {
    }
    
    public String getJsonText(String api){
-		URL url;
-		BufferedReader rd;
+		URL url = null;
+		BufferedReader rd = null;
 		StringBuilder sb = new StringBuilder("");
 		try {
 			url = new URL(api);
 			URLConnection conn = url.openConnection();
+			conn.setReadTimeout(10*1000);
+			
 			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        // Get the response
 			String line = "";
@@ -103,14 +116,13 @@ public class BackendHelperSingleton {
            rd.close();
            return sb.toString();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.v("title","message for catch");
 			e.printStackTrace();
 			return null;
+		} finally {
+			if (rd != null) try { rd.close(); } catch (IOException logOrIgnore) {}
 		}
 	}
 	

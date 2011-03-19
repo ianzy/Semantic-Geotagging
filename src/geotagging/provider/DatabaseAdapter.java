@@ -57,12 +57,12 @@ public class DatabaseAdapter {
 	public Cursor getComments(int entity_id, int category_id) {
 		return db.query(Tables.COMMENTS, CommentQuery.PROJECTION,
 				Comments.COMMENT_ENTITYID + "=" + String.valueOf(entity_id) + " AND " + Comments.COMMENT_CATEGORYID+"="+String.valueOf(category_id),
-				null, null, null, Comments.COMMENT_ID + " DESC");
+				null, null, null, Comments.COMMENT_ID + " ASC");
 	}
 	
 	public Cursor getResponses(int comment_id) {
 		return db.query(Tables.RESPONSES, ResponseQuery.PROJECTION, 
-				Responses.RESPONSE_COMMENTID+"="+String.valueOf(comment_id), null, null, null, Responses._ID + " DESC");
+				Responses.RESPONSE_COMMENTID+"="+String.valueOf(comment_id), null, null, null, Responses._ID + " ASC");
 	}
 	
 	public Cursor getCommentCategories() {

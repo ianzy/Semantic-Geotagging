@@ -14,22 +14,19 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public class UpdateMapThread extends BaseThread {
 	
 	private Drawable d;
 	private GeotaggingMap cx;
-	private List<Overlay> mapOverlays;
 	private GeotaggingItemizedOverlay itemizedoverlay;
 	private GeoEntityIDAL dao;
 	private int mode;
 	
-	public UpdateMapThread (Drawable drawable, GeotaggingMap cx, List<Overlay> mapOverlays, GeotaggingItemizedOverlay itemizedoverlay, int mode) {
+	public UpdateMapThread (Drawable drawable, GeotaggingMap cx, GeotaggingItemizedOverlay itemizedoverlay, int mode) {
 		this.d = drawable;
 		this.cx = cx;
-		this.mapOverlays = mapOverlays;
 		this.itemizedoverlay = itemizedoverlay;
 		this.dao = new GeoEntityDAL(cx);
 		this.mode = mode;
@@ -39,18 +36,18 @@ public class UpdateMapThread extends BaseThread {
 	public void run() {
 		switch(mode) {
 		case INITIALIZE_MODE:
-			this.prepareMapOverlaysFromCachedData(d, cx, mapOverlays);
-			this.prepareMapOverlaysFromRemoteData(d, cx, mapOverlays);
+			this.prepareMapOverlaysFromCachedData(d, cx);
+			this.prepareMapOverlaysFromRemoteData(d, cx);
 			break;
 		case SYNC_MODE:
-			this.updateMapOverlaysFromRemoteData(d, cx, mapOverlays);
+			this.updateMapOverlaysFromRemoteData(d, cx);
 			cx.dismissProgressBar();
 			break;
 		}
 		
 	}
 	
-	private void prepareMapOverlaysFromCachedData(Drawable drawable, Context cx, List<Overlay> mapOverlays) {
+	private void prepareMapOverlaysFromCachedData(Drawable drawable, Context cx) {
 		List<Entity> list = dao.getCachedEntities();
       
         if (list == null)
@@ -61,7 +58,7 @@ public class UpdateMapThread extends BaseThread {
         prepareMapOverlays(list);
 	}
 	
-	private void prepareMapOverlaysFromRemoteData(Drawable drawable, Context cx, List<Overlay> mapOverlays) {
+	private void prepareMapOverlaysFromRemoteData(Drawable drawable, Context cx) {
 		SharedPreferences states = cx.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, Context.MODE_PRIVATE);
 		int entity_id = states.getInt("latest_entityid", -1);
 		int remote_count = states.getInt("remote_count", -1);
@@ -111,10 +108,13 @@ public class UpdateMapThread extends BaseThread {
             itemizedoverlay.addEntity(entity);
             
         }
-        mapOverlays.add(itemizedoverlay);
+		if(cx.isEntityIconsFlag()) {
+			cx.setEntityIconsFlag(false);
+			cx.addOverlaysToMapView();
+		}
 	}
 	
-	private void updateMapOverlaysFromRemoteData(Drawable drawable, Context cx, List<Overlay> mapOverlays) {
+	private void updateMapOverlaysFromRemoteData(Drawable drawable, Context cx) {
 		SharedPreferences states = cx.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, Context.MODE_PRIVATE);
 		int entity_id = states.getInt("latest_entityid", -1);
 		int remote_count = states.getInt("remote_count", -1);
@@ -174,6 +174,9 @@ public class UpdateMapThread extends BaseThread {
             itemizedoverlay.addEntity(entity);
             
         }
-        mapOverlays.add(itemizedoverlay);
+		if(cx.isEntityIconsFlag()) {
+			cx.setEntityIconsFlag(false);
+			cx.addOverlaysToMapView();
+		}
 	}
 }

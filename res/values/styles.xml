@@ -60,12 +60,12 @@
     <style name="LabelIndicator">
     	<item name="android:layout_width">65px</item>
         <item name="android:layout_height">65px</item>
-        <item name="android:padding">10px</item>
+        <item name="android:padding">8px</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/title_text</item>
-        <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="android:background">@drawable/btn_black9</item>
-    </style>
+        <!--<item name="android:textColor">@color/title_text</item>
+        --><item name="android:textSize">@dimen/text_size_medium</item>
+        <!--<item name="android:background">@drawable/btn_black9</item>
+    --></style>
         
     
 </resources>

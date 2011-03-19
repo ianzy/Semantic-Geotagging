@@ -13,7 +13,7 @@
       <TextView style="@style/TitleBarText" 
       	android:text="Follow up responses"/>
     	
-    	<ImageView style="@style/TitleBarSeparator" />
+    	<!--<ImageView style="@style/TitleBarSeparator" />
     	<ImageButton style="@style/TitleBarAction"
           android:contentDescription="@string/description_compose"
           android:src="@drawable/ic_title_export"
@@ -29,7 +29,7 @@
           android:id="@+id/title_refresh_progress"
           android:visibility="gone" />
 		
-      <ImageView style="@style/TitleBarSeparator" />
+      --><ImageView style="@style/TitleBarSeparator" />
       <ImageButton style="@style/TitleBarAction"
           android:contentDescription="@string/description_search"
           android:src="@drawable/ic_title_home"
@@ -78,8 +78,15 @@
        	android:text="Follow up responses"/>
 	</LinearLayout>
 	</ScrollView>
+	<!--
 	<ExpandableListView android:id="@+id/follow_response_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+    />
+    -->
+    <ListView android:id="@+id/followup_categories_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarFadeDuration="1000000"
     />
 </LinearLayout>

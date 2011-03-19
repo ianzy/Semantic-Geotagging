@@ -2,7 +2,7 @@ package geotagging.realtime;
 
 import geotagging.DAL.GeoCommentDAL;
 import geotagging.DES.Comment;
-import geotagging.app.GeotaggingCommentDetails;
+import geotagging.app.GeotaggingFollowUpList;
 import geotagging.provider.CacheBase;
 
 import java.util.List;
@@ -12,11 +12,11 @@ import android.content.SharedPreferences;
 
 public class UpdateFollowupCommentThread extends BaseThread {
 
-	private GeotaggingCommentDetails commentList;
+	private GeotaggingFollowUpList commentList;
 	private int comment_id;
 	private int mode;
 	
-	public UpdateFollowupCommentThread(GeotaggingCommentDetails commentList, int comment_id, int mode) {
+	public UpdateFollowupCommentThread(GeotaggingFollowUpList commentList, int comment_id, int mode) {
 		this.commentList = commentList;
 		this.comment_id = comment_id;
 		this.mode = mode;

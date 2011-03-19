@@ -28,8 +28,8 @@
 	<EditText android:id="@+id/edit_comment" 
 		android:layout_weight="1"
 		android:text=""
-		android:hint="Enter your description here" android:layout_width="fill_parent"
-        android:layout_height="200px" android:inputType="textMultiLine" android:gravity="top">
+		android:hint="Edit the location information here" android:layout_width="fill_parent"
+        android:layout_height="150px" android:inputType="textMultiLine" android:gravity="top">
 	</EditText>
 	<LinearLayout
    		android:layout_width="wrap_content"
@@ -57,7 +57,8 @@
            android:layout_height="wrap_content"
            android:layout_weight="1"
            android:text="Submit"
-           android:onClick="onSubmitClick" />
+           android:onClick="onSubmitClick" 
+           android:enabled="false"/>
        <Button
            android:layout_width="0dip"
            android:layout_height="wrap_content"

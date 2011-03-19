@@ -60,17 +60,17 @@ ExpandableListView.OnChildClickListener{
         
         mAdapter = new MyExpandableListAdapter();
         
-        ExpandableListView pairedListView = (ExpandableListView) findViewById(R.id.follow_response_list);
-        pairedListView.setAdapter(mAdapter);
-        pairedListView.setOnChildClickListener(this);
-        pairedListView.setOnGroupClickListener(this);
+//        ExpandableListView pairedListView = (ExpandableListView) findViewById(R.id.follow_response_list);
+//        pairedListView.setAdapter(mAdapter);
+//        pairedListView.setOnChildClickListener(this);
+//        pairedListView.setOnGroupClickListener(this);
         
         //fetching the response categeory from local database
         categoryDAL = new GeoCategoryDAL(this);
         categories = categoryDAL.getResponseCategoriesByCommentId(commentId);
         
-        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.INITIALIZE_MODE);
-        t.start();
+//        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.INITIALIZE_MODE);
+//        t.start();
 	}
 	
 	@Override
@@ -111,8 +111,8 @@ ExpandableListView.OnChildClickListener{
                 View.GONE );
         findViewById(R.id.title_refresh_progress).setVisibility(
                 View.VISIBLE);
-        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.SYNC_MODE);
-        t.start();
+//        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.SYNC_MODE);
+//        t.start();
     
     }
     

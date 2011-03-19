@@ -13,8 +13,8 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
 public class GeotaggingItemizedOverlay extends ItemizedOverlay<OverlayItem> {
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-	private ArrayList<Entity> mEntities = new ArrayList<Entity>();
+	private ArrayList<OverlayItem> mOverlays;
+	private ArrayList<Entity> mEntities;
 
 	private OverlayItem selectedItem;
 	private Entity selectedEntity;
@@ -24,6 +24,9 @@ public class GeotaggingItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	
 	public GeotaggingItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
+		
+		mOverlays = new ArrayList<OverlayItem>();
+		mEntities = new ArrayList<Entity>();
 		
 	}
 	

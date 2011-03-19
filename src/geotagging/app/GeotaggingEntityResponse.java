@@ -1,8 +1,6 @@
 package geotagging.app;
 
-import geotagging.DAL.GeoCategoryDAL;
 import geotagging.DES.Comment;
-import geotagging.DES.ResponseCategory;
 import geotagging.provider.CacheBase;
 import geotagging.utils.BackendHelperSingleton;
 import geotagging.utils.DALUtils;
@@ -11,7 +9,6 @@ import geotagging.utils.UIUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,52 +19,64 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
-public class GeotaggingEntityResponse extends Activity {
+public class GeotaggingEntityResponse extends Activity implements TextWatcher {
 	
 	private int category_id;
 	
 	private int comment_id;
 	
 	private String categoryName;
-	private List<ResponseCategory> categories;
+//	private List<ResponseCategory> categories;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.entity_response);
-        GeoCategoryDAL categoryDAL = new GeoCategoryDAL(this);
+//        GeoCategoryDAL categoryDAL = new GeoCategoryDAL(this);
         Bundle b = this.getIntent().getExtras();
 		comment_id = b.getInt("comment_id");
-        categories = categoryDAL.getResponseCategoriesByCommentId(comment_id);
+//        categories = categoryDAL.getResponseCategoriesByCommentId(comment_id);
+        category_id = b.getInt("category_id");
         
+        ((EditText)findViewById(R.id.edit_response)).addTextChangedListener(this);
 	}
 	
-	public void onRadioClick(View v) {
-		// Perform action on clicks
-		Button buttonProblemReport = (Button) findViewById(R.id.submit_response);
-    	buttonProblemReport.setEnabled(true);
-    	buttonProblemReport.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
-    	
-    	RadioButton rb = (RadioButton)v;
-    	categoryName = rb.getText().toString();
-    	ResponseCategory rc;
-    	for(int i=0; i<categories.size(); i++) {
-    		rc = categories.get(i);
-    		if(categoryName.equals(rc.getName())) {
-    			category_id = rc.getCategory_id();
-    		}
-    	}
-	}
+//	public void onRadioClick(View v) {
+//		// Perform action on clicks
+//		Button buttonProblemReport = (Button) findViewById(R.id.submit_response);
+//    	buttonProblemReport.setEnabled(true);
+//    	buttonProblemReport.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+//    	
+////    	RadioButton rb = (RadioButton)v;
+////    	categoryName = rb.getText().toString();
+////    	ResponseCategory rc;
+////    	for(int i=0; i<categories.size(); i++) {
+////    		rc = categories.get(i);
+////    		if(categoryName.equals(rc.getName())) {
+////    			category_id = rc.getCategory_id();
+////    		}
+////    	}
+//	}
 	
 	public void onSubmitClick(View v) {
+		
+		Button btnSubmit = (Button) findViewById(R.id.submit_response);
+		btnSubmit.setEnabled(false);
+		
+		if(((EditText)this.findViewById(R.id.edit_response)).getText().toString().trim().equals("")) {
+    		Toast.makeText(this, "Follow up response content should not be empty", Toast.LENGTH_LONG).show();
+    		btnSubmit.setEnabled(true);
+    		return;
+    	}
 		
 		EditText edit_comment = (EditText) findViewById(R.id.edit_response);
     	SharedPreferences settings = this.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, MODE_PRIVATE);
@@ -111,13 +120,15 @@ public class GeotaggingEntityResponse extends Activity {
 	        intent.putExtra("category_name", this.categoryName);
 	        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
-            String createAt = dateFormat.format(date)+ " UTC";
-            intent.putExtra("created_at", createAt); 
+            String createAt = dateFormat.format(date);
+            intent.putExtra("created_at", createAt);
+            intent.putExtra("category_id", resp.getCategory_id());
             intent.putExtra("id", resp.getEntity_id());
 	        setResult(RESULT_OK, intent);
 	        finish();
 		} else {
 			Toast.makeText(this, "Submition failed", Toast.LENGTH_LONG).show();
+			btnSubmit.setEnabled(true);
 		}
 		
 		
@@ -142,6 +153,30 @@ public class GeotaggingEntityResponse extends Activity {
     /** Handle "search" title-bar action. */
     public void onSearchClick(View v) {
         UIUtils.goSearch(this);
+    }
+    
+    public void afterTextChanged(Editable s) {
+
+    	Button btnSubmit = (Button) findViewById(R.id.submit_response);
+    	if(s.toString().trim().equals("")) {
+    		btnSubmit.setEnabled(false);
+    	} else {
+    		btnSubmit.setEnabled(true);
+        	btnSubmit.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+    	}
+    	
+    }
+ 
+    public void beforeTextChanged(CharSequence s, int start, int count,
+            int after) {
+        // TODO Auto-generated method stub
+ 
+    }
+ 
+    public void onTextChanged(CharSequence s, int start, int before,
+            int count) {
+        // TODO Auto-generated method stub
+ 
     }
 	
 }

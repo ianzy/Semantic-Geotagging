@@ -13,7 +13,9 @@
 
       <ImageView style="@style/TitleBarSeparator" />
       <TextView style="@style/TitleBarText" 
-      	android:text="Comments"/>
+      	android:text="Comments"
+      	android:id="@+id/title_name"/>
+      	<!--
     	
     	<ImageView style="@style/TitleBarSeparator" />
     	<ImageButton style="@style/TitleBarAction"
@@ -21,6 +23,7 @@
           android:src="@drawable/ic_title_export"
           android:onClick="onComposeClick" />
           
+	  -->
 	  <ImageView style="@style/TitleBarSeparator" />
       <ImageButton style="@style/TitleBarAction"
           android:id="@+id/btn_title_refresh"
@@ -53,6 +56,8 @@
 			android:onClick="onComposeClick"
 			android:text="Add New Comment"
 			android:textSize="25px"
-			android:layout_weight="0"/>
+			android:textColor="#ffffff"
+			android:layout_weight="0"
+			android:background="#ff355689"/>
 	</LinearLayout>
 </LinearLayout>

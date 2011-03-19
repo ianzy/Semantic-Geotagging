@@ -4,6 +4,14 @@ public class ResponseCategory {
 	private String name;
 	private int category_id;
 	private int count;
+	private boolean importanTag;
+	
+	public boolean isImportanTag() {
+		return importanTag;
+	}
+	public void setImportanTag(boolean importanTag) {
+		this.importanTag = importanTag;
+	}
 	
 	public String getName() {
 		return name;

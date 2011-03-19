@@ -27,7 +27,7 @@ import com.google.android.maps.MapView;
 public class GeotaggingMapView extends MapView implements OnGestureListener{
 	
 	private GestureDetector mGestureDetector;
-	private TransparentPanel tp;
+	private TransparentPanel tp = null;
 	//need to refactor
 	private boolean tpRemoved = true;
 	private GeotaggingMap observer;
@@ -152,7 +152,7 @@ public class GeotaggingMapView extends MapView implements OnGestureListener{
 
 	public boolean onSingleTapUp(MotionEvent e) {
 		// TODO Auto-generated method stub
-		if (!tpRemoved) {
+		if (!tpRemoved && tp != null) {
 			this.removeView(this.tp);
 			tpRemoved = true;
 		}

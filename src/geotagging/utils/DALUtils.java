@@ -74,7 +74,8 @@ public class DALUtils {
 			
 			comment = new Comment();
             comment.setEntity_id(c.getJSONObject("comment").getInt("id"));
-            
+            comment.setCategory_id(c.getJSONObject("comment").getInt("category_id"));
+            comment.setTime(c.getJSONObject("comment").getString("created_at"));
             return comment;
 			
 			
@@ -84,4 +85,5 @@ public class DALUtils {
 			return null;
 		}
 	}
+	
 }

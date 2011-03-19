@@ -9,10 +9,14 @@
     <string name="GeotaggingAPIGetResponses">http://geotagging.heroku.com/api/responses.json</string>
     <string name="GeotaggingAPIGetCommentCategories">http://geotagging.heroku.com/api/comment_categories.json</string>
     <string name="GeotaggingAPIGetResponseCategories">http://geotagging.heroku.com/api/response_categories.json</string>
+    <string name="GeotaggingAPIGetCommentCategoriesCounters">http://geotagging.heroku.com/api/get_comment_categories_counters.json</string>
+    <string name="GeotaggingAPIGetResponseCategoriesCounters">http://geotagging.heroku.com/api/get_response_categories_counters.json</string>
+    
     
     <string name="GeotaggingAPIPostNewEntity">http://geotagging.heroku.com/api/entities.json</string>
     <string name="GeotaggingAPIPostNewComment">http://geotagging.heroku.com/api/comments.json</string>
     <string name="GeotaggingAPIPostNewResponse">http://geotagging.heroku.com/api/comments.json</string>
+    <string name="GeotaggingAPIVerifyUserAccount">http://geotagging.heroku.com/api/verify_user_information.json</string>
     
     
     <string name="GeotaggingGetResponses">http://geotagging.heroku.com/resps_api/get_resps_by_entity_id.json?entity_id=</string>

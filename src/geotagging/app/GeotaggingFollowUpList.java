@@ -1,7 +1,7 @@
 package geotagging.app;
 
 import geotagging.DES.Comment;
-import geotagging.realtime.UpdateCommentThread;
+import geotagging.realtime.UpdateFollowupCommentThread;
 import geotagging.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -21,24 +21,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class GeotaggingCommentsList extends ListActivity {
+public class GeotaggingFollowUpList extends ListActivity {
 	
-	private static final int NEW_COMMENT = 0x1333;
+	private static final int NEW_RESPONSE = 0x443122;
 	private List<Comment> cs;
-	private UpdateCommentThread updateCommentThread;
-	private MyCustomAdapter mAdapter;
-	private int entity_id;
-	private int category_id;
-
-	 
-    @Override
+	private UpdateFollowupCommentThread updateFollowupCommentThread;
+	private FollowUpListAdapter mAdapter;
+	private int commentId;
+	private int categoryId;
+	
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new MyCustomAdapter();
+        mAdapter = new FollowUpListAdapter();
         setContentView(R.layout.response_list_layout);
         setListAdapter(mAdapter);
         
@@ -54,7 +54,7 @@ public class GeotaggingCommentsList extends ListActivity {
 				
 				Comment c = mAdapter.getItem(arg2);
 				Bundle b = new Bundle();
-				b.putInt("commentId",c.getCommentId());
+				b.putInt("commentId",c.getEntity_id());
 				b.putString("description", c.getDescription());
 				b.putString("userName", c.getUserName());
 				b.putString("userImg", c.getUserImg());
@@ -66,10 +66,17 @@ public class GeotaggingCommentsList extends ListActivity {
         
         //get entity_id from previous activity
         Bundle b = getIntent().getExtras();
-        entity_id = b.getInt("entity_id");
-        category_id = b.getInt("category_id");
-        updateCommentThread = new UpdateCommentThread(this, entity_id, category_id, UpdateCommentThread.INITIALIZE_MODE);
-        updateCommentThread.start();
+        commentId = b.getInt("commentId");
+        categoryId = b.getInt("category_id");
+//        Log.i("!!!!!!!!!!!!!!!!!!!!!!id", String.valueOf(categoryId));
+        String categoryName = b.getString("responseCategory");
+        TextView tv = (TextView)this.findViewById(R.id.title_name);
+        tv.setText(categoryName);
+        Button btnAdd = (Button)this.findViewById(R.id.add_comments_button);
+        btnAdd.setText("Add Followup Response");
+        
+        updateFollowupCommentThread = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.INITIALIZE_MODE);
+        updateFollowupCommentThread.start();
     }
 
     /** Handle "home" title-bar action. */
@@ -88,25 +95,31 @@ public class GeotaggingCommentsList extends ListActivity {
                 View.GONE );
         findViewById(R.id.title_refresh_progress).setVisibility(
                 View.VISIBLE);
-        updateCommentThread = new UpdateCommentThread(this, entity_id, category_id, UpdateCommentThread.SYNC_MODE);
-        updateCommentThread.start();
+        updateFollowupCommentThread = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.SYNC_MODE);
+        updateFollowupCommentThread.start();
     }
     
     @Override
 	protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
-		if (requestCode == NEW_COMMENT) {
+		if (requestCode == NEW_RESPONSE) {
             if (resultCode == RESULT_OK) {
-            	Comment c = new Comment();
-            	Drawable d = this.getResources().getDrawable(R.drawable.default_user_icon);
-				c.setActualUserImg(((BitmapDrawable)d).getBitmap());
-            	c.setTime(data.getStringExtra("created_at"));
-            	c.setDescription(data.getStringExtra("description"));
-            	c.setUserName(data.getStringExtra("user_name"));
-            	c.setUserImg("http://selfsolved.com/images/icons/default_user_icon_128.png");
-            	c.setCommentId(data.getIntExtra("id", -1));
-            	mAdapter.addItem(c);
-            	this.onRefreshClick(null);
+//            	Log.i("~~~~~~~~~~~~~~~~~~~here", String.valueOf(this.categoryId));
+//            	Log.i("~~~~~~~~~~~~~~~~~~~here", String.valueOf(data.getStringExtra("created_at")));
+            	if(data.getIntExtra("category_id", -1) == this.categoryId) {
+//            		Log.i("~~~~~~~~~~~~~~~~~~~inside if", String.valueOf(data.getIntExtra("category_id", -1)));
+            		Comment c = new Comment();
+	            	Drawable d = this.getResources().getDrawable(R.drawable.default_user_icon);
+					c.setActualUserImg(((BitmapDrawable)d).getBitmap());
+	            	c.setTime(data.getStringExtra("created_at"));
+	            	c.setDescription(data.getStringExtra("description"));
+	            	c.setUserName(data.getStringExtra("userName"));
+	            	c.setEntity_id(data.getIntExtra("id", -1));
+//		            	String categoryName = data.getStringExtra("category_name");
+	            	mAdapter.addItem(c);
+	            	this.onRefreshClick(null);
+            	}
+            	
             }
 		}
             
@@ -114,13 +127,12 @@ public class GeotaggingCommentsList extends ListActivity {
     
     public void onComposeClick(View v) {
     	Bundle b = new Bundle();
-		b.putInt("entity_id", this.entity_id);
-		b.putInt("category_id", this.category_id);
-		
+    	b.putInt("comment_id", commentId);
+    	b.putInt("category_id", this.categoryId);
     	Intent intent = new Intent();
     	intent.putExtras(b);
-    	intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentComposing");
-    	startActivityForResult(intent, NEW_COMMENT);
+    	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityResponse");
+    	startActivityForResult(intent, NEW_RESPONSE);
     }
 
     /** Handle "search" title-bar action. */
@@ -141,12 +153,13 @@ public class GeotaggingCommentsList extends ListActivity {
         public void  handleMessage(Message msg) {
              //update your view from here only.
         	switch(msg.what) {
-        	case UpdateCommentThread.INITIALIZE_MODE:
+        	case UpdateFollowupCommentThread.INITIALIZE_MODE:
         		for (int i = 0; i < cs.size(); i++) {
-        			mAdapter.addItem(cs.get(i));
+        			if(cs.get(i).getCategory_id() == categoryId)
+        				mAdapter.addItem(cs.get(i));
                 }
         		break;
-        	case UpdateCommentThread.SYNC_MODE:
+        	case UpdateFollowupCommentThread.SYNC_MODE:
         		boolean existFlag;
         		if(null != cs)
         		for (int i = 0; i < cs.size(); i++) {
@@ -161,7 +174,9 @@ public class GeotaggingCommentsList extends ListActivity {
         			if(existFlag) {
         				continue;
         			}
-        			mAdapter.addItem(cs.get(i));
+        			if(cs.get(i).getCategory_id() == categoryId) {
+        				mAdapter.addItem(cs.get(i));
+        			}
         			
                 }
         		
@@ -176,12 +191,12 @@ public class GeotaggingCommentsList extends ListActivity {
         }
     };
  
-    private class MyCustomAdapter extends BaseAdapter {
+    private class FollowUpListAdapter extends BaseAdapter {
  
         private ArrayList<Comment> mData = new ArrayList<Comment>();
         private LayoutInflater mInflater;
  
-        public MyCustomAdapter() {
+        public FollowUpListAdapter() {
             mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
  
@@ -210,7 +225,7 @@ public class GeotaggingCommentsList extends ListActivity {
                 convertView = mInflater.inflate(R.layout.list_item, null);
                 holder = new ViewHolder();
                 holder.username = (TextView)convertView.findViewById(R.id.title_list_item);
-//                holder.image = (ImageView)convertView.findViewById(R.id.image_list_item);
+//	                holder.image = (ImageView)convertView.findViewById(R.id.image_list_item);
                 holder.counter = (TextView)convertView.findViewById(R.id.counter_list_item);
                 holder.time = (TextView)convertView.findViewById(R.id.time_list_item);
                 holder.content = (TextView)convertView.findViewById(R.id.content_list_item);
@@ -220,7 +235,7 @@ public class GeotaggingCommentsList extends ListActivity {
             }
             Comment c = mData.get(position);
             holder.content.setText(c.getDescription());
-//            holder.image.setImageBitmap(c.getActualUserImg());
+//	            holder.image.setImageBitmap(c.getActualUserImg());
             holder.counter.setText("+"+String.valueOf(c.getCommentCounter())+" more");
             holder.time.setText(UIUtils.TimeParser(c.getTime()));
             holder.username.setText(c.getUserName());
@@ -233,7 +248,7 @@ public class GeotaggingCommentsList extends ListActivity {
         public TextView username;
         public TextView content;
         public TextView counter;
-//        public ImageView image;
+//	        public ImageView image;
         public TextView time;
     }
 }

@@ -100,6 +100,7 @@ public class GeoEntityDAL implements GeoEntityIDAL {
         
         List<Entity> entitiesList = new ArrayList<Entity>();
         Entity ne = null;
+        int latestEntityId = -1;
 //        String updateAt;
         try {
 			JSONArray entities = new JSONArray(jsonText);
@@ -121,6 +122,8 @@ public class GeoEntityDAL implements GeoEntityIDAL {
 //                ne.setUpdatedAt(Date.parse(updateAt));
 //                Log.i("updatedAT-----------------", String.valueOf(Date.parse(updateAt)));
                 entitiesList.add(ne);
+                if(ne.getId() > latestEntityId)
+                	latestEntityId = ne.getId();
             }
 			
 			if(entitiesList.size() == 0) {
@@ -132,7 +135,7 @@ public class GeoEntityDAL implements GeoEntityIDAL {
 				
 				SharedPreferences states = cx.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = states.edit();
-				editor.putInt("latest_entityid", states.getInt("latest_entityid", -1)+entities.length());
+				editor.putInt("latest_entityid", latestEntityId);
 				editor.commit();
 				
 				return entitiesList;

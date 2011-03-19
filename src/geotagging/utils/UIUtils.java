@@ -17,6 +17,13 @@
 package geotagging.utils;
 
 import geotagging.app.GeotaggingMap;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -46,5 +53,42 @@ public class UIUtils {
     	activity.finish();
     }
 
+    public static String TimeParser(String time) {
+    	DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    	String res = null;
+		try {
+			Date now = new Date();
+			Date date = format.parse(time);
+			Calendar c = Calendar.getInstance();c.setTime(now);
+			Calendar c2 = Calendar.getInstance();c2.setTime(date);
+			
+			long diffInSeconds = (c.getTimeInMillis()-c2.getTimeInMillis()) / 1000;
+
+		    long diff[] = new long[] { 0, 0, 0, 0, 0 };
+		    /* sec */diff[4] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
+		    /* min */diff[3] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+		    /* hours */diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+		    /* days */diff[1] = (diffInSeconds = (diffInSeconds / 24));
+		    /* weeks */diff[0] = (diffInSeconds = (diffInSeconds / 7));
+
+		    if(diff[0] != 0) {
+		    	res = String.format("%d week%s ago", diff[0],
+				        diff[0] > 1 ? "s" : "");
+		    } else if (diff[0] == 0 && diff[1] != 0) {
+		    	res = String.format("%d day%s ago", diff[1],
+				        diff[1] > 1 ? "s" : "");
+		    } else if (diff[0] == 0 && diff[1] == 0 && diff[2] != 0) {
+		    	res =  String.format("%d hour%s ago", diff[2],
+				        diff[2] > 1 ? "s" : "");
+		    } else if (diff[0] == 0 && diff[1] == 0 && diff[2] == 0) {
+		    	res =  String.format("%d minute%s ago", diff[3],
+				        diff[3] > 1 ? "s" : "");
+		    }
+		    
+		} catch (ParseException e) {
+			
+		}
+		return res;
+    }
     
 }

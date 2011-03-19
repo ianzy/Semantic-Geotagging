@@ -1,12 +1,11 @@
 package geotagging.app;
 
 import geotagging.DES.Entity;
-import geotagging.provider.CacheBase;
-import geotagging.realtime.UpdateCategoriesThread;
 import geotagging.realtime.UpdateMapThread;
 import geotagging.utils.CustomArrayAdapter;
 import geotagging.utils.GeotaggingItemizedOverlay;
 import geotagging.utils.UIUtils;
+import geotagging.utils.UserIndicationOverlay;
 import geotagging.views.BaloonInMapView;
 import geotagging.views.GeotaggingMapView;
 
@@ -15,16 +14,18 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,7 +48,6 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 //Todo: use EVENT to handle the UI elements update
@@ -83,6 +83,7 @@ public class GeotaggingMap extends MapActivity {
 	};
 	private BaloonInMapView baloon; //Balloon layout
 	private GeotaggingItemizedOverlay itemizedoverlay; //Overlay for the update thread
+	private UserIndicationOverlay userIndication;
 	
 	private GeotaggingMapView mapView;
 	private Boolean isIconClick = false;
@@ -91,49 +92,24 @@ public class GeotaggingMap extends MapActivity {
 	private GeoPoint point;
 	private String location;
 	
+	private boolean userIndicationFlag = true;
+	private boolean entityIconsFlag = true;
+	
+	public boolean isEntityIconsFlag() {
+		return entityIconsFlag;
+	}
+
+	public void setEntityIconsFlag(boolean entityIconsFlag) {
+		this.entityIconsFlag = entityIconsFlag;
+	}
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        ProgressDialog MyDialog = ProgressDialog.show( this, "Loading. " , " Please wait ... ", true);
+        
         setContentView(R.layout.geotagging_map);
-        
-        //Experiment code
-//        this.mGestureDetector = new GestureDetector(this);
-        //Start the street view for a given GeoPoint
-//        ImageButton imgbtn = (ImageButton) this.findViewById(R.id.search_imgbutton);
-//        imgbtn.setOnClickListener(new OnClickListener() {
-//            public void onClick(View v) {
-//            	Uri geoUri = Uri.parse("google.streetview:cbll=46.813812,-71.207378&cbp=1,99.56,,1,-5.27&mz=21");
-//            	Intent mapCall = new Intent(Intent.ACTION_VIEW, geoUri);  
-//            	startActivity(mapCall); 
-//            }
-//        });
-        
-//        mapview = (MapView) this.findViewById(R.id.mapview);
-        //Inflate for the longpress layout
-        
-        //should be in a method
-        SharedPreferences settings = this.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, MODE_PRIVATE);
-        if(settings.getString("username", "NSV").equals("NSV")) {
-        	SharedPreferences.Editor prefEditor = settings.edit();
-        	prefEditor.putString("username", "Mike");
-        	prefEditor.putString("password", "demo");
-        	prefEditor.putInt("user_id", 4);
-        	
-        	prefEditor.putInt("latest_entityid", 0);
-        	prefEditor.putInt("latest_commentid", 0);
-        	prefEditor.putInt("latest_responseid", 0);
-        	prefEditor.putInt("cached_entityid", 0);
-        	prefEditor.putInt("cached_commentid", 0);
-        	prefEditor.putInt("cached_responseid", 0);
-        	prefEditor.putInt("remote_count", 50);
-        	prefEditor.commit(); 
-        	
-        	// initialize the categories base
-        	UpdateCategoriesThread thread = new UpdateCategoriesThread(this);
-        	thread.start();
-        }
-        
-        //end of should be in a method
         
         mapView = (GeotaggingMapView) this.findViewById(R.id.mapview);
         mapView.addObserver(this);
@@ -142,6 +118,9 @@ public class GeotaggingMap extends MapActivity {
         initializeViews();
         checkNetworkAvailability();
         initializeMap();
+        initializeUserLocation();
+        
+        MyDialog.dismiss();
 	}
 	
 	/** Handle "refresh" title-bar action. */
@@ -151,9 +130,8 @@ public class GeotaggingMap extends MapActivity {
                 View.GONE );
         findViewById(R.id.title_refresh_progress).setVisibility(
                 View.VISIBLE);
-    	List<Overlay> mapOverlays = mapView.getOverlays();
         Drawable drawable = this.getResources().getDrawable(R.drawable.fire_icon_small);
-    	UpdateMapThread updateMapT = new UpdateMapThread(drawable,this,mapOverlays, itemizedoverlay, UpdateMapThread.SYNC_MODE);
+    	UpdateMapThread updateMapT = new UpdateMapThread(drawable,this, itemizedoverlay, UpdateMapThread.SYNC_MODE);
         updateMapT.start();
     }
     
@@ -195,6 +173,7 @@ public class GeotaggingMap extends MapActivity {
             	entity.setLng(String.valueOf(data.getDoubleExtra("lng", 0)));
             	entity.setTitle(data.getStringExtra("title"));
             	entity.setId(data.getIntExtra("entity_id", -1));
+            	entity.setIconURI(data.getStringExtra("iconName"));
             	
             	GeoPoint point = new GeoPoint(
                     (int) (data.getDoubleExtra("lat", 0) * 1E6), 
@@ -214,8 +193,19 @@ public class GeotaggingMap extends MapActivity {
                 
                 itemizedoverlay.addOverlay(overlayitem);
                 itemizedoverlay.addEntity(entity);
-                mapView.getOverlays().add(itemizedoverlay);
+                //mapView.getOverlays().add(itemizedoverlay);
                 this.dismissDialog(DIALOG_FOR_ENTITY_TYPES);
+                
+                //start the detail information activity right away after the submition
+                Intent intent = new Intent();
+            	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityInformation");
+            	Bundle b = new Bundle();
+            	b.putInt("entityId", entity.getId());
+            	b.putString("entity_title", entity.getTitle());
+            			
+            	b.putInt("icon", data.getIntExtra("drawableId", -1));
+            	intent.putExtras(b);
+            	startActivity(intent);
             }
         }
     }
@@ -368,6 +358,55 @@ public class GeotaggingMap extends MapActivity {
        
 	}
 	
+	//fetch user location information
+	private void initializeUserLocation() {
+
+		// Acquire a reference to the system Location Manager
+		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+		// Define a listener that responds to location updates
+		LocationListener locationListener = new LocationListener() {
+	    public void onLocationChanged(Location location) {
+	      // Called when a new location is found by the network location provider.
+	    	GeoPoint point = new GeoPoint(
+                    (int) (location.getLatitude() * 1E6), 
+                    (int) (location.getLongitude() * 1E6));
+                
+                
+            OverlayItem overlayitem = new OverlayItem(point, "You're here", String.valueOf(location.getLatitude())+", "+String.valueOf(location.getLongitude()));
+            
+            Drawable d = GeotaggingMap.this.getResources().getDrawable(R.drawable.red_dot);
+            d.setBounds(-10, -20, d.getIntrinsicWidth()-10, d.getIntrinsicHeight()-20);
+            overlayitem.setMarker(d);
+            
+            //this can be extended to drawing icons for different responder.
+            userIndication.removeAllOverlays();
+            userIndication.addOverlay(overlayitem);
+            
+            if(userIndicationFlag) {
+            	userIndicationFlag = false;
+            	mapView.getOverlays().add(userIndication);
+            }
+            
+	    }
+
+	    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+	    public void onProviderEnabled(String provider) {}
+
+	    public void onProviderDisabled(String provider) {}
+	  };
+
+	// Register the listener with the Location Manager to receive location updates
+	  locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+	  locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+	
+	  
+		Drawable d = GeotaggingMap.this.getResources().getDrawable(R.drawable.red_dot);
+		userIndication = new UserIndicationOverlay(d,GeotaggingMap.this);
+
+	}
+	
 	private void checkNetworkAvailability () {
 		URL url;
 		URLConnection conn = null;
@@ -397,7 +436,7 @@ public class GeotaggingMap extends MapActivity {
 	
 	
 	private void initializeMap() {
-		MapView mapView = (MapView) findViewById(R.id.mapview);
+
         mapView.setBuiltInZoomControls(true);
         MapController mc = mapView.getController();
         String coordinates[] = {"37.410566","-122.059704"};
@@ -411,13 +450,17 @@ public class GeotaggingMap extends MapActivity {
         mc.animateTo(p);
         mc.setZoom(17);
         
-        List<Overlay> mapOverlays = mapView.getOverlays();
         Drawable drawable = this.getResources().getDrawable(R.drawable.fire_icon_small);
         itemizedoverlay = new GeotaggingItemizedOverlay(drawable);
         itemizedoverlay.addObserver(this);
-        UpdateMapThread updateMapT = new UpdateMapThread(drawable,this,mapOverlays, itemizedoverlay, UpdateMapThread.INITIALIZE_MODE);
+//        mapView.getOverlays().add(itemizedoverlay);
+        UpdateMapThread updateMapT = new UpdateMapThread(drawable,this, itemizedoverlay, UpdateMapThread.INITIALIZE_MODE);
         updateMapT.start();
         
+	}
+	
+	public void addOverlaysToMapView() {
+		 mapView.getOverlays().add(itemizedoverlay);
 	}
 	
 	//observer methods for the map view

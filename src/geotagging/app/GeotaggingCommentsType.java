@@ -10,13 +10,18 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class GeotaggingCommentsType extends Activity {
+public class GeotaggingCommentsType extends Activity implements TextWatcher {
 	
 	private EditText edit_comment;
     private EditText edit_title;
@@ -25,13 +30,25 @@ public class GeotaggingCommentsType extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comment_type);
-        edit_comment = (EditText) findViewById(R.id.edit_comment);
+        edit_comment = (EditText)this.findViewById(R.id.edit_comment);
         edit_title = (EditText)this.findViewById(R.id.edit_title);
+    
+        Bundle b = getIntent().getExtras();
+        String editLocation = b.getString("location");
+        Log.i(">>>>>>>>>>>>>>>>>>>>>>>>>!!!!!!!!!!", editLocation);
+        edit_comment.setText(editLocation);
+        
+        //tricky way for the editText to listen to the on text change event
+        ((EditText)findViewById(R.id.edit_comment)).addTextChangedListener(this);
+        ((EditText)findViewById(R.id.edit_title)).addTextChangedListener(this);
         
 	}
 	
 	public void onSubmitClick(View v) {
         
+		Button btnSubmit = (Button) findViewById(R.id.submit_comment);
+		btnSubmit.setEnabled(false);
+		
 		//experimental code for submitting data to the back end    	
     	//getting data from intent extra
     	Bundle b = getIntent().getExtras();
@@ -45,6 +62,7 @@ public class GeotaggingCommentsType extends Activity {
     	if(edit_comment.getText().toString().trim().equals("") ||
     			edit_title.getText().toString().trim().equals("")) {
     		Toast.makeText(GeotaggingCommentsType.this, "Title and description should not be empty", Toast.LENGTH_LONG).show();
+    		btnSubmit.setEnabled(true);
     		return;
     	}
          	
@@ -87,10 +105,12 @@ public class GeotaggingCommentsType extends Activity {
             intent.putExtra("lat", lat);
             intent.putExtra("drawableId", drawableId);
             intent.putExtra("entity_id", entity.getId());
+            intent.putExtra("iconName", iconName);
             setResult(RESULT_OK, intent);
             finish();
 		} else {
 			Toast.makeText(GeotaggingCommentsType.this, "Submit fail", Toast.LENGTH_LONG).show();
+			btnSubmit.setEnabled(true);
 		}
 			
 	}
@@ -113,4 +133,27 @@ public class GeotaggingCommentsType extends Activity {
     public void onSearchClick(View v) {
         UIUtils.goSearch(this);
     }
+    
+	public void afterTextChanged(Editable s) {
+    	Button btnSubmit = (Button) findViewById(R.id.submit_comment);
+    	if(s.toString().trim().equals("")) {
+    		btnSubmit.setEnabled(false);
+    	} else {
+    		btnSubmit.setEnabled(true);
+        	btnSubmit.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+    	}
+    }
+ 
+    public void beforeTextChanged(CharSequence s, int start, int count,
+            int after) {
+        // TODO Auto-generated method stub
+ 
+    }
+ 
+    public void onTextChanged(CharSequence s, int start, int before,
+            int count) {
+        // TODO Auto-generated method stub
+ 
+    }
+    	
 }

@@ -16,21 +16,37 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class GeotaggingCommentComposing extends Activity {
+public class GeotaggingCommentComposing extends Activity implements TextWatcher {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.comment_composing);
+		
+		//tricky way for the editText to listen to the on text change event
+        ((EditText)findViewById(R.id.comment_composing_content)).addTextChangedListener(this);
 	}
 	
 	public void onSubmitClick(View v) {
+		Button btnSubmit = (Button) findViewById(R.id.comment_composing_submit);
+		btnSubmit.setEnabled(false);
+		
+		if(((EditText)this.findViewById(R.id.comment_composing_content)).getText().toString().trim().equals("")) {
+    		Toast.makeText(this, "Comment content should not be empty", Toast.LENGTH_LONG).show();
+    		btnSubmit.setEnabled(true);
+    		return;
+    	}
 		
 		Bundle b = this.getIntent().getExtras();
 		int entity_id = b.getInt("entity_id");
@@ -83,6 +99,7 @@ public class GeotaggingCommentComposing extends Activity {
             finish();
 		} else {
 			Toast.makeText(this, "Submition failed", Toast.LENGTH_LONG).show();
+			btnSubmit.setEnabled(true);
 		}
 		
 		
@@ -108,4 +125,29 @@ public class GeotaggingCommentComposing extends Activity {
     public void onSearchClick(View v) {
         UIUtils.goSearch(this);
     }
+    
+   
+	public void afterTextChanged(Editable s) {
+    	Button btnSubmit = (Button) findViewById(R.id.comment_composing_submit);
+    	if(s.toString().trim().equals("")) {
+    		btnSubmit.setEnabled(false);
+    	} else {
+    		btnSubmit.setEnabled(true);
+        	btnSubmit.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+    	}
+    	
+    }
+ 
+    public void beforeTextChanged(CharSequence s, int start, int count,
+            int after) {
+        // TODO Auto-generated method stub
+ 
+    }
+ 
+    public void onTextChanged(CharSequence s, int start, int before,
+            int count) {
+        // TODO Auto-generated method stub
+ 
+    }
+    	
 }

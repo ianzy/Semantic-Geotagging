@@ -190,4 +190,70 @@ public class GeoCategoryDAL implements GeoCategoryIDAL {
 		da.close();
 		return 0;
 	}
+	
+	public List<CommentCategory> getRemoteCommentCountersByEntityId(int entityId) {
+		String apiurl = cx.getResources().getString(R.string.GeotaggingAPIGetCommentCategoriesCounters)+"?entity_id="+String.valueOf(entityId);
+		String jsonText = helper.getJsonText(apiurl);
+		
+		if (jsonText == null)
+	    {
+	    	return null;
+	    }
+	    
+		List<CommentCategory> categoriesList = new ArrayList<CommentCategory>();
+        CommentCategory category = null;
+        try {
+			JSONArray categories = new JSONArray(jsonText);
+			for (int i=0; i<categories.length() ;i++)
+            {
+				category = new CommentCategory();
+                JSONObject c = categories.getJSONObject(i);
+                category.setCategory_id(c.getJSONObject("entity_category_counter").getInt("comment_category_id"));
+                category.setCount(c.getJSONObject("entity_category_counter").getInt("counter"));
+                category.setImportanTag(c.getJSONObject("entity_category_counter").getBoolean("important_tag"));
+                
+                categoriesList.add(category);
+            }
+			
+			return categoriesList;
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<ResponseCategory> getRemoteResponseCountersByCommentId(int commentId) {
+		String apiurl = cx.getResources().getString(R.string.GeotaggingAPIGetResponseCategoriesCounters)+"?comment_id="+String.valueOf(commentId);
+		String jsonText = helper.getJsonText(apiurl);
+		
+		if (jsonText == null)
+	    {
+	    	return null;
+	    }
+	    
+	    List<ResponseCategory> categoriesList = new ArrayList<ResponseCategory>();
+	    ResponseCategory category = null;
+	    try {
+			JSONArray categories = new JSONArray(jsonText);
+			for (int i=0; i<categories.length() ;i++)
+	        {
+				category = new ResponseCategory();
+	            JSONObject c = categories.getJSONObject(i);
+	            category.setCategory_id(c.getJSONObject("comment_category_counter").getInt("response_category_id"));
+                category.setCount(c.getJSONObject("comment_category_counter").getInt("counter"));
+                category.setImportanTag(c.getJSONObject("comment_category_counter").getBoolean("important_tag"));
+	            
+	            categoriesList.add(category);
+	        }
+			
+			return categoriesList;
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
