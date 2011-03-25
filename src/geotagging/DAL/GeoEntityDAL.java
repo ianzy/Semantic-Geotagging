@@ -23,12 +23,27 @@ import com.google.android.maps.GeoPoint;
 
 public class GeoEntityDAL implements GeoEntityIDAL {
 
-	private Context cx;
+	private static Context cx;
 	private BackendHelperSingleton helper;
 	private DatabaseAdapter da;
 	
-	public GeoEntityDAL(Context cx) {
-		this.cx = cx;
+	public static void setContext(Context cx) {
+		GeoEntityDAL.cx = cx;
+	}
+	
+	/**
+	* SingletonHolder is loaded on the first execution of Singleton.getInstance() 
+	* or the first access to SingletonHolder.INSTANCE, not before.
+	*/
+   private static class SingletonHolder { 
+     public static final GeoEntityDAL INSTANCE = new GeoEntityDAL(GeoEntityDAL.cx);
+   }
+ 
+   public static GeoEntityDAL getInstance() {
+     return SingletonHolder.INSTANCE;
+   }
+	
+	protected GeoEntityDAL(Context cx) {
 		this.helper = BackendHelperSingleton.getInstance();
 		this.da = new DatabaseAdapter(cx);
 	}

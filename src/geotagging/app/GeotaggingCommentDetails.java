@@ -66,7 +66,7 @@ ExpandableListView.OnChildClickListener{
 //        pairedListView.setOnGroupClickListener(this);
         
         //fetching the response categeory from local database
-        categoryDAL = new GeoCategoryDAL(this);
+        categoryDAL = GeoCategoryDAL.getInstance();
         categories = categoryDAL.getResponseCategoriesByCommentId(commentId);
         
 //        UpdateFollowupCommentThread t = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.INITIALIZE_MODE);

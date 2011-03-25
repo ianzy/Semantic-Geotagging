@@ -14,7 +14,14 @@ public class Comment {
 	private int commentCounter;
 	private int entity_id;
 	private int category_id;
+	private boolean importantTag;
 	
+	public boolean isImportantTag() {
+		return importantTag;
+	}
+	public void setImportantTag(boolean importantTag) {
+		this.importantTag = importantTag;
+	}
 	public int getCommentCounter() {
 		return this.commentCounter;
 	}

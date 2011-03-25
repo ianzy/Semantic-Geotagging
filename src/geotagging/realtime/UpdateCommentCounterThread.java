@@ -13,7 +13,7 @@ public class UpdateCommentCounterThread extends BaseThread {
 	
 	public UpdateCommentCounterThread(GeotaggingEntityInformation cx, int entityId) {
 		this.cx = cx;
-		this.counterDAL = new GeoCategoryDAL(cx);
+		this.counterDAL = GeoCategoryDAL.getInstance();
 		this.entityId = entityId;
 	}
 	

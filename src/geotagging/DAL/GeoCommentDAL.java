@@ -26,12 +26,27 @@ import android.graphics.drawable.Drawable;
 
 public class GeoCommentDAL implements GeoCommentIDAL {
 
-	private Context cx;
+	private static Context cx;
 	private BackendHelperSingleton helper;
 	private DatabaseAdapter da;
 	
-	public GeoCommentDAL(Context cx) {
-		this.cx = cx;
+	public static void setContext(Context cx) {
+		GeoCommentDAL.cx = cx;
+	}
+	
+	/**
+	* SingletonHolder is loaded on the first execution of Singleton.getInstance() 
+	* or the first access to SingletonHolder.INSTANCE, not before.
+	*/
+   private static class SingletonHolder { 
+     public static final GeoCommentDAL INSTANCE = new GeoCommentDAL(GeoCommentDAL.cx);
+   }
+ 
+   public static GeoCommentDAL getInstance() {
+     return SingletonHolder.INSTANCE;
+   }
+	
+	protected GeoCommentDAL(Context cx) {
         this.helper = BackendHelperSingleton.getInstance();
         this.da = new DatabaseAdapter(cx);
 	}
@@ -81,6 +96,8 @@ public class GeoCommentDAL implements GeoCommentIDAL {
 				comment.setUserImg(cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERIMG)));
 				comment.setUserName(cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERNAME)));
 				comment.setCommentCounter(cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_COUNTER)));
+				//this is how android do the getBoolean()....
+				comment.setImportantTag(cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_IMPORTANT_TAG)) > 0);
 				
 				//**********************attention!*************************
 				Drawable d = cx.getResources().getDrawable(R.drawable.default_user_icon);
@@ -125,6 +142,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
 				comment.setUserImg(cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERIMG)));
 				comment.setEntity_id(cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_ID)));
 				comment.setCommentCounter(cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_COUNTER)));
+				comment.setImportantTag(cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_IMPORTANT_TAG)) > 0);
 				
 				//**********************attention!*************************
 				Drawable d = cx.getResources().getDrawable(R.drawable.default_user_icon);
@@ -160,7 +178,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
         int latest_comment_id = 0;
         
         // Get all the comment counters for update purpose
-        GeoCategoryDAL categoryDAL = new GeoCategoryDAL(this.cx);
+        GeoCategoryDAL categoryDAL = GeoCategoryDAL.getInstance();
         List<CommentCategory> categories = categoryDAL.getCommentCategoriesByEntityId(entity_id);
         CommentCategory category;
         
@@ -182,6 +200,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
                 comment.setCategory_id(c.getJSONObject("comment").getInt("category_id"));
                 comment.setEntity_id(c.getJSONObject("comment").getInt("entity_id"));
                 comment.setCommentCounter(c.getJSONObject("comment").getInt("counter"));
+                comment.setImportantTag(c.getJSONObject("comment").getBoolean("important_tag"));
                 
                 comment.setActualUserImg(helper.fetchImage(comment.getUserImg()));
                 
@@ -241,7 +260,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
         int latest_response_id = 0;
         
         // Get all the response counters for update purpose
-        GeoCategoryDAL categoryDAL = new GeoCategoryDAL(this.cx);
+        GeoCategoryDAL categoryDAL = GeoCategoryDAL.getInstance();
         List<ResponseCategory> categories = categoryDAL.getResponseCategoriesByCommentId(comment_id);
         ResponseCategory category;
         
@@ -262,6 +281,7 @@ public class GeoCommentDAL implements GeoCommentIDAL {
                 comment.setUserName(c.getJSONObject("comment").getString("username"));
                 comment.setUserImg(c.getJSONObject("comment").getString("user_image"));
                 comment.setCommentCounter(c.getJSONObject("comment").getInt("counter"));
+                comment.setImportantTag(c.getJSONObject("comment").getBoolean("important_tag"));
                 
                 comment.setActualUserImg(helper.fetchImage(comment.getUserImg()));
                 // Updating counter

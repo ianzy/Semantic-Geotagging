@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -105,6 +106,7 @@ public class GeotaggingCommentsList extends ListActivity {
             	c.setUserName(data.getStringExtra("user_name"));
             	c.setUserImg("http://selfsolved.com/images/icons/default_user_icon_128.png");
             	c.setCommentId(data.getIntExtra("id", -1));
+            	c.setImportantTag(data.getBooleanExtra("important_tag", false));
             	mAdapter.addItem(c);
             	this.onRefreshClick(null);
             }
@@ -214,6 +216,7 @@ public class GeotaggingCommentsList extends ListActivity {
                 holder.counter = (TextView)convertView.findViewById(R.id.counter_list_item);
                 holder.time = (TextView)convertView.findViewById(R.id.time_list_item);
                 holder.content = (TextView)convertView.findViewById(R.id.content_list_item);
+                holder.importantImage = ((ImageView)convertView.findViewById(R.id.list_item_important_tag));
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
@@ -224,6 +227,13 @@ public class GeotaggingCommentsList extends ListActivity {
             holder.counter.setText("+"+String.valueOf(c.getCommentCounter())+" more");
             holder.time.setText(UIUtils.TimeParser(c.getTime()));
             holder.username.setText(c.getUserName());
+            if(c.isImportantTag()) {
+            	holder.importantImage
+            	.setImageDrawable(GeotaggingCommentsList.this
+            							.getResources()
+            							.getDrawable(R.drawable.cg_icon_exclamation));
+            }
+            
             return convertView;
         }
  
@@ -235,5 +245,6 @@ public class GeotaggingCommentsList extends ListActivity {
         public TextView counter;
 //        public ImageView image;
         public TextView time;
+        public ImageView importantImage;
     }
 }

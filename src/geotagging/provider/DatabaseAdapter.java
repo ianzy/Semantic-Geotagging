@@ -270,6 +270,7 @@ public class DatabaseAdapter {
 			args.put(Comments.COMMENT_COUNTER, 0);
 //			args.put(Comments.COMMENT_COUNTER, c.getCommentCounter());
 			args.put(Comments.COMMENT_USERNAME, c.getUserName());
+			args.put(Comments.COMMENT_IMPORTANT_TAG, c.isImportantTag());
 			db.insert(Tables.COMMENTS, null, args);
 		}
 		return 0;
@@ -290,6 +291,7 @@ public class DatabaseAdapter {
 			args.put(Responses.RESPONSE_COUNTER, 0);
 //			args.put(Responses.RESPONSE_COUNTER, c.getCommentCounter());
 			args.put(Responses.RESPONSE_ID, c.getEntity_id());
+			args.put(Responses.RESPONSE_IMPORTANT_TAG, c.isImportantTag());
 			db.insert(Tables.RESPONSES, null, args);
 			
 			//update counter in both comment and response tables
@@ -308,6 +310,7 @@ public class DatabaseAdapter {
 		        comment.put(Comments.COMMENT_TIME, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_TIME)));
 		        comment.put(Comments.COMMENT_USERIMG, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERIMG)));
 		        comment.put(Comments.COMMENT_USERNAME, cursor.getString(cursor.getColumnIndex(Comments.COMMENT_USERNAME)));
+		        comment.put(Comments.COMMENT_IMPORTANT_TAG, cursor.getInt(cursor.getColumnIndex(Comments.COMMENT_IMPORTANT_TAG)) > 0);
 		        db.update(Tables.COMMENTS, comment, 
 		        		Comments.COMMENT_ID+"="+String.valueOf(c.getCommentId()), null);
 		    }
@@ -327,7 +330,7 @@ public class DatabaseAdapter {
 				response.put(Responses.RESPONSE_TIME, cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_TIME)));
 				response.put(Responses.RESPONSE_USERIMG, cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERIMG)));
 				response.put(Responses.RESPONSE_USERNAME, cursor.getString(cursor.getColumnIndex(Responses.RESPONSE_USERNAME)));
-				
+				response.put(Responses.RESPONSE_IMPORTANT_TAG, cursor.getInt(cursor.getColumnIndex(Responses.RESPONSE_IMPORTANT_TAG)) > 0);
 				db.update(Tables.RESPONSES, response, 
 						Responses.RESPONSE_ID+"="+String.valueOf(c.getCommentId()), null);
 			}
@@ -360,7 +363,8 @@ public class DatabaseAdapter {
 			Comments.COMMENT_TIME,
 			Comments.COMMENT_USERIMG,
 			Comments.COMMENT_COUNTER,
-			Comments.COMMENT_USERNAME
+			Comments.COMMENT_USERNAME,
+			Comments.COMMENT_IMPORTANT_TAG
 		};
 	}
 
@@ -373,7 +377,8 @@ public class DatabaseAdapter {
 			Responses.RESPONSE_USERNAME,
 			Responses.RESPONSE_USERIMG,
 			Responses.RESPONSE_COUNTER,
-			Responses.RESPONSE_ID
+			Responses.RESPONSE_ID,
+			Responses.RESPONSE_IMPORTANT_TAG
 		};
 	}
 	
@@ -410,7 +415,8 @@ public class DatabaseAdapter {
 		String[] PROJECTION = {
 			CommentCounters.COUNTER_CATEGORY_NAME,
 			CommentCounters.COUNTER_CATEGORYID,
-			CommentCounters.COUNTER_COUNTER
+			CommentCounters.COUNTER_COUNTER,
+			CommentCounters.CATEGORY_IMPORTANT_TAG
 		};
 	}
 	
@@ -418,7 +424,8 @@ public class DatabaseAdapter {
 		String[] PROJECTION = {
 			ResponseCounters.COUNTER_CATEGORY_NAME,
 			ResponseCounters.COUNTER_CATEGORYID,
-			ResponseCounters.COUNTER_COUNTER
+			ResponseCounters.COUNTER_COUNTER,
+			ResponseCounters.CATEGORY_IMPORTANT_TAG
 		};
 	}
 }

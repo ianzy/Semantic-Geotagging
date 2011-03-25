@@ -11,14 +11,18 @@
 	    android:layout_weight="1"
 	    android:gravity="center_vertical"
 	    android:padding="10dp"
-	    android:textSize="25px"
-	    >
+	    android:textSize="25px">
 	</TextView>
-	
+	<ImageView
+	android:layout_width="20px"
+	android:layout_height="20px"
+	android:layout_marginTop="17px"
+	android:layout_marginRight="5px"
+	android:id="@+id/entity_information_important_tag"/>
 	<TextView android:id="@+id/comment_category_counter"
 		android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:textSize="25px"
-	    android:text=" " >
+	    android:text=" ">
 	</TextView>
 </LinearLayout>

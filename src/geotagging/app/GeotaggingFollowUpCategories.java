@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -63,7 +64,7 @@ public class GeotaggingFollowUpCategories extends Activity {
         mAdapter = new FollowUpCategoryAdapter();
         
         //fetching the response categeory from local database
-        categoryDAL = new GeoCategoryDAL(this);
+        categoryDAL = GeoCategoryDAL.getInstance();
         categories = categoryDAL.getResponseCategoriesByCommentId(commentId);
         for(int i=0; i<categories.size(); i++) {
         	mAdapter.addItem(categories.get(i));
@@ -164,6 +165,7 @@ public class GeotaggingFollowUpCategories extends Activity {
                 holder = new ViewHolder();
                 holder.categoryName = (TextView)convertView.findViewById(R.id.comemnt_category);
                 holder.counter = (TextView)convertView.findViewById(R.id.comment_category_counter);
+                holder.importantImage = (ImageView)convertView.findViewById(R.id.entity_information_important_tag);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
@@ -171,6 +173,12 @@ public class GeotaggingFollowUpCategories extends Activity {
             ResponseCategory c = mData.get(position);
             holder.categoryName.setText(c.getName());
             holder.counter.setText("("+String.valueOf(c.getCount())+")");
+            if(c.isImportanTag()) {	
+	            holder.importantImage
+	        	.setImageDrawable(GeotaggingFollowUpCategories.this
+	        							.getResources()
+	        							.getDrawable(R.drawable.cg_icon_exclamation));
+            }
             return convertView;
         }
  
@@ -179,6 +187,7 @@ public class GeotaggingFollowUpCategories extends Activity {
     public static class ViewHolder {
         public TextView categoryName;
         public TextView counter;
+        public ImageView importantImage;
     }
 
 }

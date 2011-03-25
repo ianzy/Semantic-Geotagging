@@ -28,7 +28,7 @@ public class UpdateMapThread extends BaseThread {
 		this.d = drawable;
 		this.cx = cx;
 		this.itemizedoverlay = itemizedoverlay;
-		this.dao = new GeoEntityDAL(cx);
+		this.dao = GeoEntityDAL.getInstance();
 		this.mode = mode;
 	}
 	

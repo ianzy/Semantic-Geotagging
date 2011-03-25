@@ -62,6 +62,7 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + Comments.COMMENT_TIME + " TEXT,"
 			      + Comments.COMMENT_USERIMG + " TEXT,"
 			      + Comments.COMMENT_COUNTER + " INTEGER,"
+			      + Comments.COMMENT_IMPORTANT_TAG + " BOOLEAN,"
 			      + Comments.COMMENT_USERNAME + " TEXT"
 			      + ");");
 		
@@ -74,6 +75,7 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + Responses.RESPONSE_USERIMG + " TEXT,"
 			      + Responses.RESPONSE_USERNAME + " TEXT,"
 			      + Responses.RESPONSE_COUNTER + " INTEGER,"
+			      + Responses.RESPONSE_IMPORTANT_TAG + " BOOLEAN,"
 			      + Responses.RESPONSE_ID + " INTEGER"
 			      + ");");
 		
@@ -108,6 +110,7 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + CommentCounters.COUNTER_CATEGORYID + " INTEGER,"
 			      + CommentCounters.COUNTER_COUNTER + " INTEGER,"
 			      + CommentCounters.COUNTER_ENTITYID + " INTEGER,"
+			      + CommentCounters.CATEGORY_IMPORTANT_TAG + " BOOLEAN,"
 			      + CommentCounters.COUNTER_CATEGORY_NAME + " TEXT"
 			      + ");");
 		
@@ -116,6 +119,7 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + ResponseCounters.COUNTER_CATEGORYID + " INTEGER,"
 			      + ResponseCounters.COUNTER_COUNTER + " INTEGER,"
 			      + ResponseCounters.COUNTER_COMMENTID + " INTEGER,"
+			      + ResponseCounters.CATEGORY_IMPORTANT_TAG + " BOOLEAN,"
 			      + ResponseCounters.COUNTER_CATEGORY_NAME + " TEXT"
 			      + ");");
 	}

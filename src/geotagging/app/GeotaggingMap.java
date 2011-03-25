@@ -1,5 +1,8 @@
 package geotagging.app;
 
+import geotagging.DAL.GeoCategoryDAL;
+import geotagging.DAL.GeoCommentDAL;
+import geotagging.DAL.GeoEntityDAL;
 import geotagging.DES.Entity;
 import geotagging.realtime.UpdateMapThread;
 import geotagging.utils.CustomArrayAdapter;
@@ -113,14 +116,20 @@ public class GeotaggingMap extends MapActivity {
         
         mapView = (GeotaggingMapView) this.findViewById(R.id.mapview);
         mapView.addObserver(this);
-        //End of experiment
         
+        initializeDALContext();        
         initializeViews();
         checkNetworkAvailability();
         initializeMap();
         initializeUserLocation();
-        
+
         MyDialog.dismiss();
+	}
+	
+	private void initializeDALContext() {
+		GeoCategoryDAL.setContext(this);
+		GeoCommentDAL.setContext(this);
+		GeoEntityDAL.setContext(this);
 	}
 	
 	/** Handle "refresh" title-bar action. */

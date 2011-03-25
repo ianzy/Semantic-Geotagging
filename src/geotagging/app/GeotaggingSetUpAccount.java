@@ -1,5 +1,6 @@
 package geotagging.app;
 
+import geotagging.DAL.GeoCategoryDAL;
 import geotagging.provider.CacheBase;
 import geotagging.realtime.UpdateCategoriesThread;
 import geotagging.utils.BackendHelperSingleton;
@@ -91,7 +92,8 @@ public class GeotaggingSetUpAccount extends Activity {
         	prefEditor.commit(); 
         	
         	// initialize the categories base
-        	UpdateCategoriesThread thread = new UpdateCategoriesThread(this);
+        	GeoCategoryDAL.setContext(this);
+        	UpdateCategoriesThread thread = new UpdateCategoriesThread();
         	thread.start();
 	        
 			Intent intent = new Intent();

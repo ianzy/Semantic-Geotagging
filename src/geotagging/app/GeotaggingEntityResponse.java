@@ -24,6 +24,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
 	private int category_id;
 	
 	private int comment_id;
+	private boolean important;
 	
 	private String categoryName;
 //	private List<ResponseCategory> categories;
@@ -46,7 +48,7 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
 		comment_id = b.getInt("comment_id");
 //        categories = categoryDAL.getResponseCategoriesByCommentId(comment_id);
         category_id = b.getInt("category_id");
-        
+        important = false;
         ((EditText)findViewById(R.id.edit_response)).addTextChangedListener(this);
 	}
 	
@@ -95,6 +97,7 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
             obj.put("type", "");
             obj.put("created_at","");
             obj.put("updated_at","");
+            obj.put("important_tag", this.important);
      
             ent.put("comment", obj);
 		} catch (JSONException e1) {
@@ -124,6 +127,7 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
             intent.putExtra("created_at", createAt);
             intent.putExtra("category_id", resp.getCategory_id());
             intent.putExtra("id", resp.getEntity_id());
+            intent.putExtra("important_tag", this.important);
 	        setResult(RESULT_OK, intent);
 	        finish();
 		} else {
@@ -133,6 +137,14 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
 		
 		
 		
+	}
+	
+	public void onImportantClick(View v) {
+		CheckBox checkBox = (CheckBox)v;
+		if(checkBox.isChecked())
+			this.important = true;
+		else
+			this.important = false;
 	}
 	
 	public void onCancelClick(View v) {

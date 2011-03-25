@@ -21,12 +21,28 @@ import android.database.Cursor;
 
 public class GeoCategoryDAL implements GeoCategoryIDAL {
 
-	private Context cx;
+	private static Context cx;
+	
 	private BackendHelperSingleton helper;
 	private DatabaseAdapter da;
 	
-	public GeoCategoryDAL(Context cx) {
-		this.cx = cx;
+	public static void setContext(Context cx) {
+		GeoCategoryDAL.cx = cx;
+	}
+	
+	/**
+	* SingletonHolder is loaded on the first execution of Singleton.getInstance() 
+	* or the first access to SingletonHolder.INSTANCE, not before.
+	*/
+   private static class SingletonHolder { 
+     public static final GeoCategoryDAL INSTANCE = new GeoCategoryDAL(GeoCategoryDAL.cx);
+   }
+ 
+   public static GeoCategoryDAL getInstance() {
+     return SingletonHolder.INSTANCE;
+   }
+	
+	protected GeoCategoryDAL(Context cx) {
         this.helper = BackendHelperSingleton.getInstance();
         this.da = new DatabaseAdapter(cx);
 	}

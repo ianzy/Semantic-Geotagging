@@ -56,7 +56,7 @@ public class GeotaggingEntityInformation extends Activity {
         entity_information_adapter = new CommentCategoryAdapter();
         
         //fetch categories from local cache database
-        categoryDAL = new GeoCategoryDAL(this);
+        categoryDAL = GeoCategoryDAL.getInstance();
         categories = categoryDAL.getCommentCategoriesByEntityId(entityId);
         for(int i=0; i<categories.size(); i++) {
         	entity_information_adapter.addItem(categories.get(i));
@@ -150,6 +150,7 @@ public class GeotaggingEntityInformation extends Activity {
                 holder = new ViewHolder();
                 holder.categoryName = (TextView)convertView.findViewById(R.id.comemnt_category);
                 holder.counter = (TextView)convertView.findViewById(R.id.comment_category_counter);
+                holder.importantImage = (ImageView)convertView.findViewById(R.id.entity_information_important_tag);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
@@ -157,6 +158,12 @@ public class GeotaggingEntityInformation extends Activity {
             CommentCategory c = mData.get(position);
             holder.categoryName.setText(c.getName());
             holder.counter.setText("("+String.valueOf(c.getCount())+")");
+            if(c.isImportanTag()) {	
+	            holder.importantImage
+	        	.setImageDrawable(GeotaggingEntityInformation.this
+	        							.getResources()
+	        							.getDrawable(R.drawable.cg_icon_exclamation));
+            }
             return convertView;
         }
  
@@ -164,6 +171,7 @@ public class GeotaggingEntityInformation extends Activity {
  
     public static class ViewHolder {
         public TextView categoryName;
+        public ImageView importantImage;
         public TextView counter;
     }
 	

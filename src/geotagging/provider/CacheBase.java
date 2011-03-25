@@ -34,6 +34,7 @@ public final class CacheBase {
 		String COMMENT_CATEGORYID = "category_id";
 		String COMMENT_ENTITYID = "entity_id";
 		String COMMENT_COUNTER = "comments_counter";
+		String COMMENT_IMPORTANT_TAG = "comment_important_tag";
 	}
 	
 	interface ResponsesColumns {
@@ -45,6 +46,7 @@ public final class CacheBase {
 		String RESPONSE_USERIMG = "user_img";
 		String RESPONSE_ID = "response_id";
 		String RESPONSE_COUNTER = "response_counter";
+		String RESPONSE_IMPORTANT_TAG = "response_important_tag";
 	}
 	
 	interface StatesColumns {
@@ -75,6 +77,7 @@ public final class CacheBase {
 		String COUNTER_CATEGORYID = "category_id";
 		String COUNTER_COUNTER = "counter";
 		String COUNTER_CATEGORY_NAME = "category_name";
+		String CATEGORY_IMPORTANT_TAG = "important_tag";
 	}
 	
 	interface ResponseCounterColumns {
@@ -82,6 +85,7 @@ public final class CacheBase {
 		String COUNTER_CATEGORYID = "category_id";
 		String COUNTER_COUNTER = "counter";	
 		String COUNTER_CATEGORY_NAME = "category_name";
+		String CATEGORY_IMPORTANT_TAG = "important_tag";
 	}
 	
 	public static class Entities implements EntitiesColumns, BaseColumns {

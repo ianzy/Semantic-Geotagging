@@ -1,14 +1,13 @@
 package geotagging.realtime;
 
 import geotagging.DAL.GeoCategoryDAL;
-import android.content.Context;
 
 public class UpdateCategoriesThread extends BaseThread {
 
 	private GeoCategoryDAL categoryDAL;
 	
-	public UpdateCategoriesThread(Context cx) {
-		categoryDAL = new GeoCategoryDAL(cx);
+	public UpdateCategoriesThread() {
+		categoryDAL = GeoCategoryDAL.getInstance();
 	}
 	
 	@Override

@@ -15,7 +15,7 @@ public class UpdateResponseCounterThread extends BaseThread {
 	public UpdateResponseCounterThread(GeotaggingFollowUpCategories cx, int commentId) {
 		this.commentId = commentId;
 		this.cx = cx;
-		this.counterDAL = new GeoCategoryDAL(cx);
+		this.counterDAL = GeoCategoryDAL.getInstance();
 	}
 	@Override
 	public void run() {

@@ -61,6 +61,12 @@ android:orientation="horizontal"
 	style="@style/LabelIndicator"
 	android:id="@+id/counter_list_item"
 	android:text="More (13)"/>
+	<ImageView
+	android:layout_width="20px"
+	android:layout_height="20px"
+	android:layout_marginLeft="10px"
+	android:layout_marginBottom="10px"
+	android:id="@+id/list_item_important_tag"/>
 	</LinearLayout>
 	
 </LinearLayout>

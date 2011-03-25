@@ -37,7 +37,7 @@ public class UpdateFollowupCommentThread extends BaseThread {
 	}
 	
 	private void prepareCachedCommentsList() {
-		GeoCommentDAL commentsDAL = new GeoCommentDAL(commentList);
+		GeoCommentDAL commentsDAL = GeoCommentDAL.getInstance();
 		List<Comment> commentsList = commentsDAL.getCachedFollowUpCommentsByCommentId(comment_id);
         
 		if(commentsList == null || commentsList.size() == 0 )
@@ -52,7 +52,7 @@ public class UpdateFollowupCommentThread extends BaseThread {
 		SharedPreferences states = commentList.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, Context.MODE_PRIVATE);
 		int remote_count = states.getInt("remote_count", -1);
 		
-		GeoCommentDAL commentsDAL = new GeoCommentDAL(commentList);
+		GeoCommentDAL commentsDAL = GeoCommentDAL.getInstance();
 		int since_id = commentsDAL.getLatestResponseIdByCommentId(comment_id);
 		List<Comment> commentsList = commentsDAL.getRemoteFollowUpCommentsByCommentId(since_id, comment_id, remote_count);
         

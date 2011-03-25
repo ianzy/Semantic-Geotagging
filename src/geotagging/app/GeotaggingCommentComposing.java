@@ -24,15 +24,18 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class GeotaggingCommentComposing extends Activity implements TextWatcher {
 	
+	private boolean important;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.comment_composing);
+		this.important = false;
 		
 		//tricky way for the editText to listen to the on text change event
         ((EditText)findViewById(R.id.comment_composing_content)).addTextChangedListener(this);
@@ -68,6 +71,7 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
             obj.put("type", "");
             obj.put("created_at","");
             obj.put("updated_at","");
+            obj.put("important_tag", this.important);
      
             ent.put("comment", obj);
 		} catch (JSONException e1) {
@@ -95,6 +99,7 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
             String createAt = dateFormat.format(date)+ " UTC";
             intent.putExtra("created_at", createAt); 
             intent.putExtra("id", comment.getCommentId());
+            intent.putExtra("important_tag", this.important);
             setResult(RESULT_OK, intent);
             finish();
 		} else {
@@ -102,8 +107,14 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
 			btnSubmit.setEnabled(true);
 		}
 		
-		
-		
+	}
+	
+	public void onImportantClick(View v) {
+		CheckBox checkBox = (CheckBox)v;
+		if(checkBox.isChecked())
+			this.important = true;
+		else
+			this.important = false;
 	}
 	
 	public void onCancelClick(View v) {
