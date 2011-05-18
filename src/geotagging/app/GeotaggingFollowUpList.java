@@ -39,9 +39,35 @@ public class GeotaggingFollowUpList extends ListActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new FollowUpListAdapter();
         setContentView(R.layout.response_list_layout);
-        setListAdapter(mAdapter);
+        
+        //get entity_id from previous activity
+        Bundle b = getIntent().getExtras();
+        commentId = b.getInt("commentId");
+        categoryId = b.getInt("category_id");
+//        Log.i("!!!!!!!!!!!!!!!!!!!!!!id", String.valueOf(categoryId));
+        String categoryName = b.getString("responseCategory");
+        TextView tv = (TextView)this.findViewById(R.id.title_name);
+        tv.setText(categoryName);
+        Button btnAdd = (Button)this.findViewById(R.id.add_comments_button);
+        
+        // Ugly code
+        if(categoryName.charAt(categoryName.length()-1) == 's') {
+        	categoryName = categoryName.substring(0, categoryName.length()-1);
+        }
+        btnAdd.setText("Add A New "+categoryName);
+        
+        mAdapter = (FollowUpListAdapter)getLastNonConfigurationInstance();
+        if(null == mAdapter) {
+        	mAdapter = new FollowUpListAdapter();
+        	setListAdapter(mAdapter);
+        	updateFollowupCommentThread = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.INITIALIZE_MODE);
+            updateFollowupCommentThread.start();
+        } else {
+        	setListAdapter(mAdapter);
+        }
+        
+        
         
         //Set the onclick event listener for listview items
         ListView pairedListView = this.getListView();
@@ -65,21 +91,13 @@ public class GeotaggingFollowUpList extends ListActivity {
 			}
 		});
         
-        //get entity_id from previous activity
-        Bundle b = getIntent().getExtras();
-        commentId = b.getInt("commentId");
-        categoryId = b.getInt("category_id");
-//        Log.i("!!!!!!!!!!!!!!!!!!!!!!id", String.valueOf(categoryId));
-        String categoryName = b.getString("responseCategory");
-        TextView tv = (TextView)this.findViewById(R.id.title_name);
-        tv.setText(categoryName);
-        Button btnAdd = (Button)this.findViewById(R.id.add_comments_button);
-        btnAdd.setText("Add Followup Response");
-        
-        updateFollowupCommentThread = new UpdateFollowupCommentThread(this, commentId, UpdateFollowupCommentThread.INITIALIZE_MODE);
-        updateFollowupCommentThread.start();
     }
 
+	@Override
+    public Object onRetainNonConfigurationInstance() {
+        return this.mAdapter;
+    }
+	
     /** Handle "home" title-bar action. */
     public void onHomeClick(View v) {
         UIUtils.goHome(this);
@@ -167,7 +185,7 @@ public class GeotaggingFollowUpList extends ListActivity {
         		for (int i = 0; i < cs.size(); i++) {
         			existFlag = false;
         			for(int ii=0; ii<mAdapter.getCount(); ii++) {
-        				if(mAdapter.getItem(ii).getCommentId() == cs.get(i).getCommentId()) {
+        				if(mAdapter.getItem(ii).getEntity_id() == cs.get(i).getEntity_id()) {
         					existFlag = true;
         					break;
         				}
@@ -242,6 +260,8 @@ public class GeotaggingFollowUpList extends ListActivity {
             holder.counter.setText("+"+String.valueOf(c.getCommentCounter())+" more");
             holder.time.setText(UIUtils.TimeParser(c.getTime()));
             holder.username.setText(c.getUserName());
+            
+            holder.importantImage.setImageDrawable(null);
             if(c.isImportantTag()) {
             	holder.importantImage
             	.setImageDrawable(GeotaggingFollowUpList.this

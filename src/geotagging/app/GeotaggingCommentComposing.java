@@ -1,5 +1,6 @@
 package geotagging.app;
 
+import geotagging.DAL.GeoDraftDAL;
 import geotagging.DES.Comment;
 import geotagging.provider.CacheBase;
 import geotagging.utils.BackendHelperSingleton;
@@ -31,6 +32,11 @@ import android.widget.Toast;
 public class GeotaggingCommentComposing extends Activity implements TextWatcher {
 	
 	private boolean important;
+	private GeoDraftDAL draftDAL;
+	private int entityId;
+	private int categoryId;
+	private String content;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,7 +44,22 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
 		this.important = false;
 		
 		//tricky way for the editText to listen to the on text change event
-        ((EditText)findViewById(R.id.comment_composing_content)).addTextChangedListener(this);
+		EditText edit_content = (EditText)findViewById(R.id.comment_composing_content);
+		edit_content.addTextChangedListener(this);
+        
+        draftDAL = new GeoDraftDAL(this);
+        Bundle b = this.getIntent().getExtras();
+        entityId = b.getInt("entity_id");
+        categoryId = b.getInt("category_id");
+        
+        Comment draftComment = draftDAL.getCommentDraft(entityId, categoryId);
+        
+        if(null != draftComment) {
+        	content = draftComment.getDescription();
+            important = draftComment.isImportantTag();
+        	edit_content.setText(content);
+        	((CheckBox)this.findViewById(R.id.important_checkbox)).setChecked(important);
+        }
 	}
 	
 	public void onSubmitClick(View v) {
@@ -77,6 +98,9 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			Toast.makeText(this, "Submit failed...", Toast.LENGTH_LONG).show();
+    		btnSubmit.setEnabled(true);
+			return;
 		}
 		
 		String contentForPost = ent.toString();
@@ -87,9 +111,11 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
 		
 		
 		if(response != null) {
+			
 			Toast.makeText(this, "Submitting new comment", Toast.LENGTH_LONG).show();
 			Comment comment = DALUtils.getCommentFromJsonText(response);
-			//finish the activity
+
+			//finish the activity 
             Intent intent = new Intent();
             //need to be refactored
             intent.putExtra("description",edit_content.getText().toString());
@@ -100,6 +126,7 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
             intent.putExtra("created_at", createAt); 
             intent.putExtra("id", comment.getCommentId());
             intent.putExtra("important_tag", this.important);
+            draftDAL.deleteCommentDraft(entity_id, category_id);
             setResult(RESULT_OK, intent);
             finish();
 		} else {
@@ -117,7 +144,26 @@ public class GeotaggingCommentComposing extends Activity implements TextWatcher 
 			this.important = false;
 	}
 	
+	public void onSaveClick(View v) {
+		EditText e = (EditText)this.findViewById(R.id.comment_composing_content);
+		if(e.getText().toString().trim().equals("")) {
+    		Toast.makeText(this, "Empty content", Toast.LENGTH_LONG).show();
+    		return;
+    	}
+		String content = e.getText().toString();
+		if(null == draftDAL.getCommentDraft(entityId, categoryId)) {
+			draftDAL.createCommentDraft(entityId, categoryId, content, this.important);
+		} else {
+			draftDAL.updateCommentDraft(entityId, categoryId, content, this.important);
+		}
+	}
+	
+	public void onResetClick(View v) {
+		((EditText)this.findViewById(R.id.comment_composing_content)).setText("");
+	}
+	
 	public void onCancelClick(View v) {
+		draftDAL.deleteCommentDraft(entityId, categoryId);
 		this.setResult(Activity.RESULT_CANCELED);
 		this.finish();
 	}

@@ -73,16 +73,19 @@ public class UIUtils {
 
 		    if(diff[0] != 0) {
 		    	res = String.format("%d week%s ago", diff[0],
-				        diff[0] > 1 ? "s" : "");
+				        diff[0] > 1 || diff[0]==0 ? "s" : "");
 		    } else if (diff[0] == 0 && diff[1] != 0) {
 		    	res = String.format("%d day%s ago", diff[1],
-				        diff[1] > 1 ? "s" : "");
+				        diff[1] > 1 || diff[1]==0 ? "s" : "");
 		    } else if (diff[0] == 0 && diff[1] == 0 && diff[2] != 0) {
 		    	res =  String.format("%d hour%s ago", diff[2],
-				        diff[2] > 1 ? "s" : "");
-		    } else if (diff[0] == 0 && diff[1] == 0 && diff[2] == 0) {
+				        diff[2] > 1 || diff[2]==0 ? "s" : "");
+		    } else if (diff[0] == 0 && diff[1] == 0 && diff[2] == 0 && diff[3] != 0) {
 		    	res =  String.format("%d minute%s ago", diff[3],
-				        diff[3] > 1 ? "s" : "");
+				        diff[3] > 1 || diff[3]==0 ? "s" : "");
+		    } else if (diff[0] == 0 && diff[1] == 0 && diff[2] == 0 && diff[3] == 0) {
+		    	res = String.format("%d second%s ago", diff[4],
+		    			diff[4] > 1 || diff[4] == 0 ? "s" : "");
 		    }
 		    
 		} catch (ParseException e) {

@@ -129,7 +129,7 @@ public class GeoEntityDAL implements GeoEntityIDAL {
                 ne.setLocation(entity.getJSONObject("entity").getString("location"));
                 ne.setTitle(entity.getJSONObject("entity").getString("title"));
                 ne.setId(entity.getJSONObject("entity").getInt("id"));
-                ne.setIconURI(entity.getJSONObject("entity").getString("icon_uri"));
+                ne.setIconURI(entity.getJSONObject("entity").getString("icon_name"));
                 
                 ne.setUpdatedAt(entity.getJSONObject("entity").getString("updated_at"));
 //                updateAt = entity.getJSONObject("entity").getString("updated_at").replace("T", " ").replace("Z", "").replace("-", "/");

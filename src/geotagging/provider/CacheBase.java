@@ -88,6 +88,20 @@ public final class CacheBase {
 		String CATEGORY_IMPORTANT_TAG = "important_tag";
 	}
 	
+	interface CommentDraftColumns {
+		String DRAFT_ENTITYID = "comment_draft_entity_id";
+		String DRAFT_CATEGORYID = "comment_draft_category_id";
+		String DRAFT_CONTENT = "comment_draft_content";
+		String DRAFT_IMPORTANT = "comment_draft_important_tag";
+	}
+	
+	interface ResponseDraftColumns {
+		String DRAFT_COMMENTID = "response_draft_comment_id";
+		String DRAFT_CATEGORYID = "response_draft_category_id";
+		String DRAFT_CONTENT = "response_draft_content";
+		String DRAFT_IMPORTANT = "response_draft_important_tag";
+	}
+	
 	public static class Entities implements EntitiesColumns, BaseColumns {
 		// This class can be extended to support content provider
 	}
@@ -120,5 +134,12 @@ public final class CacheBase {
 		// This class can be extended to support content provider
 	}
 	
+	public static class CommentDrafts implements CommentDraftColumns, BaseColumns {
+		
+	}
+	
+	public static class ResponseDrafts implements ResponseDraftColumns, BaseColumns {
+		
+	}
 	
 }

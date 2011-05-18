@@ -4,7 +4,6 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical">
-  
   <LinearLayout style="@style/TitleBar">
       <ImageButton style="@style/TitleBarAction"
           android:contentDescription="@string/description_home"
@@ -13,17 +12,9 @@
 
       <ImageView style="@style/TitleBarSeparator" />
       <TextView style="@style/TitleBarText" 
-      	android:text="Comments"
+      	android:text="Alert"
       	android:id="@+id/title_name"/>
-      	<!--
-    	
-    	<ImageView style="@style/TitleBarSeparator" />
-    	<ImageButton style="@style/TitleBarAction"
-          android:contentDescription="@string/description_compose"
-          android:src="@drawable/ic_title_export"
-          android:onClick="onComposeClick" />
-          
-	  -->
+
 	  <ImageView style="@style/TitleBarSeparator" />
       <ImageButton style="@style/TitleBarAction"
           android:id="@+id/btn_title_refresh"
@@ -40,21 +31,7 @@
           android:src="@drawable/ic_title_home"
           android:onClick="onHomeClick" />
   </LinearLayout>
-  
-  <LinearLayout
-	  android:layout_width="match_parent"
-	  android:layout_height="match_parent"
-	  android:orientation="vertical">
-	  <TextView android:layout_width="match_parent" 
-		android:layout_height="wrap_content"
-		style="@style/CategorizedResponse" 
-       	android:text="Select a message to view or add a follow up response"
-       	/>
-	<ListView android:id="@+id/android:list" 
-	android:layout_width="match_parent"
-	android:layout_height="0dip"
-	android:layout_weight="1"/>
-	<TextView
+  <TextView
         android:id="@android:id/empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -62,18 +39,4 @@
         android:gravity="center"
         android:layout_weight = "1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-        <LinearLayout android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:background="#ff980000">
-			<Button android:id="@+id/add_comments_button"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:onClick="onComposeClick"
-					android:text="Add New Comment"
-					android:textSize="25px"
-					android:textColor="#ffffff"
-					android:layout_weight="0"
-					android:background="@drawable/title_button"/>
-			</LinearLayout>
-	</LinearLayout>
 </LinearLayout>

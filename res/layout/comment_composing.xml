@@ -31,11 +31,11 @@
 	       <requestFocus />
 	   </EditText>
 	   <LinearLayout
-	   		android:layout_width="wrap_content"
+	   		android:layout_width="match_parent"
 	   		android:layout_height="wrap_content"
 	   		android:layout_weight="0"
 	   		android:orientation="horizontal">
-	   		<CheckBox
+	   		<CheckBox android:id="@+id/important_checkbox"
 				android:text="Important"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -43,7 +43,8 @@
 				/>
 		   <Button android:text="Add Image" 
 	   			android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="40px" />
 			<TextView
 				android:text="(Optional)"
 				android:layout_width="wrap_content"
@@ -66,6 +67,14 @@
            android:onClick="onSubmitClick"
            android:id="@+id/comment_composing_submit"
            android:enabled="false"/>
+       <Button
+           android:layout_width="0dip"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:text="Save Draft" 
+           android:onClick="onSaveClick"
+           android:id="@+id/comment_composing_save_draft"/>
+           
        <Button
            android:layout_width="0dip"
            android:layout_height="wrap_content"

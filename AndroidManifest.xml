@@ -22,6 +22,13 @@
             </intent-filter>
         </activity>
         
+        <activity android:name=".GeotaggingAlert" android:label="GeotaggingAlert"
+			android:theme="@android:style/Theme.Light.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        
         <activity android:name=".GeotaggingResponseList" android:label="GeotaggingResponseList"
 			android:theme="@android:style/Theme.Light.NoTitleBar">
             <intent-filter>
@@ -107,4 +114,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <supports-screens android:largeScreens="true" />
 </manifest>

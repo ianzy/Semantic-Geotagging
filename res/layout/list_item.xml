@@ -51,22 +51,22 @@ android:orientation="horizontal"
 		</TextView>
 	</LinearLayout>
 	<LinearLayout
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_weight="0"
-	android:orientation="vertical"
-	android:paddingTop="20px"
-	>
-	<TextView 
-	style="@style/LabelIndicator"
-	android:id="@+id/counter_list_item"
-	android:text="More (13)"/>
-	<ImageView
-	android:layout_width="20px"
-	android:layout_height="20px"
-	android:layout_marginLeft="10px"
-	android:layout_marginBottom="10px"
-	android:id="@+id/list_item_important_tag"/>
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="0"
+		android:orientation="vertical"
+		android:paddingTop="20px"
+		>
+		<ImageView
+			android:layout_width="20px"
+			android:layout_height="20px"
+			android:layout_marginLeft="10px"
+			android:layout_marginBottom="10px"
+			android:id="@+id/list_item_important_tag"/>
+		<TextView 
+			style="@style/LabelIndicator"
+			android:id="@+id/counter_list_item"
+			android:text="More (13)"/>
 	</LinearLayout>
 	
 </LinearLayout>

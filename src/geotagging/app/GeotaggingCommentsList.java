@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,9 +40,29 @@ public class GeotaggingCommentsList extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new MyCustomAdapter();
         setContentView(R.layout.response_list_layout);
-        setListAdapter(mAdapter);
+        
+        Bundle b = getIntent().getExtras();
+        entity_id = b.getInt("entity_id");
+        category_id = b.getInt("category_id");
+        
+        String categoryName = b.getString("commentCategory");
+        TextView tv = (TextView)this.findViewById(R.id.title_name);
+        tv.setText(categoryName);
+        Button btnAdd = (Button)this.findViewById(R.id.add_comments_button);
+        btnAdd.setText("Add New "+categoryName);
+        
+        mAdapter = (MyCustomAdapter)getLastNonConfigurationInstance();
+        if(null == mAdapter) {
+        	mAdapter = new MyCustomAdapter();
+        	setListAdapter(mAdapter);
+        	//get entity_id from previous activity
+            
+            updateCommentThread = new UpdateCommentThread(this, entity_id, category_id, UpdateCommentThread.INITIALIZE_MODE);
+            updateCommentThread.start();
+        } else {
+        	setListAdapter(mAdapter);
+        }
         
         //Set the onclick event listener for listview items
         ListView pairedListView = this.getListView();
@@ -64,13 +85,11 @@ public class GeotaggingCommentsList extends ListActivity {
 				startActivity(intent);
 			}
 		});
-        
-        //get entity_id from previous activity
-        Bundle b = getIntent().getExtras();
-        entity_id = b.getInt("entity_id");
-        category_id = b.getInt("category_id");
-        updateCommentThread = new UpdateCommentThread(this, entity_id, category_id, UpdateCommentThread.INITIALIZE_MODE);
-        updateCommentThread.start();
+    }
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return this.mAdapter;
     }
 
     /** Handle "home" title-bar action. */
@@ -227,6 +246,7 @@ public class GeotaggingCommentsList extends ListActivity {
             holder.counter.setText("+"+String.valueOf(c.getCommentCounter())+" more");
             holder.time.setText(UIUtils.TimeParser(c.getTime()));
             holder.username.setText(c.getUserName());
+            holder.importantImage.setImageDrawable(null);
             if(c.isImportantTag()) {
             	holder.importantImage
             	.setImageDrawable(GeotaggingCommentsList.this

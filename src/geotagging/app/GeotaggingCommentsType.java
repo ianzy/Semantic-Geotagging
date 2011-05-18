@@ -57,6 +57,7 @@ public class GeotaggingCommentsType extends Activity implements TextWatcher {
         double lat = b.getDouble("lat");
         String iconName = b.getString("iconName");
         int drawableId = b.getInt("drawableId");
+        String iconUrl = b.getString("iconUrl");
         //end of getting data
 		
     	if(edit_comment.getText().toString().trim().equals("") ||
@@ -77,7 +78,8 @@ public class GeotaggingCommentsType extends Activity implements TextWatcher {
             obj.put("lng", lng);
             obj.put("description", edit_comment.getText().toString());
             obj.put("lat", lat);
-            obj.put("icon_uri", iconName);
+            obj.put("icon_name", iconName);
+            obj.put("icon_uri", iconUrl);
 
             ent.put("entity", obj);
 		} catch (JSONException e1) {

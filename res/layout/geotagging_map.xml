@@ -64,6 +64,10 @@
             android:src="@drawable/ic_title_search"
             android:onClick="onSearchClick" />
     </LinearLayout>
+    <FrameLayout
+    android:id="@+id/mapwrapper"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
 	 <geotagging.views.GeotaggingMapView
     	android:id="@+id/mapview"
         android:layout_width="match_parent" 
@@ -72,5 +76,6 @@
         android:clickable="true"
         android:apiKey="0qbAL2m0_ty3apb0xzR5KFERAehDR1qrEGE_Ang"
         />
+        </FrameLayout>
       </LinearLayout>
 </FrameLayout>

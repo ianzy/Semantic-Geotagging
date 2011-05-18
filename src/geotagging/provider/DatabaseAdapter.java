@@ -7,10 +7,12 @@ import geotagging.DES.ResponseCategory;
 import geotagging.DES.States;
 import geotagging.provider.CacheBase.CommentCategories;
 import geotagging.provider.CacheBase.CommentCounters;
+import geotagging.provider.CacheBase.CommentDrafts;
 import geotagging.provider.CacheBase.Comments;
 import geotagging.provider.CacheBase.Entities;
 import geotagging.provider.CacheBase.ResponseCategories;
 import geotagging.provider.CacheBase.ResponseCounters;
+import geotagging.provider.CacheBase.ResponseDrafts;
 import geotagging.provider.CacheBase.Responses;
 import geotagging.provider.GeotaggingDatabaseHelper.Tables;
 
@@ -93,13 +95,13 @@ public class DatabaseAdapter {
 				CommentCounterQuery.PROJECTION, CommentCounters.COUNTER_ENTITYID
 				+"="
 				+String.valueOf(entity_id), 
-				null, null, null, null);
+				null, null, null, CommentCounters.COUNTER_CATEGORYID + " ASC");
 	}
 	
 	public Cursor getResponseCounters(int comment_id) {
 		return db.query(Tables.RESPONSECOUNTERS, ResponseCounterQuery.PROJECTION,
 				ResponseCounters.COUNTER_COMMENTID+"="+String.valueOf(comment_id),
-				null, null, null, null);
+				null, null, null, ResponseCounters.COUNTER_CATEGORY_NAME + " ASC");
 	}
 	
 	public boolean updateCommentCounter(int entity_id, int category_id, int count) {
@@ -184,6 +186,7 @@ public class DatabaseAdapter {
 		        initialValues.put(CommentCounters.COUNTER_COUNTER, 0);
 		        initialValues.put(CommentCounters.COUNTER_ENTITYID, entity_id);
 		        initialValues.put(CommentCounters.COUNTER_CATEGORY_NAME, c.getString(c.getColumnIndex(CommentCategories.CATEGORY_NAME)));
+		        initialValues.put(CommentCounters.CATEGORY_IMPORTANT_TAG, false);
 		        db.insert(Tables.COMMENTCOUNTERS, null, initialValues);
 				
 			} while(c.moveToNext());
@@ -203,6 +206,7 @@ public class DatabaseAdapter {
 		        initialValues.put(ResponseCounters.COUNTER_COUNTER, 0);
 		        initialValues.put(ResponseCounters.COUNTER_COMMENTID, comment_id);
 		        initialValues.put(ResponseCounters.COUNTER_CATEGORY_NAME, c.getString(c.getColumnIndex(ResponseCategories.CATEGORY_NAME)));
+		        initialValues.put(ResponseCounters.CATEGORY_IMPORTANT_TAG, false);
 		        db.insert(Tables.RESPONSECOUNTERS, null, initialValues);
 				
 			} while(c.moveToNext());
@@ -340,6 +344,74 @@ public class DatabaseAdapter {
 		return 0;
 	}
 	
+	//comment drafts CRUD
+	public long createCommentDraft(int entityId, int categoryId, String content, boolean important) {
+		ContentValues initialValues = new ContentValues();
+        initialValues.put(CommentDrafts.DRAFT_CATEGORYID, categoryId);
+        initialValues.put(CommentDrafts.DRAFT_CONTENT, content);
+        initialValues.put(CommentDrafts.DRAFT_ENTITYID, entityId);
+        initialValues.put(CommentDrafts.DRAFT_IMPORTANT, important);
+        return db.insert(Tables.COMMENTDRAFTS, null, initialValues);
+	}
+	
+	public boolean updateCommentDraft(int entityId, int categoryId, String content, boolean important) {
+		ContentValues args = new ContentValues();
+        args.put(CommentDrafts.DRAFT_ENTITYID, entityId);
+        args.put(CommentDrafts.DRAFT_CATEGORYID, categoryId);
+        args.put(CommentDrafts.DRAFT_CONTENT, content);
+        args.put(CommentDrafts.DRAFT_IMPORTANT, important);
+        return db.update(Tables.COMMENTDRAFTS, args, 
+        		CommentDrafts.DRAFT_CATEGORYID+"="+String.valueOf(categoryId)+" AND "
+        		+CommentDrafts.DRAFT_ENTITYID+"="+String.valueOf(entityId), null) > 0;
+	}
+	
+	public Cursor getCommentDraft(int entityId, int categoryId) {
+		return db.query(Tables.COMMENTDRAFTS, 
+				CommentDraftQuery.PROJECTION, CommentDrafts.DRAFT_CATEGORYID
+				+"="+String.valueOf(categoryId)
+				+" AND "+CommentDrafts.DRAFT_ENTITYID+"="+String.valueOf(entityId), 
+				null, null, null, null);
+	}
+	
+	public int deleteCommentDraft(int entityId, int categoryId) {
+		return db.delete(Tables.COMMENTDRAFTS, CommentDrafts.DRAFT_CATEGORYID+"="+String.valueOf(categoryId)+" AND "
+        		+CommentDrafts.DRAFT_ENTITYID+"="+String.valueOf(entityId), null);
+	}
+	
+	// response drafts CRUD
+	public long createResponseDraft(int commentId, int categoryId, String content, boolean important) {
+		ContentValues initialValues = new ContentValues();
+        initialValues.put(ResponseDrafts.DRAFT_CATEGORYID, categoryId);
+        initialValues.put(ResponseDrafts.DRAFT_CONTENT, content);
+        initialValues.put(ResponseDrafts.DRAFT_COMMENTID, commentId);
+        initialValues.put(ResponseDrafts.DRAFT_IMPORTANT, important);
+        return db.insert(Tables.RESPONSEDRAFTS, null, initialValues);
+	}
+	
+	public boolean updateResponseDraft(int commentId, int categoryId, String content, boolean important) {
+		ContentValues args = new ContentValues();
+        args.put(ResponseDrafts.DRAFT_COMMENTID, commentId);
+        args.put(ResponseDrafts.DRAFT_CATEGORYID, categoryId);
+        args.put(ResponseDrafts.DRAFT_CONTENT, content);
+        args.put(ResponseDrafts.DRAFT_IMPORTANT, important);
+        return db.update(Tables.RESPONSEDRAFTS, args, 
+        		ResponseDrafts.DRAFT_CATEGORYID+"="+String.valueOf(categoryId)+" AND "
+        		+ResponseDrafts.DRAFT_COMMENTID+"="+String.valueOf(commentId), null) > 0;
+	}
+	
+	public Cursor getResponseDraft(int commentId, int categoryId) {
+		return db.query(Tables.RESPONSEDRAFTS, 
+				ResponseDraftQuery.PROJECTION, ResponseDrafts.DRAFT_CATEGORYID
+				+"="+String.valueOf(categoryId)
+				+" AND "+ResponseDrafts.DRAFT_COMMENTID+"="+String.valueOf(commentId), 
+				null, null, null, null);
+	}
+	
+	public int deleteResponseDraft(int commentId, int categoryId) {
+		return db.delete(Tables.RESPONSEDRAFTS, ResponseDrafts.DRAFT_CATEGORYID+"="+String.valueOf(categoryId)+" AND "
+        		+ResponseDrafts.DRAFT_COMMENTID+"="+String.valueOf(commentId), null);
+	}
+	
 	private interface EntityQuery {
 		String[] PROJECTION = {
 			Entities.ENTITY_DESCRIPTION,
@@ -426,6 +498,24 @@ public class DatabaseAdapter {
 			ResponseCounters.COUNTER_CATEGORYID,
 			ResponseCounters.COUNTER_COUNTER,
 			ResponseCounters.CATEGORY_IMPORTANT_TAG
+		};
+	}
+	
+	private interface CommentDraftQuery {
+		String[] PROJECTION = {
+			CommentDrafts.DRAFT_CATEGORYID,
+			CommentDrafts.DRAFT_CONTENT,
+			CommentDrafts.DRAFT_IMPORTANT,
+			CommentDrafts.DRAFT_ENTITYID
+		};
+	}
+	
+	private interface ResponseDraftQuery {
+		String[] PROJECTION = {
+			ResponseDrafts.DRAFT_CATEGORYID,
+			ResponseDrafts.DRAFT_CONTENT,
+			ResponseDrafts.DRAFT_IMPORTANT,
+			ResponseDrafts.DRAFT_COMMENTID
 		};
 	}
 }

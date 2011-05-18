@@ -66,7 +66,7 @@ public class GeoCategoryDAL implements GeoCategoryIDAL {
 				category.setCategory_id(cursor.getInt(cursor.getColumnIndex(CommentCounters.COUNTER_CATEGORYID)));
 				category.setCount(cursor.getInt(cursor.getColumnIndex(CommentCounters.COUNTER_COUNTER)));
 				category.setName(cursor.getString(cursor.getColumnIndex(CommentCounters.COUNTER_CATEGORY_NAME)));
-				
+				category.setImportanTag(cursor.getInt(cursor.getColumnIndex(CommentCounters.CATEGORY_IMPORTANT_TAG)) > 0);
 				categories.add(category);
 			} while(cursor.moveToNext());
 			cursor.close();
@@ -98,7 +98,7 @@ public class GeoCategoryDAL implements GeoCategoryIDAL {
 				category.setCategory_id(cursor.getInt(cursor.getColumnIndex(ResponseCounters.COUNTER_CATEGORYID)));
 				category.setCount(cursor.getInt(cursor.getColumnIndex(ResponseCounters.COUNTER_COUNTER)));
 				category.setName(cursor.getString(cursor.getColumnIndex(ResponseCounters.COUNTER_CATEGORY_NAME)));
-				
+				category.setImportanTag(cursor.getInt(cursor.getColumnIndex(ResponseCounters.CATEGORY_IMPORTANT_TAG)) > 0);
 				categories.add(category);
 			} while(cursor.moveToNext());
 			cursor.close();

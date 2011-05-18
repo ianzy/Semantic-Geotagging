@@ -18,6 +18,7 @@ public class BackendHelperSingleton {
 	
 	// Private constructor prevents instantiation from other classes
    protected BackendHelperSingleton() {
+	   
    }
  
    /**
@@ -70,6 +71,8 @@ public class BackendHelperSingleton {
         	   return null;
            case 500:
         	   return null;
+           case -1:
+        	   return null;
            }
            
            //Get Response	
@@ -90,9 +93,9 @@ public class BackendHelperSingleton {
            return null;
          } finally {
         	 if (wr != null) try { wr.close(); } catch (IOException logOrIgnore) {}
-           if(connection != null) {
-             connection.disconnect(); 
-           }
+			 if(connection != null) {
+			   connection.disconnect(); 
+			 }
            
          }
    }
@@ -113,7 +116,6 @@ public class BackendHelperSingleton {
            	sb.append(line);
            }
            
-           rd.close();
            return sb.toString();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

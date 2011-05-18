@@ -173,7 +173,10 @@ public class GeotaggingFollowUpCategories extends Activity {
             ResponseCategory c = mData.get(position);
             holder.categoryName.setText(c.getName());
             holder.counter.setText("("+String.valueOf(c.getCount())+")");
+            //force clear the image to prevent caching behavior
+            holder.importantImage.setImageDrawable(null);
             if(c.isImportanTag()) {	
+//            	Log.i("-------------------------", String.valueOf(c.getName()));
 	            holder.importantImage
 	        	.setImageDrawable(GeotaggingFollowUpCategories.this
 	        							.getResources()

@@ -12,7 +12,6 @@
 		android:id="@+id/widget28"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		xmlns:android="http://schemas.android.com/apk/res/android"
 		>
 		<Button
 		android:id="@+id/add_inpanel_button"

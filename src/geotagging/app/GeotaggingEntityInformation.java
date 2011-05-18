@@ -158,6 +158,7 @@ public class GeotaggingEntityInformation extends Activity {
             CommentCategory c = mData.get(position);
             holder.categoryName.setText(c.getName());
             holder.counter.setText("("+String.valueOf(c.getCount())+")");
+            holder.importantImage.setImageDrawable(null);
             if(c.isImportanTag()) {	
 	            holder.importantImage
 	        	.setImageDrawable(GeotaggingEntityInformation.this
@@ -196,5 +197,17 @@ public class GeotaggingEntityInformation extends Activity {
     /** Handle "search" title-bar action. */
     public void onSearchClick(View v) {
         UIUtils.goSearch(this);
+    }
+    
+    public void onAlertClick(View v) {
+    	Intent intent = new Intent();
+		intent.setClassName("geotagging.app","geotagging.app.GeotaggingAlert");
+		this.startActivity(intent);
+    }
+    
+    public void onClearAllClick(View v) {
+    	Intent intent = new Intent();
+		intent.setClassName("geotagging.app","geotagging.app.GeotaggingAlert");
+		this.startActivity(intent);
     }
 }

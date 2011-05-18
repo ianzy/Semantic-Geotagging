@@ -2,10 +2,12 @@ package geotagging.provider;
 
 import geotagging.provider.CacheBase.CommentCategories;
 import geotagging.provider.CacheBase.CommentCounters;
+import geotagging.provider.CacheBase.CommentDrafts;
 import geotagging.provider.CacheBase.Comments;
 import geotagging.provider.CacheBase.Entities;
 import geotagging.provider.CacheBase.ResponseCategories;
 import geotagging.provider.CacheBase.ResponseCounters;
+import geotagging.provider.CacheBase.ResponseDrafts;
 import geotagging.provider.CacheBase.Responses;
 import geotagging.provider.CacheBase.States;
 import android.content.Context;
@@ -29,6 +31,8 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
         String RESPONSECATEGORIES = "responsecategories";
         String COMMENTCOUNTERS = "commentcounters";
         String RESPONSECOUNTERS = "responsecounters";
+        String COMMENTDRAFTS = "commentdrafts";
+        String RESPONSEDRAFTS = "responsedrafts";
     }
 
 	
@@ -122,6 +126,22 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
 			      + ResponseCounters.CATEGORY_IMPORTANT_TAG + " BOOLEAN,"
 			      + ResponseCounters.COUNTER_CATEGORY_NAME + " TEXT"
 			      + ");");
+		
+		db.execSQL("CREATE TABLE " + Tables.RESPONSEDRAFTS + " ("
+			      + ResponseDrafts._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+			      + ResponseDrafts.DRAFT_CATEGORYID + " INTEGER,"
+			      + ResponseDrafts.DRAFT_COMMENTID + " INTEGER,"
+			      + ResponseDrafts.DRAFT_IMPORTANT + " BOOLEAN,"
+			      + ResponseDrafts.DRAFT_CONTENT + " TEXT"
+			      + ");");
+		
+		db.execSQL("CREATE TABLE " + Tables.COMMENTDRAFTS + " ("
+			      + CommentDrafts._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+			      + CommentDrafts.DRAFT_CATEGORYID + " INTEGER,"
+			      + CommentDrafts.DRAFT_ENTITYID + " INTEGER,"
+			      + CommentDrafts.DRAFT_IMPORTANT + " BOOLEAN,"
+			      + CommentDrafts.DRAFT_CONTENT + " TEXT"
+			      + ");");
 	}
 
 	@Override
@@ -144,6 +164,8 @@ public class GeotaggingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Tables.RESPONSECOUNTERS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.RESPONSES);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.STATES);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.COMMENTDRAFTS);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.RESPONSEDRAFTS);
 
         onCreate(db);
 

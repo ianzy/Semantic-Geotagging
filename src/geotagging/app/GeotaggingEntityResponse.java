@@ -1,5 +1,6 @@
 package geotagging.app;
 
+import geotagging.DAL.GeoDraftDAL;
 import geotagging.DES.Comment;
 import geotagging.provider.CacheBase;
 import geotagging.utils.BackendHelperSingleton;
@@ -34,6 +35,8 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
 	
 	private int comment_id;
 	private boolean important;
+	private GeoDraftDAL draftDAL;
+	private String content;
 	
 	private String categoryName;
 //	private List<ResponseCategory> categories;
@@ -49,7 +52,19 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
 //        categories = categoryDAL.getResponseCategoriesByCommentId(comment_id);
         category_id = b.getInt("category_id");
         important = false;
-        ((EditText)findViewById(R.id.edit_response)).addTextChangedListener(this);
+        EditText edit_content = (EditText)findViewById(R.id.edit_response);
+		edit_content.addTextChangedListener(this);
+        
+        draftDAL = new GeoDraftDAL(this);
+        
+        Comment draftResponse = draftDAL.getResponseDraft(comment_id, category_id);
+        
+        if(null != draftResponse) {
+        	content = draftResponse.getDescription();
+            important = draftResponse.isImportantTag();
+            ((CheckBox)this.findViewById(R.id.important_checkbox)).setChecked(important);
+        	edit_content.setText(content);
+        }
 	}
 	
 //	public void onRadioClick(View v) {
@@ -128,15 +143,13 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
             intent.putExtra("category_id", resp.getCategory_id());
             intent.putExtra("id", resp.getEntity_id());
             intent.putExtra("important_tag", this.important);
+            draftDAL.deleteResponseDraft(this.comment_id, this.category_id);
 	        setResult(RESULT_OK, intent);
 	        finish();
 		} else {
 			Toast.makeText(this, "Submition failed", Toast.LENGTH_LONG).show();
 			btnSubmit.setEnabled(true);
 		}
-		
-		
-		
 	}
 	
 	public void onImportantClick(View v) {
@@ -147,7 +160,26 @@ public class GeotaggingEntityResponse extends Activity implements TextWatcher {
 			this.important = false;
 	}
 	
+	public void onSaveClick(View v) {
+		EditText e = (EditText)this.findViewById(R.id.edit_response);
+		if(e.getText().toString().trim().equals("")) {
+    		Toast.makeText(this, "Empty content", Toast.LENGTH_LONG).show();
+    		return;
+    	}
+		String content = e.getText().toString();
+		if(null == draftDAL.getResponseDraft(this.comment_id, this.category_id)) {
+			draftDAL.createResponseDraft(this.comment_id, this.category_id, content, this.important);
+		} else {
+			draftDAL.updateResponseDraft(this.comment_id, this.category_id, content, this.important);
+		}
+	}
+	
+	public void onResetClick(View v) {
+		((EditText)this.findViewById(R.id.edit_response)).setText("");
+	}
+	
 	public void onCancelClick(View v) {
+		draftDAL.deleteResponseDraft(this.comment_id, this.category_id);
 		this.setResult(Activity.RESULT_CANCELED);
 		this.finish();
 	}

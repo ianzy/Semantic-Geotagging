@@ -11,6 +11,7 @@ import geotagging.utils.UIUtils;
 import geotagging.utils.UserIndicationOverlay;
 import geotagging.views.BaloonInMapView;
 import geotagging.views.GeotaggingMapView;
+import geotagging.views.TransparentPanel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,9 +39,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -80,6 +83,14 @@ public class GeotaggingMap extends MapActivity {
 		"gasleak"
 	};
 	
+	public static final String[] ICONURLS = new String[] {
+		"http://geotagging.heroku.com/images/icons/FireIcon_small.png",
+		"http://geotagging.heroku.com/images/icons/Crime.png",
+		"http://geotagging.heroku.com/images/icons/Earthquake.png",
+		"http://geotagging.heroku.com/images/icons/ExplosionIcon.png",
+		"http://geotagging.heroku.com/images/icons/Nuclear.png"
+	};
+	
 	private static final int DIALOG_FOR_MAPMODE = 2;
 	private static final String[] ITEMS_FOR_MAPMODE = new String[] {
 		"Map","Satellite", "Street View","Traffic"
@@ -116,6 +127,18 @@ public class GeotaggingMap extends MapActivity {
         
         mapView = (GeotaggingMapView) this.findViewById(R.id.mapview);
         mapView.addObserver(this);
+        
+        //add the instruction
+        final FrameLayout fl = (FrameLayout)this.findViewById(R.id.mapwrapper);
+        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final TransparentPanel instructionPanel = (TransparentPanel)layoutInflater.inflate(R.layout.mapview_instruction, null);
+        fl.addView(instructionPanel, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        Button btnClose = (Button)instructionPanel.findViewById(R.id.close_panel_button);
+        btnClose.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+            	fl.removeView(instructionPanel);
+            }
+        });
         
         initializeDALContext();        
         initializeViews();
@@ -260,6 +283,7 @@ public class GeotaggingMap extends MapActivity {
 	    		    	b.putDouble("lat", point.getLatitudeE6() / 1E6);
 	    		    	b.putInt("drawableId", DRAWABLES[(int)arg3]);
 	    		    	b.putString("iconName", ICONNAMES[(int)arg3]);
+	    		    	b.putString("iconUrl", ICONURLS[(int)arg3]);
 	    		    	Log.i("+++++++++++++++++++++", HARDCODED_DATA[(int)arg3]);
 	    		    	Log.i("+++++++++++++++++++++", String.valueOf(DRAWABLES[(int)arg3]));
 	    		    	newEntityIntent.putExtras(b);
