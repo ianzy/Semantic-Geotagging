@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:orientation="vertical">
+	
+	  <LinearLayout style="@style/TitleBar">
+      <ImageButton style="@style/TitleBarAction"
+          android:contentDescription="@string/description_home"
+          android:src="@drawable/back_button"
+          android:onClick="onBackClick" />
+
+      <ImageView style="@style/TitleBarSeparator" />
+      <TextView style="@style/TitleBarText" 
+      	android:text="Follow up responses"/>
+	  <ImageView style="@style/TitleBarSeparator" />
+      <ImageButton style="@style/TitleBarAction"
+          android:contentDescription="@string/description_search"
+          android:src="@drawable/ic_title_home"
+          android:onClick="onHomeClick" />
+  		</LinearLayout>
+
+	<ScrollView
+	android:id="@+id/comment_detail_sw"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_weight="1">
+	<LinearLayout
+	android:id="@+id/comment_detail_ll"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	>
+	<LinearLayout
+	android:id="@+id/comment_detail_header"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	>
+		<TextView
+		android:id="@+id/comment_content_user_name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="User Name"
+		android:paddingTop="10px"
+		android:paddingLeft = "10px"
+		android:textSize="8pt"
+		>
+		</TextView>
+	</LinearLayout>
+	<TextView
+		android:id="@+id/comment_content_content"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textSize="10pt"
+		android:paddingLeft="10px"
+		android:paddingTop="5px"
+		>
+	</TextView>
+	</LinearLayout>
+	</ScrollView>
+	
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="40px"
+        android:orientation="vertical"
+        android:background="#ff980000">
+        <Button android:id="@+id/comment_content_btn_see"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:onClick="onFollowUpCategoryClick"
+				android:text="See follow-up responses"
+				android:textSize="25px"
+				android:textColor="#ffffff"
+				android:layout_weight="0"
+				android:background="@drawable/title_button"/>
+	</LinearLayout>
+		<ImageView style="@style/ButtonSeparator" />
+	<LinearLayout android:layout_width="match_parent"
+        android:layout_height="40px"
+        android:orientation="vertical"
+        android:background="#ff980000">
+		<Button android:id="@+id/comment_content_btn_respond"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:onClick="onComposeCategoryClick"
+				android:text="Respond yourself"
+				android:textSize="25px"
+				android:textColor="#ffffff"
+				android:layout_weight="0"
+				android:background="@drawable/title_button"/>
+	</LinearLayout>
+	<include layout="@layout/alert_bottom_bar"/>
+</LinearLayout>

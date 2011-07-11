@@ -2,60 +2,79 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:id="@+id/list_item_frame"
 android:layout_width="match_parent"
-android:layout_height="match_parent"
+android:layout_height="wrap_content"
 android:layout_alignParentTop="true"
 android:layout_alignParentLeft="true"
 android:orientation="horizontal"
 >
+	<FrameLayout android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_weight="1">
 	
-	<LinearLayout
-	android:id="@+id/list_content_frame"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:paddingTop="6px"
-	android:paddingLeft="6px"
-	android:layout_weight="1"
-	>
 		<LinearLayout
-		android:id="@+id/widget38"
+		android:id="@+id/list_content_frame"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
+		android:layout_height="100dp"
+		android:orientation="vertical"
+		android:paddingTop="6px"
+		android:paddingLeft="6px"
+		android:layout_weight="1"
 		>
-			<TextView
-			android:id="@+id/title_list_item"
+			<LinearLayout
+			android:id="@+id/widget38"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:gravity="center_vertical"
-			android:text="Title"
+			android:orientation="horizontal"
 			>
-			</TextView>
+				<TextView
+				android:id="@+id/title_list_item"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:gravity="center_vertical"
+				android:text="Title"
+				>
+				</TextView>
+				<TextView
+				android:id="@+id/time_list_item"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Time"
+				>
+				</TextView>
+			</LinearLayout>
 			<TextView
-			android:id="@+id/time_list_item"
-			android:layout_width="wrap_content"
+			android:id="@+id/content_list_item"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="Time"
+			android:text="Content"
+			android:paddingBottom="10dp"
+			android:textSize="18dip"
 			>
 			</TextView>
 		</LinearLayout>
-		<TextView
-		android:id="@+id/content_list_item"
+		<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="Content"
-		android:paddingBottom="10dp"
-		android:textSize="8pt"
-		>
-		</TextView>
-	</LinearLayout>
+		android:orientation="horizontal"
+		android:background="#FFFFFF"
+		android:layout_gravity="right|bottom">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="#E8E8E8"
+			android:text="show all..."
+			android:textSize="18dip"
+			android:layout_marginLeft="6dp"
+			android:layout_marginBottom="6dp"/>
+		</LinearLayout>
+	</FrameLayout>
+	
 	<LinearLayout
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_height="100dp"
 		android:layout_weight="0"
 		android:orientation="vertical"
-		android:paddingTop="20px"
+		android:paddingTop="0dp"
 		>
 		<ImageView
 			android:layout_width="20px"

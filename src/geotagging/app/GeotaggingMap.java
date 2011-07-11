@@ -4,6 +4,9 @@ import geotagging.DAL.GeoCategoryDAL;
 import geotagging.DAL.GeoCommentDAL;
 import geotagging.DAL.GeoEntityDAL;
 import geotagging.DES.Entity;
+import geotagging.provider.CacheBase;
+import geotagging.provider.DatabaseAdapter;
+import geotagging.realtime.UpdateCategoriesThread;
 import geotagging.realtime.UpdateMapThread;
 import geotagging.utils.CustomArrayAdapter;
 import geotagging.utils.GeotaggingItemizedOverlay;
@@ -25,11 +28,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,16 +45,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -163,6 +169,11 @@ public class GeotaggingMap extends MapActivity {
         findViewById(R.id.title_refresh_progress).setVisibility(
                 View.VISIBLE);
         Drawable drawable = this.getResources().getDrawable(R.drawable.fire_icon_small);
+        // refresh the database
+        if (isOnline()) {
+			this.syncDatabase();
+		}
+        
     	UpdateMapThread updateMapT = new UpdateMapThread(drawable,this, itemizedoverlay, UpdateMapThread.SYNC_MODE);
         updateMapT.start();
     }
@@ -441,6 +452,10 @@ public class GeotaggingMap extends MapActivity {
 	}
 	
 	private void checkNetworkAvailability () {
+//		if (isOnline()) {
+//			this.syncDatabase();
+//		}
+		
 		URL url;
 		URLConnection conn = null;
 		InputStream inputstream = null;
@@ -466,6 +481,37 @@ public class GeotaggingMap extends MapActivity {
 			
 		}
 	}
+	
+	private void syncDatabase() {
+		DatabaseAdapter da = new DatabaseAdapter(this);
+		da.open();
+		da.upgradeDatabase();
+		da.close();
+		
+		SharedPreferences settings = this.getSharedPreferences(CacheBase.PREFERENCE_FILENAME, MODE_PRIVATE);
+    	SharedPreferences.Editor prefEditor = settings.edit();
+    	prefEditor.putInt("latest_entityid", 0);
+    	prefEditor.putInt("latest_commentid", 0);
+    	prefEditor.putInt("latest_responseid", 0);
+    	prefEditor.putInt("cached_entityid", 0);
+    	prefEditor.putInt("cached_commentid", 0);
+    	prefEditor.putInt("cached_responseid", 0);
+    	prefEditor.putInt("remote_count", 50);
+    	prefEditor.commit(); 
+		
+		GeoCategoryDAL.setContext(this);
+    	UpdateCategoriesThread thread = new UpdateCategoriesThread();
+    	thread.start();
+	}
+	
+	private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
 	
 	
 	private void initializeMap() {

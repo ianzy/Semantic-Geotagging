@@ -52,11 +52,11 @@ ExpandableListView.OnChildClickListener{
         commentId = b.getInt("commentId");
         String description = b.getString("description");
 		
-        TextView tvUserName = (TextView)this.findViewById(R.id.comment_detail_user_name);
-        tvUserName.setText(userName+" said,");
-        
-        TextView tvDescription = (TextView)this.findViewById(R.id.comment_detail_content);
-        tvDescription.setText(description);
+//        TextView tvUserName = (TextView)this.findViewById(R.id.comment_detail_user_name);
+//        tvUserName.setText(userName+" said,");
+//        
+//        TextView tvDescription = (TextView)this.findViewById(R.id.comment_detail_content);
+//        tvDescription.setText(description);
         
         mAdapter = new MyExpandableListAdapter();
         

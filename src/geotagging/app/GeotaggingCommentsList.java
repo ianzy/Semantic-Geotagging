@@ -80,7 +80,8 @@ public class GeotaggingCommentsList extends ListActivity {
 				b.putString("description", c.getDescription());
 				b.putString("userName", c.getUserName());
 				b.putString("userImg", c.getUserImg());
-				intent.setClassName("geotagging.app","geotagging.app.GeotaggingFollowUpCategories");
+				b.putString("count", String.valueOf(c.getCommentCounter()));
+				intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentContent");
 				intent.putExtras(b);
 				startActivity(intent);
 			}

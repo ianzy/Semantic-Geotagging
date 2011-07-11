@@ -40,6 +40,12 @@ public class DatabaseAdapter {
 	public void close() {
 		db.close();
 	}
+	
+	public void upgradeDatabase() {
+		if(db.isOpen()) {
+			mDatabaseHelper.onUpgrade(db, db.getVersion(), db.getVersion()+1);
+		}
+	}
 
 	public Cursor getAllEntities() {
 		return db.query(Tables.ENTITIES, EntityQuery.PROJECTION, null, null, null, null, Entities.ENTITY_ID + " DESC");

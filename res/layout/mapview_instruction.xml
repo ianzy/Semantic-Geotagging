@@ -21,8 +21,8 @@
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:padding="5px"
 		android:textSize="18sp"
-		android:textColor="#ffffffff"
-       	android:text="Select a location to view or add an incident."/>
+		android:textColor="#ff000000"
+       	android:text="Select a location in the map to view or add an incident."/>
        	
     </LinearLayout>
 </geotagging.views.TransparentPanel>

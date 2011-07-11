@@ -55,7 +55,11 @@ public class GeotaggingFollowUpList extends ListActivity {
         if(categoryName.charAt(categoryName.length()-1) == 's') {
         	categoryName = categoryName.substring(0, categoryName.length()-1);
         }
-        btnAdd.setText("Add A New "+categoryName);
+        if(categoryName == "Advice") {
+        	btnAdd.setText("Add New " +categoryName);
+        } else {
+        	btnAdd.setText("Add New "+categoryName);
+        }
         
         mAdapter = (FollowUpListAdapter)getLastNonConfigurationInstance();
         if(null == mAdapter) {
@@ -66,7 +70,6 @@ public class GeotaggingFollowUpList extends ListActivity {
         } else {
         	setListAdapter(mAdapter);
         }
-        
         
         
         //Set the onclick event listener for listview items
@@ -85,7 +88,8 @@ public class GeotaggingFollowUpList extends ListActivity {
 				b.putString("description", c.getDescription());
 				b.putString("userName", c.getUserName());
 				b.putString("userImg", c.getUserImg());
-				intent.setClassName("geotagging.app","geotagging.app.GeotaggingFollowUpCategories");
+				b.putString("count", String.valueOf(c.getCommentCounter()));
+				intent.setClassName("geotagging.app","geotagging.app.GeotaggingCommentContent");
 				intent.putExtras(b);
 				startActivity(intent);
 			}

@@ -45,11 +45,20 @@
 	  android:layout_width="match_parent"
 	  android:layout_height="match_parent"
 	  android:orientation="vertical">
-	  <TextView android:layout_width="match_parent" 
+	  <geotagging.views.TransparentPanel android:layout_width="match_parent" 
+		android:layout_height="wrap_content">
+		<TextView android:layout_width="match_parent" 
+		android:layout_height="wrap_content"
+		android:textSize="18sp"
+		android:paddingLeft="7dip"
+		android:textStyle="bold"
+       	android:text="Select a message to view or add a follow up response"/>
+		</geotagging.views.TransparentPanel>
+	  <!-- <TextView android:layout_width="match_parent" 
 		android:layout_height="wrap_content"
 		style="@style/CategorizedResponse" 
        	android:text="Select a message to view or add a follow up response"
-       	/>
+       	/> -->
 	<ListView android:id="@+id/android:list" 
 	android:layout_width="match_parent"
 	android:layout_height="0dip"
@@ -63,7 +72,7 @@
         android:layout_weight = "1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
         <LinearLayout android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
+        	android:layout_height="40px"
         	android:background="#ff980000">
 			<Button android:id="@+id/add_comments_button"
 					android:layout_width="match_parent"
@@ -74,6 +83,7 @@
 					android:textColor="#ffffff"
 					android:layout_weight="0"
 					android:background="@drawable/title_button"/>
-			</LinearLayout>
+		</LinearLayout>
+		<include layout="@layout/alert_bottom_bar"/>
 	</LinearLayout>
 </LinearLayout>

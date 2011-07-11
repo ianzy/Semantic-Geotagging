@@ -29,6 +29,12 @@
         <item name="android:background">@color/title_separator</item>
     </style>
     
+    <style name="ButtonSeparator">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/title_separator</item>
+    </style>
+    
     <style name="TitleBarText">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">fill_parent</item>
@@ -56,14 +62,15 @@
         <item name="android:textColor">@color/followup_response</item>
         <!--<item name="android:singleLine">true</item>
         -->
-        <item name="android:background">#bb787878</item>
+        <!-- <item name="android:background">#bb787878</item> -->
+        <item name="android:background">#ffffffff</item>
         <item name="android:ellipsize">end</item>
     </style>
     
     <style name="LabelIndicator">
     	<item name="android:layout_width">65px</item>
         <item name="android:layout_height">65px</item>
-        <item name="android:padding">8px</item>
+        <item name="android:paddingLeft">8px</item>
         <item name="android:textStyle">bold</item>
         <!--<item name="android:textColor">@color/title_text</item>
         --><item name="android:textSize">@dimen/text_size_medium</item>

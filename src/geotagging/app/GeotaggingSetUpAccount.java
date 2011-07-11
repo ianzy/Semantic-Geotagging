@@ -36,7 +36,7 @@ public class GeotaggingSetUpAccount extends Activity {
 	
 	public void onLogin(View v) {
 		((Button)v).setEnabled(false);
-		ProgressDialog MyDialog = ProgressDialog.show( this, "Loging in. " , " Please wait ... ", true);
+		ProgressDialog myDialog = ProgressDialog.show( this, "Loging in. " , " Please wait ... ", true);
 		String username = ((EditText)this.findViewById(R.id.account_user_name)).getText().toString();
 		String password = ((EditText)this.findViewById(R.id.account_password)).getText().toString();
 		String organization = ((EditText)this.findViewById(R.id.account_organization)).getText().toString();
@@ -95,6 +95,8 @@ public class GeotaggingSetUpAccount extends Activity {
         	GeoCategoryDAL.setContext(this);
         	UpdateCategoriesThread thread = new UpdateCategoriesThread();
         	thread.start();
+        	
+        	myDialog.dismiss();
 	        
 			Intent intent = new Intent();
 			intent.setClassName("geotagging.app", "geotagging.app.GeotaggingMap");
@@ -103,7 +105,7 @@ public class GeotaggingSetUpAccount extends Activity {
 		} else {
 			Toast.makeText(this, "Login failed", Toast.LENGTH_LONG).show();
 			((Button)v).setEnabled(true);
-			MyDialog.dismiss();
+			myDialog.dismiss();
 		}
 	}
 	

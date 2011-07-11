@@ -2,17 +2,17 @@ package geotagging.realtime;
 
 import geotagging.DAL.GeoCategoryDAL;
 import geotagging.DES.ResponseCategory;
-import geotagging.app.GeotaggingFollowUpCategories;
+import geotagging.app.IResponseCounter;
 
 import java.util.List;
 
 public class UpdateResponseCounterThread extends BaseThread {
 
 	private int commentId;
-	private GeotaggingFollowUpCategories cx;
+	private IResponseCounter cx;
 	private GeoCategoryDAL counterDAL;
 	
-	public UpdateResponseCounterThread(GeotaggingFollowUpCategories cx, int commentId) {
+	public UpdateResponseCounterThread(IResponseCounter cx, int commentId) {
 		this.commentId = commentId;
 		this.cx = cx;
 		this.counterDAL = GeoCategoryDAL.getInstance();

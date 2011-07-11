@@ -28,10 +28,12 @@ public class BaloonInMapView extends LinearLayout {
         panelPaint.setAntiAlias(true);
         //Border
         Paint borderPaint = new Paint();
-		borderPaint.setARGB(255, 255, 255, 255);//color for the border
+//		borderPaint.setARGB(255, 255, 255, 255);//color for the border
+		borderPaint.setARGB(255, 0, 0, 0);
 		borderPaint.setAntiAlias(true);
 		borderPaint.setStyle(Style.STROKE);
-		borderPaint.setStrokeWidth(4);
+		//4
+		borderPaint.setStrokeWidth(2);
         
 		float bottomForPanel = getMeasuredHeight()-20;
 		float bottomForContent = 19*(getMeasuredHeight()/20)-20;
@@ -42,7 +44,8 @@ public class BaloonInMapView extends LinearLayout {
         //BaloonRect
         RectF baloonRect = new RectF();
         baloonRect.set(0,0, getMeasuredWidth(), bottomForContent);
-        panelPaint.setARGB(100, 0, 0, 0);//color for background
+//        panelPaint.setARGB(100, 0, 0, 0);//color for background
+        panelPaint.setARGB(255, 255, 255, 255);
         canvas.drawRoundRect(baloonRect, 20, 20, panelPaint);
         canvas.drawRoundRect(baloonRect, 20, 20, borderPaint);
         //Arrow below

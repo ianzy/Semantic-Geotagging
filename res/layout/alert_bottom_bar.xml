@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+ 	android:layout_height="wrap_content"
+ 	android:layout_weight="0"
+ 	android:orientation="vertical">
+ 	<ImageView style="@style/ButtonSeparator" />
+ 	<LinearLayout android:layout_width="match_parent"
+ 	android:layout_height="wrap_content"
+ 	android:orientation="horizontal">
+ 	<Button android:id="@+id/btn_alert"
+ 		android:layout_width="match_parent"
+ 		android:layout_height="40dip"
+ 		android:layout_weight="1"
+ 		android:background="#ff980000"
+ 		android:textSize="18sp"
+ 		android:text="Alert"
+ 		android:textColor="#ffffffff"
+ 		android:onClick="onAlertClick"/>
+ 	<Button android:id="@+id/btn_clear_all"
+ 		android:layout_width="match_parent"
+ 		android:layout_height="40dip"
+ 		android:layout_weight="1"
+ 		android:background="#ff00dd00"
+ 		android:textSize="18sp"
+ 		android:text="All Clear"
+ 		android:textColor="#ffffffff"
+ 		android:onClick="onClearAllClick"/>
+ 	</LinearLayout>
+ </LinearLayout>

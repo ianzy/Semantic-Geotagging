@@ -2,7 +2,6 @@ package geotagging.app;
 
 import geotagging.DAL.GeoCategoryDAL;
 import geotagging.DES.ResponseCategory;
-import geotagging.realtime.UpdateResponseCounterThread;
 import geotagging.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +23,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class GeotaggingFollowUpCategories extends Activity implements IResponseCounter {
-	
-
+public class GeotaggingCategoriesForResponding extends Activity implements IResponseCounter {
 	private GeoCategoryDAL categoryDAL;
 	private List<ResponseCategory> categories;
 
+	private static final int NEW_RESPONSE = 0x443322;
 	private int commentId;
 	
 	private FollowUpCategoryAdapter mAdapter;
@@ -63,20 +60,29 @@ public class GeotaggingFollowUpCategories extends Activity implements IResponseC
         pairedListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				Intent intent = new Intent();
 				Bundle b = new Bundle();
-            	b.putInt("commentId", commentId);
-            	b.putInt("category_id", categories.get(arg2).getCategory_id());
-            	Log.i("!!!!!!!!!!!!!!!!!!!!!!id", String.valueOf(categories.get(arg2).getName()));
-				intent.setClassName("geotagging.app","geotagging.app.GeotaggingFollowUpList");
-				b.putString("responseCategory", categories.get(arg2).getName());
-				intent.putExtras(b);
-				startActivity(intent);
+		    	b.putInt("comment_id", commentId);
+		    	b.putInt("category_id", categories.get(arg2).getCategory_id());
+		    	Intent intent = new Intent();
+		    	intent.putExtras(b);
+		    	intent.setClassName("geotagging.app","geotagging.app.GeotaggingEntityResponse");
+		    	startActivityForResult(intent, NEW_RESPONSE);
 			}
 		});
         
-        UpdateResponseCounterThread thread = new UpdateResponseCounterThread(this, commentId);
-        thread.start();
+//        UpdateResponseCounterThread thread = new UpdateResponseCounterThread(this, commentId);
+//        thread.start();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+		if (requestCode == NEW_RESPONSE) {
+            if (resultCode == RESULT_OK) {
+            	this.finish();
+            }
+		}
+            
 	}
 	
 	//We must use a Handler object because we cannot update most UI 
@@ -171,13 +177,13 @@ public class GeotaggingFollowUpCategories extends Activity implements IResponseC
             }
             ResponseCategory c = mData.get(position);
             holder.categoryName.setText(c.getName());
-            holder.counter.setText("("+String.valueOf(c.getCount())+")");
+//            holder.counter.setText("("+String.valueOf(c.getCount())+")");
             //force clear the image to prevent caching behavior
             holder.importantImage.setImageDrawable(null);
             if(c.isImportanTag()) {	
 //            	Log.i("-------------------------", String.valueOf(c.getName()));
 	            holder.importantImage
-	        	.setImageDrawable(GeotaggingFollowUpCategories.this
+	        	.setImageDrawable(GeotaggingCategoriesForResponding.this
 	        							.getResources()
 	        							.getDrawable(R.drawable.cg_icon_exclamation));
             }

@@ -42,7 +42,7 @@ android:id="@+id/txv_title"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:textSize="25sp"
-android:textColor="#ffffffff"
+android:textColor="#ff000000"
 android:text="TextView"
 >
 </TextView>
@@ -59,7 +59,7 @@ android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="TextView"
 android:textSize="25sp"
-android:textColor="#ffffffff"
+android:textColor="#ff000000"
 >
 </TextView>
 </ScrollView>

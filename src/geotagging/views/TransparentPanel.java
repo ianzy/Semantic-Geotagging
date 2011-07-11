@@ -24,11 +24,13 @@ private Paint innerPaint, borderPaint ;
 
 	private void init() {
 		innerPaint = new Paint();
-		innerPaint.setARGB(100, 0, 0, 0); //color for content
+//		innerPaint.setARGB(100, 0, 0, 0); //color for content
+		innerPaint.setARGB(255, 255, 255, 255);
 		innerPaint.setAntiAlias(true);
 
 		borderPaint = new Paint();
-		borderPaint.setARGB(255, 255, 255, 255);
+//		borderPaint.setARGB(255, 255, 255, 255);
+		borderPaint.setARGB(150, 0, 0, 0);
 		borderPaint.setAntiAlias(true);
 		borderPaint.setStyle(Style.STROKE);
 		borderPaint.setStrokeWidth(5);
